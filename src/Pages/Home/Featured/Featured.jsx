@@ -3,7 +3,7 @@ import React from 'react'
 export default function Featured() {
     return (
         <div>
-            <section class="bg-red-50 py-16">
+            <section class=" py-16">
                 <div class="container mx-auto px-4">
                     {/* section title */}
                     <div class="text-center mb-12">
