@@ -12,13 +12,13 @@ export default function Allusers() {
     // State for filtering and pagination
     const [statusFilter, setStatusFilter] = useState('all');
     const [currentPage, setCurrentPage] = useState(0);
-    const usersPerPage = 5;
 
     // Fetching users data
-    const { data: users = [], refetch } = useQuery({
+    const { data: users = [] ,refetch} = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
             const res = await axiosSecure.get('/users');
+            console.log(res.data);
             return res.data;
         },
     });
@@ -31,6 +31,7 @@ export default function Allusers() {
     });
 
     // Pagination logic
+    const usersPerPage = 5;
     const pageCount = Math.ceil(filteredUsers.length / usersPerPage);
     const currentUsers = filteredUsers.slice(
         currentPage * usersPerPage,
@@ -47,20 +48,62 @@ export default function Allusers() {
         setStatusFilter(e.target.value);
     };
 
+    // Block user
+    const handleBlock = async (userId) => {
+        try {
+            await axiosSecure.put(`/users/block/${userId}`);
+            // Refresh state or reload users as needed
+        } catch (error) {
+            console.error('Error blocking user:', error);
+        }
+    };
+
+    // Unblock user
+    const handleUnblock = async (userId) => {
+        try {
+            await axiosSecure.put(`/users/unblock/${userId}`);
+            // Refresh state or reload users as needed
+        } catch (error) {
+            console.error('Error unblocking user:', error);
+        }
+    };
+
+    // Make user a volunteer
+    const handleMakeVolunteer = async (userId) => {
+        try {
+            await axiosSecure.put(`/users/make-volunteer/${userId}`);
+            // Refresh state or reload users as needed
+        } catch (error) {
+            console.error('Error making volunteer:', error);
+        }
+    };
+
     // Make user an admin
     const handleMakeAdmin = async (user) => {
-        axiosSecure.patch(`/users/admin/${user._id}`).then((res) => {
-            if (res.data.modifiedCount > 0) {
-                refetch();
-                Swal.fire({
-                    position: 'top-center',
-                    icon: 'success',
-                    title: `${user.name} is now Admin!`,
-                    showConfirmButton: false,
-                    timer: 1500,
-                });
-            }
-        });
+       axiosSecure.patch(`/users/admin/${user._id}`)
+       .then(res=>{
+        console.log(res.data)
+        if(res.data.modifiedCount > 0){
+            refetch()
+            Swal.fire({
+                position: "top-center",
+                icon: "success",
+                title: `${user.name} is an Admin`,
+                showConfirmButton: false,
+                timer: 1500
+              });
+        }
+       })
+    };
+
+    // Make user a donor
+    const handleMakeDonor = async (userId) => {
+        try {
+            await axiosSecure.put(`/users/make-donor/${userId}`);
+            // Refresh state or reload users as needed
+        } catch (error) {
+            console.error('Error making donor:', error);
+        }
     };
 
     return (
@@ -97,31 +140,29 @@ export default function Allusers() {
                             <tr key={user._id}>
                                 <td className="px-4 py-2 border-b">
                                     <img
-                                        src={user.avatar || '/default-avatar.png'}
+                                        src={user.avatar}
                                         alt="Avatar"
                                         className="rounded-full w-12 h-12"
                                     />
                                 </td>
                                 <td className="px-4 py-2 border-b">{user.email}</td>
                                 <td className="px-4 py-2 border-b">{user.name}</td>
-                                <td className="px-4 py-2 border-b">
-                                    {user.role === 'admin' ? (
-                                        'Admin'
-                                    ) : (
-                                        <button
-                                            onClick={() => handleMakeAdmin(user)}
-                                            className="btn btn-sm bg-blue-500 text-white"
-                                        >
-                                            Make Admin
-                                        </button>
-                                    )}
+                                <td>
+                                    { user.role === 'admin' ? 'Admin' : <button
+                                        onClick={() => handleMakeAdmin(user)}
+                                        className="btn ">
+                                        {user.role}
+                                    </button>}
                                 </td>
-                                <td className="px-4 py-2 border-b">{user.status || 'N/A'}</td>
+                                <td 
+                                
+                                className="px-4 py-2 border-b">{user.status}</td>
+                                
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="5" className="px-4 py-2 border-b text-center">
+                            <td colSpan="6" className="px-4 py-2 border-b text-center">
                                 No users found.
                             </td>
                         </tr>

@@ -7,7 +7,7 @@ export default function UserAdmin() {
   const {user} =UseAuth()
   console.log(user)
   const axiosSecure = AxiosSecure()
-const {data: isAdmin} = useQuery({
+const {data: isAdmin ,isPending: isAdminLoading } = useQuery({
   queryKey:[user?.email ,'isAdmin'],
   queryFn:async ()=>{
     const result = await axiosSecure.get(`/users/admin/${user.email}`)
@@ -16,5 +16,5 @@ const {data: isAdmin} = useQuery({
   }
 })
 
-  return[isAdmin]
+  return[isAdmin , isAdminLoading]
 }
