@@ -1,11 +1,12 @@
 import React from 'react';
 import { FaHome } from 'react-icons/fa';
 import { NavLink, Outlet } from 'react-router-dom';
+import UserAdmin from '../../Components/Hooks/UserAdmin';
 
 export default function Dashboard() {
 
   // TODO:
-  const isAdmin = true
+  const [isAdmin] = UserAdmin()
 
   return (
     <div className="drawer lg:drawer-open">
