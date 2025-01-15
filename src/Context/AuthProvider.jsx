@@ -19,11 +19,11 @@ import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndP
       };
     
       // Update profile
-      const UpdateProfile = (name,photo) => {
+      const UpdateProfile = (name,image) => {
           setLoading(true)
           return updateProfile(auth.currentUser,{
             displayName: name,
-        photoURL: photo,
+          photoURL: image,
           })
         }
 

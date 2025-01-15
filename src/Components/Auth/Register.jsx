@@ -3,8 +3,15 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthProvider";
+import AxiosPublic from "../Hooks/AxiosPublic";
+import Swal from "sweetalert2";
+
+const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
+const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
 export default function Register() {
+  const axiosPublic = AxiosPublic();
+
   const { donateUserRegistration, UpdateProfile } = useContext(AuthContext);
   const [districts, setDistricts] = useState([]);
   const [filteredUpazilas, setFilteredUpazilas] = useState([]);
@@ -26,6 +33,11 @@ export default function Register() {
       .catch((error) => {
         console.error("Error fetching districts data:", error);
         setIsLoading(false);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Failed to load district data. Please try again later.",
+        });
       });
   }, []);
 
@@ -38,24 +50,107 @@ export default function Register() {
   };
 
   // Form submission
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log("Form Data:", data);
 
-    donateUserRegistration(data.email, data.password)
-      .then((result) => {
-        const loggedUser = result.user;
-        console.log("Registered User:", loggedUser);
+    // Image upload with ImageBB
+    const imageFile = new FormData();
+    imageFile.append("image", data.photo[0]);
 
-        UpdateProfile(data.name, data.photo)
-          .then(() => {
-            console.log("Profile updated successfully.");
-            
+    try {
+      const res = await axios.post(image_hosting_api, imageFile);
+      const imageURL = res.data.data.display_url;
+
+      console.log("Uploaded Image URL:", imageURL);
+
+      donateUserRegistration(data.email, data.password)
+        .then((result) => {
+          const loggedUser = result.user;
+
+          console.log("Registered User:", loggedUser);
+
+          // Update user profile with name and photo
+          UpdateProfile(data.name, imageURL)
+            .then(() => {
+              console.log("Profile updated successfully.");
+
+              // Prepare user data for database
+              const userData = {
+                name: data.name,
+                email: data.email,
+                avatar: imageURL,
+                bloodGroup: data.bloodGroup,
+                district: data.district,
+                upazila: data.upozela,
+                status: "active",  // Default status is active
+                role: "donor",     // Default role is donor
+              };
+
+              // Save user data to your database
+              axiosPublic.post("/users", userData)
+                .then(() => {
+                  console.log("User data saved successfully.");
+                  if (res.data.insertedId) {
+                    console.log('user data added');
+                    reset();
+                    Swal.fire({
+                      title: "User Successfully Account Created",
+                      showClass: {
+                        popup: `
+                          animate__animated
+                          animate__fadeInUp
+                          animate__faster
+                        `
+                      },
+                      hideClass: {
+                        popup: `
+                          animate__animated
+                          animate__fadeOutDown
+                          animate__faster
+                        `
+                      }
+                    });
+                    navigate('/');
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error saving user data:", error.message);
+                  Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Error saving user data. Please try again later.",
+                  });
+                });
+
+            })
+            .catch((error) => {
+              console.error("Profile Update Error:", error.message);
+              Swal.fire({
+                icon: "error",
+                title: "Profile Update Error",
+                text: "Something went wrong while updating your profile. Please try again later.",
+              });
+            });
+
+        })
+        .catch((error) => {
+          console.error("Profile Update Error:", error.message);
+          Swal.fire({
+            icon: "error",
+            title: "Registration Failed",
+            text: "There was an issue with your registration. Please check your details and try again.",
           });
-      })
-      .catch((error) => {
-        console.error("Registration Error:", error.message);
+        });
+
+    } catch (error) {
+      console.error("Image Upload Error:", error.message);
+      Swal.fire({
+        icon: "error",
+        title: "Image Upload Failed",
+        text: "There was an issue uploading your image. Please try again.",
       });
-  };
+    }
+  }
 
   return (
     <div className="flex flex-col items-center justify-center p-6 lg:p-12 mt-16">
@@ -94,15 +189,9 @@ export default function Register() {
           </div>
 
           {/* Photo URL */}
-          <div>
-            <label htmlFor="photo" className="block font-medium">Photo URL</label>
-            <input
-              id="photo"
-              type="url"
-              {...register("photo", { required: "Photo URL is required" })}
-              className="flex h-10 w-full rounded-md border px-3 py-2 text-sm focus:ring-1"
-            />
-            {errors.photo && <p className="text-red-500">{errors.photo.message}</p>}
+          <div className="form-control w-full my-6">
+            <input {...register('photo', { required: true })} type="file" className="file-input w-full max-w-xs" />
+            {errors.photo && <p className="text-red-500">Photo is required</p>}
           </div>
 
           {/* District */}
@@ -154,8 +243,9 @@ export default function Register() {
             </select>
             {errors.bloodGroup && <p className="text-red-500">{errors.bloodGroup.message}</p>}
           </div>
-           {/* Password */}
-           <div>
+
+          {/* Password */}
+          <div>
             <label htmlFor="password" className="block font-medium">Password</label>
             <input
               id="password"
@@ -172,8 +262,8 @@ export default function Register() {
             <input
               id="confirmPassword"
               type="password"
-              {...register("confirmPassword", { 
-                required: "Confirm password is required", 
+              {...register("confirmPassword", {
+                required: "Confirm password is required",
                 validate: (value) => value === watch("password") || "Passwords don't match"
               })}
               className="flex h-10 w-full rounded-md border px-3 py-2 text-sm focus:ring-1"
@@ -184,7 +274,7 @@ export default function Register() {
           {/* Submit Button */}
           <input
             type="submit"
-            className=" w-full btn bg-red-900 text-white hover:bg-red-900 border-none"
+            className="w-full btn bg-red-900 text-white hover:bg-red-900 border-none"
             value="Sign Up"
           />
         </form>
