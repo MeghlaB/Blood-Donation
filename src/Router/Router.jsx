@@ -11,6 +11,10 @@ import Proflie from "../Pages/Dashboard/Profile";
 import DashboardHome from "../Pages/Dashboard/DashboardHome";
 import MyDonationReques from "../Pages/Dashboard/MyDonationReques";
 import CreateDonationpage from "../Pages/Dashboard/CreateDonationpage";
+import AdminHome from "../Pages/Dashboard/DashboardAdimn/AdminHome";
+import Allusers from "../Pages/Dashboard/DashboardAdimn/Allusers";
+import Allbloodrequest from "../Pages/Dashboard/DashboardAdimn/Allbloodrequest";
+import ContentManagement from "../Pages/Dashboard/DashboardAdimn/ContentManagement";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -40,7 +44,7 @@ const router = createBrowserRouter([
           },
           // donar collection
           {
-            path:'home',
+            path:'Home',
             element:<DashboardHome></DashboardHome>
           },
           {
@@ -50,7 +54,24 @@ const router = createBrowserRouter([
           ,{
             path:'create-donation-request',
             element:<CreateDonationpage></CreateDonationpage>
-          }
+          },
+          // adimn collection
+          {
+            path:'adminhome',
+            element:<AdminHome></AdminHome>
+          },
+          {
+            path:'all-users',
+            element:<Allusers></Allusers>
+          },
+          {
+            path:'all-blood-donation-request',
+            element:<Allbloodrequest></Allbloodrequest>
+          },
+          {
+            path:'content-management',
+            element:<ContentManagement></ContentManagement>
+          },
         ]
       },
 
