@@ -50,7 +50,9 @@ const signout =()=>{
     const userInfo={
         user,
         UpdateProfile,
+        donorUserLogin,
         donateUserRegistration,
+        signout,
         name:'meghla'
     }
     return (

@@ -184,7 +184,7 @@ export default function Register() {
           {/* Submit Button */}
           <input
             type="submit"
-            className="btn w-full btn-primary"
+            className=" w-full btn bg-red-900 text-white hover:bg-red-900 border-none"
             value="Sign Up"
           />
         </form>

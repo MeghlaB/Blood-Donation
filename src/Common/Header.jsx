@@ -4,10 +4,10 @@ import { Link, NavLink } from 'react-router-dom';
 import { AuthContext } from '../Context/AuthProvider';
 
 const Header = () => {
-    const { user, logout } = useContext(AuthContext);
+    const { user, signout } = useContext(AuthContext);
 
     const handleLogout = () => {
-        logout().then(() => {
+        signout().then(() => {
             console.log('Logged out successfully');
         }).catch((error) => {
             console.error('Logout error:', error);
@@ -77,7 +77,14 @@ const Header = () => {
                         </ul>
                     </div>
                 ) : (
-                    <Link to={'/register'} className="btn btn-primary">Register</Link>
+                    <div className='ml-6'>
+                    <Link to={'/register'} className="btn bg-red-900 text-white hover:bg-red-900 border-none px-4 py-2 rounded-lg">
+                      Register
+                    </Link>
+                    <Link to={'/login'} className="btn bg-red-900 text-white hover:bg-red-900 border-none px-4 py-2 rounded-lg ml-4">
+                      Login
+                    </Link>
+                  </div>
                 )}
             </div>
         </div>

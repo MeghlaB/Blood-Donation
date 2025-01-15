@@ -21,7 +21,8 @@
     "react-hook-form": "^7.54.2",
     "react-parallax": "^3.5.1",
     "react-router-dom": "^7.1.1",
-    "sort-by": "^1.2.0"
+    "sort-by": "^1.2.0",
+    "sweetalert2": "^11.15.10"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

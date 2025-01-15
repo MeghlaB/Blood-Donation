@@ -79,7 +79,7 @@ export default function ConnectUs() {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition"
+                  className="w-full btn bg-red-900 text-white hover:bg-red-900 border-none transition"
                 >
                   Send Message
                 </button>
