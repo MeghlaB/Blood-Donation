@@ -49,34 +49,34 @@ export default function Allusers() {
     };
 
     // Block user
-    const handleBlock = async (userId) => {
-        try {
-            await axiosSecure.put(`/users/block/${userId}`);
-            // Refresh state or reload users as needed
-        } catch (error) {
-            console.error('Error blocking user:', error);
-        }
-    };
+    // const handleBlock = async (userId) => {
+    //     try {
+    //         await axiosSecure.put(`/users/block/${userId}`);
+    //         // Refresh state or reload users as needed
+    //     } catch (error) {
+    //         console.error('Error blocking user:', error);
+    //     }
+    // };
 
     // Unblock user
-    const handleUnblock = async (userId) => {
-        try {
-            await axiosSecure.put(`/users/unblock/${userId}`);
-            // Refresh state or reload users as needed
-        } catch (error) {
-            console.error('Error unblocking user:', error);
-        }
-    };
+    // const handleUnblock = async (userId) => {
+    //     try {
+    //         await axiosSecure.put(`/users/unblock/${userId}`);
+    //         // Refresh state or reload users as needed
+    //     } catch (error) {
+    //         console.error('Error unblocking user:', error);
+    //     }
+    // };
 
     // Make user a volunteer
-    const handleMakeVolunteer = async (userId) => {
-        try {
-            await axiosSecure.put(`/users/make-volunteer/${userId}`);
-            // Refresh state or reload users as needed
-        } catch (error) {
-            console.error('Error making volunteer:', error);
-        }
-    };
+    // const handleMakeVolunteer = async (userId) => {
+    //     try {
+    //         await axiosSecure.put(`/users/make-volunteer/${userId}`);
+    //         // Refresh state or reload users as needed
+    //     } catch (error) {
+    //         console.error('Error making volunteer:', error);
+    //     }
+    // };
 
     // Make user an admin
     const handleMakeAdmin = async (user) => {
@@ -97,14 +97,14 @@ export default function Allusers() {
     };
 
     // Make user a donor
-    const handleMakeDonor = async (userId) => {
-        try {
-            await axiosSecure.put(`/users/make-donor/${userId}`);
-            // Refresh state or reload users as needed
-        } catch (error) {
-            console.error('Error making donor:', error);
-        }
-    };
+    // const handleMakeDonor = async (userId) => {
+    //     try {
+    //         await axiosSecure.put(`/users/make-donor/${userId}`);
+    //         // Refresh state or reload users as needed
+    //     } catch (error) {
+    //         console.error('Error making donor:', error);
+    //     }
+    // };
 
     return (
         <div className="p-6 mt-12">

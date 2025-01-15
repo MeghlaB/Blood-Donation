@@ -15,6 +15,7 @@ import AdminHome from "../Pages/Dashboard/DashboardAdimn/AdminHome";
 import Allusers from "../Pages/Dashboard/DashboardAdimn/Allusers";
 import Allbloodrequest from "../Pages/Dashboard/DashboardAdimn/Allbloodrequest";
 import ContentManagement from "../Pages/Dashboard/DashboardAdimn/ContentManagement";
+import Privet from "../PrivetRoute/Privet";
 const router = createBrowserRouter([
   {
     path: "/",
