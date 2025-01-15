@@ -1,16 +1,29 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import logo from '../../src/assets/Image/Logo/Blood logo.png';
+import { Link, NavLink } from 'react-router-dom';
 import { AuthContext } from '../Context/AuthProvider';
-import logo from '../../src/assets/Image/Logo/Blood logo.png'
 
 const Header = () => {
     const { user, logout } = useContext(AuthContext);
-    const navLinks=<>
-     <li><a>Donation Request</a></li>
-    </>
+
+    const handleLogout = () => {
+        logout().then(() => {
+            console.log('Logged out successfully');
+        }).catch((error) => {
+            console.error('Logout error:', error);
+        });
+    };
+
+    const navLinks = (
+        <>
+            <NavLink to={'/'}><li><a>Home</a></li></NavLink>
+            <li><a>Donation Request</a></li>
+            <li><a>Blog</a></li>
+        </>
+    );
 
     return (
-        <div className="navbar  bg-slate-400">
+        <div className="navbar px-6 fixed z-10 top-0 left-0 bg-[#FCE0DF] text-red-500">
             <div className="navbar-start">
                 <div className="dropdown">
                     <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -30,7 +43,6 @@ const Header = () => {
                     <ul
                         tabIndex={0}
                         className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-                       
                         <li>
                             <a>Parent</a>
                             <ul className="p-2">
@@ -41,18 +53,32 @@ const Header = () => {
                         <li><a>Item 3</a></li>
                     </ul>
                 </div>
-               <div className=" flex items-center gap-2 ">
-                <img className='w-10 h-10 rounded-full' src={logo} alt="" />
-               <a className=' lg:text-xl font-bold'>Blood <span className='text-red-600'>Bond</span> </a>
-               </div>
+                <div className="flex items-center gap-2">
+                    <img className="w-10 h-10 rounded-full" src={logo} alt="Logo" />
+                    <a className="lg:text-xl font-bold">Blood <span className="text-red-600">Bond</span></a>
+                </div>
             </div>
-            <div className="navbar-center hidden lg:flex">
+            <div className="navbar-end hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">
-                   {navLinks}
+                    {navLinks}
                 </ul>
             </div>
             <div className="navbar-end">
-                <Link className='btn '  to={'/register'}>Register</Link>
+                {user ? (
+                    <div className="dropdown dropdown-end">
+                        <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                            <div className="w-10 rounded-full">
+                                <img src={user.photoURL} alt="User" />
+                            </div>
+                        </label>
+                        <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box mt-3 w-52 p-2 shadow">
+                            <li><a href="/dashboard">Dashboard</a></li>
+                            <li><a onClick={handleLogout}>Logout</a></li>
+                        </ul>
+                    </div>
+                ) : (
+                    <Link to={'/register'} className="btn btn-primary">Register</Link>
+                )}
             </div>
         </div>
     );

@@ -1,0 +1,43 @@
+ [
+   
+    {"district": "Dhaka", "upazilas": ["Savar", "Dhamrai", "Dohar", "Keraniganj", "Nawabganj", "Demra"]},
+    {"district": "Gazipur", "upazilas": ["Gazipur Sadar", "Kaliakair", "Kapasia", "Sreepur"]},
+    {"district": "Kishoreganj", "upazilas": ["Kishoreganj Sadar", "Bhairab", "Hossainpur", "Itna", "Katiadi", "Karimganj", "Tarail", "Pakundia", "Mithamain"]},
+    {"district": "Manikganj", "upazilas": ["Manikganj Sadar", "Singair", "Saturia", "Shibalaya", "Harirampur", "Ghior", "Daulatpur"]},
+    {"district": "Munshiganj", "upazilas": ["Munshiganj Sadar", "Gazaria", "Tongibari", "Lohajang", "Sirajdikhan", "Sreenagar"]},
+    {"district": "Narayanganj", "upazilas": ["Narayanganj Sadar", "Araihazar", "Rupganj", "Sonargaon", "Bandar"]},
+    {"district": "Narsingdi", "upazilas": ["Narsingdi Sadar", "Palash", "Raipura", "Belabo", "Monohardi", "Shibpur"]},
+    {"district": "Faridpur", "upazilas": ["Faridpur Sadar", "Madhukhali", "Boalmari", "Nagarkanda", "Alfadanga", "Sadarpur", "Charbhadrasan"]},
+
+  
+    {"district": "Chittagong", "upazilas": ["Chittagong Sadar", "Rangunia", "Raozan", "Fatikchhari", "Mirsharai", "Sitakunda", "Sandwip", "Lohagara", "Anwara", "Satkania", "Patiya", "Boalkhali", "Banshkhali", "Chandanaish"]},
+    {"district": "Cox's Bazar", "upazilas": ["Cox's Bazar Sadar", "Ramu", "Ukhiya", "Teknaf", "Chakaria", "Maheshkhali", "Kutubdia", "Pekua"]},
+    {"district": "Comilla", "upazilas": ["Comilla Sadar", "Daudkandi", "Debidwar", "Titas", "Muradnagar", "Laksam", "Homna", "Meghna", "Barura", "Monohorgonj"]},
+    {"district": "Khagrachari", "upazilas": ["Khagrachari Sadar", "Dighinala", "Matiranga", "Panchhari", "Laxmichhari", "Ramgarh", "Manikchhari", "Mahalchhari"]},
+    {"district": "Bandarban", "upazilas": ["Bandarban Sadar", "Thanchi", "Ruma", "Rowangchhari", "Lama", "Alikadam", "Naikhongchhari"]},
+    {"district": "Rangamati", "upazilas": ["Rangamati Sadar", "Kaptai", "Baghaichhari", "Barkal", "Juraichhari", "Rajasthali", "Belaichhari"]},
+
+
+    {"district": "Sylhet", "upazilas": ["Sylhet Sadar", "Beanibazar", "Bishwanath", "Golapganj", "Fenchuganj", "Jaintiapur", "Kanaighat", "Companiganj", "Zakiganj"]},
+    {"district": "Moulvibazar", "upazilas": ["Moulvibazar Sadar", "Srimangal", "Kamalganj", "Rajnagar", "Kulaura", "Juri", "Barlekha"]},
+    {"district": "Habiganj", "upazilas": ["Habiganj Sadar", "Chunarughat", "Madhabpur", "Bahubal", "Baniachang", "Ajmiriganj", "Nabiganj", "Lakhai"]},
+    {"district": "Sunamganj", "upazilas": ["Sunamganj Sadar", "Tahirpur", "Jamalganj", "Dharampasha", "Shalla", "Dirai", "Chhatak", "Jagannathpur", "Bishwamvarpur"]},
+
+
+    {"district": "Rajshahi", "upazilas": ["Rajshahi Sadar", "Bagha", "Bagmara", "Charghat", "Durgapur", "Godagari", "Mohanpur", "Paba", "Puthia", "Tanore"]},
+    {"district": "Natore", "upazilas": ["Natore Sadar", "Baraigram", "Gurudaspur", "Bagatipara", "Lalpur", "Singra"]},
+    {"district": "Pabna", "upazilas": ["Pabna Sadar", "Sujanagar", "Ishwardi", "Santhia", "Bera", "Chatmohar", "Faridpur", "Bhangura"]},
+
+ 
+    {"district": "Khulna", "upazilas": ["Khulna Sadar", "Dacope", "Batiaghata", "Dumuria", "Terokhada", "Paikgachha", "Phultala", "Rupsha", "Koyra"]},
+    {"district": "Jessore", "upazilas": ["Jessore Sadar", "Sharsha", "Bagherpara", "Chaugachha", "Jhikargachha", "Manirampur", "Keshabpur"]},
+    {"district": "Satkhira", "upazilas": ["Satkhira Sadar", "Shyamnagar", "Kaliganj", "Assasuni", "Debhata", "Tala", "Kalaroa"]},
+
+  
+    {"district": "Barisal", "upazilas": ["Barisal Sadar", "Babuganj", "Banaripara", "Gournadi", "Agailjhara", "Hizla", "Mehendiganj", "Muladi", "Bakerganj"]},
+
+    
+    {"district": "Rangpur", "upazilas": ["Rangpur Sadar", "Mithapukur", "Pirganj", "Gangachara", "Kaunia", "Pirgachha", "Badarganj"]},
+
+    {"district": "Mymensingh", "upazilas": ["Mymensingh Sadar", "Trishal", "Haluaghat", "Muktagachha", "Gouripur", "Phulpur"]}
+]
