@@ -16,9 +16,12 @@ const Header = () => {
 
     const navLinks = (
         <>
-            <NavLink to={'/'}><li><a>Home</a></li></NavLink>
-            <li><a>Donation Request</a></li>
-            <li><a>Blog</a></li>
+            <NavLink to={'/'}><li>Home</li></NavLink>
+            <li>Donation Request</li>
+            <li>Blog</li>
+            {
+                user&&<NavLink to={'/dashboard'}><li>Dashboard</li></NavLink>
+            }
         </>
     );
 
@@ -59,7 +62,7 @@ const Header = () => {
                 </div>
             </div>
             <div className="navbar-end hidden lg:flex">
-                <ul className="menu menu-horizontal px-1">
+                <ul className="menu menu-horizontal px-1 gap-5">
                     {navLinks}
                 </ul>
             </div>
