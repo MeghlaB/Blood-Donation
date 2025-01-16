@@ -51,7 +51,7 @@ export default function Allusers() {
     // Block user
     const handleBlock = async (userId) => {
         try {
-            await axiosSecure.put(`/users/block/${userId}`);
+            await axiosSecure.put(`/users/${userId}`);
             // Refresh state or reload users as needed
         } catch (error) {
             console.error('Error blocking user:', error);
@@ -61,7 +61,7 @@ export default function Allusers() {
     // Unblock user
     const handleUnblock = async (userId) => {
         try {
-            await axiosSecure.put(`/users/unblock/${userId}`);
+            await axiosSecure.put(`/users/${userId}`);
             // Refresh state or reload users as needed
         } catch (error) {
             console.error('Error unblocking user:', error);
@@ -71,7 +71,7 @@ export default function Allusers() {
     // Make user a volunteer
     const handleMakeVolunteer = async (userId) => {
         try {
-            await axiosSecure.put(`/users/make-volunteer/${userId}`);
+            await axiosSecure.put(`/users/${userId}`);
             // Refresh state or reload users as needed
         } catch (error) {
             console.error('Error making volunteer:', error);
@@ -99,7 +99,7 @@ export default function Allusers() {
     // Make user a donor
     const handleMakeDonor = async (userId) => {
         try {
-            await axiosSecure.put(`/users/make-donor/${userId}`);
+            await axiosSecure.put(`/users/${userId}`);
             // Refresh state or reload users as needed
         } catch (error) {
             console.error('Error making donor:', error);
@@ -122,7 +122,7 @@ export default function Allusers() {
                     <option value="blocked">Blocked</option>
                 </select>
             </div>
-
+            <div><h1>All users {user.length}</h1></div>
             {/* Table with Users */}
             <table className="min-w-full mt-6 table-auto">
                 <thead>
