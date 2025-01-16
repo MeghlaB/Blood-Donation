@@ -17,6 +17,7 @@ import Allbloodrequest from "../Pages/Dashboard/DashboardAdimn/Allbloodrequest";
 import ContentManagement from "../Pages/Dashboard/DashboardAdimn/ContentManagement";
 import Privet from "../PrivetRoute/Privet";
 import AdminRoute from "../PrivetRoute/AdminRoute";
+import Edit from "../Pages/Dashboard/Edit";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -46,33 +47,39 @@ const router = createBrowserRouter([
           },
           // donar collection
           {
-            path:'Home',
-            element:<DashboardHome></DashboardHome>
+            path: 'home',
+            element: <DashboardHome></DashboardHome>
           },
           {
-            path:'my-donation-requests',
-            element:<MyDonationReques></MyDonationReques>
+            path: 'edit/:id',
+            element: <Edit></Edit>,
+            loader:({params})=>fetch (`http://localhost:5000/donation/${params.id}`)
+           
+          },
+          {
+            path: 'my-donation-requests',
+            element: <MyDonationReques></MyDonationReques>
           }
-          ,{
-            path:'create-donation-request',
-            element:<CreateDonationpage></CreateDonationpage>
+          , {
+            path: 'create-donation-request',
+            element: <CreateDonationpage></CreateDonationpage>
           },
           // adimn collection
           {
-            path:'adminhome',
-            element:<AdminRoute><AdminHome></AdminHome></AdminRoute>
+            path: 'adminhome',
+            element: <AdminRoute><AdminHome></AdminHome></AdminRoute>
           },
           {
-            path:'all-users',
-            element:<AdminRoute><Allusers></Allusers></AdminRoute>
+            path: 'all-users',
+            element: <AdminRoute><Allusers></Allusers></AdminRoute>
           },
           {
-            path:'all-blood-donation-request',
-            element:<AdminRoute><Allbloodrequest></Allbloodrequest></AdminRoute>
+            path: 'all-blood-donation-request',
+            element: <AdminRoute><Allbloodrequest></Allbloodrequest></AdminRoute>
           },
           {
-            path:'content-management',
-            element:<AdminRoute><ContentManagement></ContentManagement></AdminRoute>
+            path: 'content-management',
+            element: <AdminRoute><ContentManagement></ContentManagement></AdminRoute>
           },
         ]
       },

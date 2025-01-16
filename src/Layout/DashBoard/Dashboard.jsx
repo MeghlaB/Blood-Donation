@@ -97,7 +97,7 @@ export default function Dashboard() {
               </li>
               <li>
                 <NavLink
-                  to={'/dashboard/Home'}
+                  to={'/dashboard/home'}
                   className={({ isActive }) =>
                     isActive ? 'font-bold text-white' : 'text-black'
                   }
