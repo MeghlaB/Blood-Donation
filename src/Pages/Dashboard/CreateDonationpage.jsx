@@ -95,7 +95,7 @@ const navigate = useNavigate()
                 setDonationTime('');
                 setRequestMessage('');
             }
-            Navigate('my-donation-requests')
+           
         } catch (error) {
             console.error('Error creating donation request:', error);
             Swal.fire({
