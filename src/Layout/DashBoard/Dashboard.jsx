@@ -22,7 +22,7 @@ export default function Dashboard() {
       {/* Sidebar Area */}
       <div className="drawer-side">
         <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
-        <ul className="menu  text-black min-h-full w-80 mt-16 p-4 gap-4">
+        <ul className="menu bg-red-300  text-black min-h-full w-80 mt-16 p-4 gap-4">
           {/* Sidebar Links */}
           {
             isAdmin ? <>
