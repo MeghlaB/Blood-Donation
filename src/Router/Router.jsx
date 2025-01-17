@@ -18,6 +18,7 @@ import ContentManagement from "../Pages/Dashboard/DashboardAdimn/ContentManageme
 import Privet from "../PrivetRoute/Privet";
 import AdminRoute from "../PrivetRoute/AdminRoute";
 import Edit from "../Pages/Dashboard/Edit";
+import SearchPage from "../Pages/SearchPage/SearchPage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: '/login',
         element: <Login></Login>
+      },
+      {
+        path:'/searchDonars',
+        element:<SearchPage></SearchPage>
       },
       // Dashboard
       {
