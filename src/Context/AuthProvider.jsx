@@ -66,6 +66,7 @@ export default function AuthProvider({ children }) {
 
   const userInfo = {
     user,
+    loading,
     UpdateProfile,
     donorUserLogin,
     donateUserRegistration,

@@ -9,7 +9,8 @@ export default function Dashboard() {
   const [isVolunteer] = UserVolunteer();
 
   return (
-    <div className="drawer lg:drawer-open">
+    <div>
+      <div className="drawer lg:drawer-open">
       {/* Main Wrapper for the Layout */}
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
 
@@ -21,7 +22,7 @@ export default function Dashboard() {
       {/* Sidebar Area */}
       <div className="drawer-side">
         <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
-        <ul className="menu bg-red-300 text-black min-h-full w-80 mt-16 p-4 gap-4">
+        <ul className="menu bg-red-300 text-black min-h-full w-80  p-4 gap-4">
           {isAdmin && (
             <>
             <li>
@@ -166,8 +167,23 @@ export default function Dashboard() {
               </li>
             </>
           )}
+          <div className="divider ">OR</div>
+          <li>
+                <NavLink
+                  to={'/'}
+                  className={({ isActive }) =>
+                    isActive ? 'font-bold text-white' : 'text-black'
+                  }
+                >
+                  Home
+                </NavLink>
+              </li>
         </ul>
       </div>
+      
+     </div>
+     
     </div>
+     
   );
 }

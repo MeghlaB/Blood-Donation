@@ -22,7 +22,7 @@ const Header = () => {
     const navLinks = (
         <>
             <NavLink to={'/'}><li>Home</li></NavLink>
-            <li>Donation Request</li>
+            <NavLink to={'/requestDonation'}><li>Donation Request</li></NavLink>
             <li>Blog</li>
             
         </>

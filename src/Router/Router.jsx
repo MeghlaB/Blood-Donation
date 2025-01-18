@@ -23,6 +23,8 @@ import MyDonationReques from "../Pages/Dashboard/UserDashboard/MyDonationReques"
 import MyDonationRequests from "../Pages/Dashboard/UserDashboard/MyDonationReques";
 import CreateDonationPage from "../Pages/Dashboard/UserDashboard/CreateDonationpage";
 import AllDonationRequest from "../Pages/Dashboard/DashboardVolunter/AllDonationRequest";
+import DonationRequest from "../Pages/NavabarRoute/DonationRequest";
+import BloodDetails from "../Pages/NavabarRoute/BloodDetails";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -43,6 +45,14 @@ const router = createBrowserRouter([
       {
         path:'/searchDonars',
         element:<SearchPage></SearchPage>
+      },
+      {
+        path:'/requestDonation',
+        element:<DonationRequest></DonationRequest>
+      },
+      {
+        path:'/details/:id',
+        element:<Privet><BloodDetails></BloodDetails></Privet>
       },
       // Dashboard
       {

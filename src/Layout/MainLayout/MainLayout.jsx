@@ -1,18 +1,23 @@
 import React from 'react'
 import Header from '../../Common/Header'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import Footer from '../../Common/Footer'
 
 export default function MainLayout() {
+  const location =useLocation()
+  const isDashboardRoute = location.pathname.startsWith('/dashboard');
   return (
-    <div>
-      <Header></Header>
-     <div className='min-h-[calc(100vh-288px)]'>
-     <Outlet></Outlet>
-     </div>
-      <div className=''>
-      <Footer></Footer>
-      </div>
+    
+        <div>
+    
+      {!isDashboardRoute && <Header/>}
+      <main>
+        <Outlet />
+      </main>
+      {/* Footer শুধুমাত্র ড্যাশবোর্ড রুটে বাদ দিন */}
+      {!isDashboardRoute && <Footer />}
     </div>
+     
+   
   )
 }

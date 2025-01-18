@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import AxiosPublic from '../../../Components/Hooks/AxiosPublic';
 import { BsThreeDots } from 'react-icons/bs';
 import Swal from 'sweetalert2';
+import { FaTrash } from 'react-icons/fa';
+import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
 
 export default function AllDonationRequest() {
+  const axiosSecure = AxiosSecure()
   const [requests, setRequests] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState('');
@@ -24,7 +27,7 @@ export default function AllDonationRequest() {
     fetchAllRequests();
   }, [axiosPublic]);
 
-  const handleBlockUnblock = () => {
+  const handlestausChange = () => {
     if (!selectedUser || !selectedStatus) {
       Swal.fire('Error', 'Please select a user and a status.', 'error');
       return;
@@ -48,6 +51,41 @@ export default function AllDonationRequest() {
       });
   };
 
+
+
+
+  const handleMenuDelete = async (item) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await axiosSecure.delete(`/donation/${item._id}`);
+          if (res.data.deletedCount > 0) {
+            setRequests((prev) => prev.filter((req) => req._id !== item._id));
+            Swal.fire('Deleted!', `${item.name} has been deleted.`, 'success');
+          }
+        } catch (error) {
+          console.error('Error deleting the item:', error);
+          Swal.fire('Error!', 'There was a problem deleting the item.', 'error');
+        }
+      }
+    });
+};
+
+
+
+
+
+
+
+
   const totalPages = Math.ceil(requests.length / pageSize);
   const paginatedRequests = requests.slice(
     (currentPage - 1) * pageSize,
@@ -68,6 +106,7 @@ export default function AllDonationRequest() {
                 <th className="border-b px-4 py-2">Time</th>
                 <th className="border-b px-4 py-2">Blood Group</th>
                 <th className="border-b px-4 py-2">Status</th>
+                <th className="border-b px-4 py-2">Delate</th>
               </tr>
             </thead>
             <tbody>
@@ -99,7 +138,7 @@ export default function AllDonationRequest() {
                           <button
                             onClick={() => {
                               setSelectedUser(request);
-                              handleBlockUnblock();
+                              handlestausChange();
                             }}
                             className="btn bg-red-900 text-white hover:bg-red-900 w-full"
                           >
@@ -109,6 +148,15 @@ export default function AllDonationRequest() {
                       </ul>
                     </div>
                   </td>
+                  <td className="border-b px-4 py-2 text-center">
+                <button
+                  onClick={() => handleMenuDelete(request)}
+                  className="flex items-center justify-center rounded-full bg-red-500 px-4 py-2 font-bold text-white shadow-md transition-all duration-300 hover:bg-red-700"
+                >
+                  <FaTrash />
+                  Delete
+                </button>
+              </td>
                 </tr>
               ))}
             </tbody>

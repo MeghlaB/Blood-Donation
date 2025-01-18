@@ -33,7 +33,7 @@ export default function Login() {
 
 
   return (
-    <div className="mx-auto w-full max-w-md mt-20 space-y-4 rounded-lg border bg-white p-10 shadow-lg pb-8">
+    <div className="mx-auto w-full mb-52 max-w-md mt-20 space-y-4 rounded-lg border bg-white p-10 shadow-lg pb-8">
     <h1 className="text-3xl font-semibold">Sign In</h1>
     <form onSubmit={handleSubmit} className="space-y-6">
         {/* Email Field */}
