@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import UseAuth from '../../../Components/Hooks/UseAuth';
 import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
 
@@ -20,43 +20,75 @@ const CreateDonationPage = () => {
     const [donationTime, setDonationTime] = useState('');
     const [requestMessage, setRequestMessage] = useState('');
     const [isBlocked, setIsBlocked] = useState(false);
-const navigate = useNavigate()
-    useEffect(() => {
-        if (user?.status === 'blocked') {
-            setIsBlocked(true);
-        }
-    }, [user]);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        axios
-            .get('/distric.json')
-            .then((response) => {
+        const checkUserStatus = async () => {
+            try {
+                const response = await axiosSecure(`/users/${user?.email}`);
+                const userStatus = response.data.status;
+                console.log(userStatus);
+                if (userStatus === 'block') {
+                    setIsBlocked(true);
+                } else {
+                    setIsBlocked(false);
+                }
+            } catch (error) {
+                console.error('Error fetching user status:', error);
+                setIsBlocked(true); 
+            }
+        };
+    
+        if (user?.email) {
+            checkUserStatus();
+        }
+    }, [user?.email, axiosSecure]);
+    
+
+
+    useEffect(() => {
+        // Fetch district data
+        const fetchDistricts = async () => {
+            try {
+                const response = await axios.get('/distric.json');
                 if (Array.isArray(response.data)) {
                     setDistricts(response.data);
                 } else {
                     console.error('Invalid district data format');
                 }
-            })
-            .catch((error) => {
+            } catch (error) {
                 console.error('Error fetching districts data:', error);
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
                     text: 'Failed to load district data. Please try again later.',
                 });
-            });
+            }
+        };
+
+        fetchDistricts();
     }, []);
 
     const handleDistrictChange = (event) => {
         const selected = event.target.value;
         setSelectedDistrict(selected);
+
         const foundDistrict = districts.find((d) => d.district === selected);
         setFilteredUpazilas(foundDistrict ? foundDistrict.upazilas : []);
-        setSelectedUpazila(''); // Clear upazila field when district changes
+        setSelectedUpazila(''); 
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (isBlocked) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Blocked User',
+                text: 'Your account is blocked. You cannot submit donation requests.',
+            });
+            return;
+        }
 
         const donationRequest = {
             requesterName: user?.displayName,
@@ -72,11 +104,10 @@ const navigate = useNavigate()
             requestMessage,
             status: 'pending',
         };
-    console.log(donationRequest)
+
         try {
             const res = await axiosSecure.post('/donation-requests', donationRequest);
-            console.log(res.data)
-            if (res.data.insertedId ) {
+            if (res.data.insertedId) {
                 Swal.fire({
                     position: 'top-center',
                     icon: 'success',
@@ -95,7 +126,6 @@ const navigate = useNavigate()
                 setDonationTime('');
                 setRequestMessage('');
             }
-           
         } catch (error) {
             console.error('Error creating donation request:', error);
             Swal.fire({
@@ -110,7 +140,7 @@ const navigate = useNavigate()
         <section className="p-6 mt-20 bg-gray-100 text-gray-900">
             <form onSubmit={handleSubmit} className="container mx-auto space-y-6">
                 <fieldset className="p-6 rounded-md shadow-sm bg-white">
-                    <div className="grid grid-cols-6 gap-4">
+                <div className="grid grid-cols-6 gap-4">
                         {/* Requester Name */}
                         <div className="col-span-3">
                             <label htmlFor="requesterName" className="block text-sm">
@@ -276,14 +306,15 @@ const navigate = useNavigate()
                             />
                         </div>
                     </div>
-                    {/* Submit Button */}
                     <div className="text-right mt-4">
                         <button
                             type="submit"
                             disabled={isBlocked}
                             className={`px-6 py-2 ${
-                                isBlocked ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-900 hover:bg-red-700'
-                            } text-white rounded-md`}
+                                isBlocked
+                                    ? 'bg-gray-400 cursor-not-allowed'
+                                    : 'bg-red-900 hover:bg-red-700 text-white rounded-md'
+                            }`}
                         >
                             Submit Request
                         </button>

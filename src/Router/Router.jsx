@@ -52,7 +52,8 @@ const router = createBrowserRouter([
           // Proflie
           {
             path: 'profile',
-            element: <Proflie></Proflie>
+            element: <Proflie></Proflie>,
+            loader:({params})=>fetch(`http://localhost:5000/users/profile/${params.email}`)
           },
           // donar collection
           {

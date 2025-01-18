@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
 import { FaUserEdit } from 'react-icons/fa';
+import { BsThreeDots } from 'react-icons/bs';
 
 export default function AllUsers() {
     const axiosSecure = AxiosSecure();
     const [selectedUser, setSelectedUser] = useState(null);
-    const [selectedRole, setSelectedRole] = useState('')
-    const [selectedStatus , setSelectedStatus] = useState('')
+    const [selectedRole, setSelectedRole] = useState('');
+    const [selectedStatus, setSelectedStatus] = useState('');
+    const [filterStatus, setFilterStatus] = useState('all');
+    const [filteredUsers, setFilteredUsers] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 5;
 
     // Fetch users
     const { data: users = [], refetch } = useQuery({
@@ -19,25 +24,33 @@ export default function AllUsers() {
         },
     });
 
-  
-    const handleRoleChange = () => {
-        console.log('Selected User:', selectedUser);
-        console.log('Selected Role:', selectedRole);
-    
-        if (!selectedUser) {
-            Swal.fire('Error', 'No user selected for role update.', 'error');
-            return;
+    // Filter logic
+    useEffect(() => {
+        if (filterStatus === 'all') {
+            setFilteredUsers(users);
+        } else {
+            setFilteredUsers(users.filter(user => user.status === filterStatus));
         }
-        if (!selectedRole) {
-            Swal.fire('Error', 'Please select a role before submitting.', 'error');
+    }, [filterStatus, users]);
+
+    // Pagination
+    const totalPages = Math.ceil(filteredUsers.length / pageSize);
+    const paginatedUsers = filteredUsers.slice(
+        (currentPage - 1) * pageSize,
+        currentPage * pageSize
+    );
+
+    // Handle role change
+    const handleRoleChange = () => {
+        if (!selectedUser || !selectedRole) {
+            Swal.fire('Error', 'Please select a user and a role.', 'error');
             return;
         }
         axiosSecure.patch(`/users/AdimnroleChange/${selectedUser._id}`, { role: selectedRole })
             .then((res) => {
-                console.log(res.data);
                 if (res?.data?.message === 'Role updated successfully') {
                     Swal.fire('Success', `Role updated to ${selectedRole}.`, 'success');
-                    setSelectedRole('');  
+                    setSelectedRole('');
                     refetch();
                 }
             })
@@ -45,41 +58,49 @@ export default function AllUsers() {
                 Swal.fire('Error', err.response?.data?.message || 'Failed to update role.', 'error');
             });
     };
-    
 
+    // Handle block/unblock
     const handleBlockUnblock = () => {
-        console.log('Selected User:',selectedUser)
-        console.log('Selected Status:',selectedStatus)
-        if(!selectedUser){
-            Swal.fire('Error', 'No user selected for Status update.', 'error')
-            return
-        }
-        if (!selectedStatus) {
-            Swal.fire('Error', 'Please select a Staus before submitting.', 'error');
+        if (!selectedUser || !selectedStatus) {
+            Swal.fire('Error', 'Please select a user and a status.', 'error');
             return;
         }
         axiosSecure.put(`/users/status/${selectedUser._id}`, { status: selectedStatus })
-        .then((res) => {
-            console.log(res.data);
-            if (res?.data?.message === 'Status updated successfully') {
-                Swal.fire('Success', `Role updated to ${selectedRole}.`, 'success');
-                setSelectedStatus('');  
-                refetch();
-            }
-        })
-        .catch((err) => {
-            Swal.fire('Error', err.response?.data?.message || 'Failed to update role.', 'error');
-        });
-        
+            .then((res) => {
+                if (res?.data?.message === 'Status updated successfully') {
+                    Swal.fire('Success', `Status updated to ${selectedStatus}.`, 'success');
+                    setSelectedStatus('');
+                    refetch();
+                }
+            })
+            .catch((err) => {
+                Swal.fire('Error', err.response?.data?.message || 'Failed to update status.', 'error');
+            });
     };
 
     return (
-        <div className="p-6 mt-12">
+       <div >
+         <div className="p-6 mt-12 mb-32 ">
             <h1 className="text-2xl font-bold">All Users: {users.length}</h1>
 
-            {/* Table with Users */}
-            <div className="overflow-x-auto ">
-                <table className="table ">
+            {/* Filter by status */}
+            <div className="mb-4 ">
+                <label htmlFor="filterStatus" className="mr-2">Filter by Status</label>
+                <select
+                    id="filterStatus"
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                    className="border px-3 py-2 rounded-md"
+                >
+                    <option value="all">All</option>
+                    <option value="active">Active</option>
+                    <option value="block">Blocked</option>
+                </select>
+            </div>
+
+            {/* Table */}
+            <div className="overflow-x-auto overflow-hidden ">
+                <table className="table w-full h-[750px] border-collapse">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -93,15 +114,11 @@ export default function AllUsers() {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map((user, index) => (
+                        {paginatedUsers.map((user, index) => (
                             <tr key={user._id}>
-                                <th>{index + 1}</th>
+                                <td className=''>{(currentPage - 1) * pageSize + index + 1}</td>
                                 <td>
-                                    <img
-                                        src={user.avatar}
-                                        alt="avatar"
-                                        className="w-10 h-10 rounded-full"
-                                    />
+                                    <img src={user.avatar} alt="avatar" className="w-10 h-10 rounded-full" />
                                 </td>
                                 <td>{user.name}</td>
                                 <td>{user.email}</td>
@@ -110,10 +127,10 @@ export default function AllUsers() {
                                     <div className="dropdown dropdown-end">
                                         <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                                             <div className="">
-                                                <FaUserEdit />
+                                            <BsThreeDots />
                                             </div>
                                         </label>
-                                        <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box mt-3 w-52 p-2 shadow">
+                                        <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box -top-10 w-52 p-2 shadow">
                                             <select
                                                 id="role"
                                                 className="select select-bordered w-full max-w-xs"
@@ -133,7 +150,7 @@ export default function AllUsers() {
                                                         setSelectedUser(user);
                                                         handleRoleChange();
                                                     }}
-                                                    className="btn btn-primary w-full"
+                                                    className="btn bg-red-900 text-white hover:bg-red-900 w-full"
                                                 >
                                                     Submit
                                                 </button>
@@ -143,13 +160,13 @@ export default function AllUsers() {
                                 </td>
                                 <td>{user.status}</td>
                                 <td>
-                                <div className="dropdown dropdown-end">
+                                    <div className="dropdown dropdown-end">
                                         <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                                             <div className="">
-                                                <FaUserEdit />
+                                            <BsThreeDots />
                                             </div>
                                         </label>
-                                        <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box mt-3 w-52 p-2 shadow">
+                                        <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box -top-10 w-52 p-2   shadow">
                                             <select
                                                 id="role"
                                                 className="select select-bordered w-full max-w-xs"
@@ -169,7 +186,7 @@ export default function AllUsers() {
                                                         setSelectedUser(user);
                                                         handleBlockUnblock();
                                                     }}
-                                                    className="btn btn-primary w-full"
+                                                    className="btn bg-red-900 text-white hover:bg-red-900 w-full"
                                                 >
                                                     Submit
                                                 </button>
@@ -182,6 +199,22 @@ export default function AllUsers() {
                     </tbody>
                 </table>
             </div>
+
+            {/* Pagination */}
+        <div className="flex justify-center mt-24 ">
+                {Array.from({ length: totalPages }, (_, index) => (
+                    <button
+                        key={index}
+                        onClick={() => setCurrentPage(index + 1)}
+                        className={`btn  btn-sm mx-1 ${currentPage === index + 1 ? 'bg-red-900 text-white hover:bg-red-900 ' : 'btn-outline'}`}
+                    >
+                        {index + 1}
+                    </button>
+                ))}
+            </div>
+           
         </div>
+        
+       </div>
     );
 }

@@ -27,9 +27,7 @@ export default function Login() {
               navgate('/')
              
         })
-        .catch((err) => {
-            console.error('Sign In Error:', err.message);
-        });
+       
 };
 
 

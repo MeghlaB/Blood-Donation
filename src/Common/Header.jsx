@@ -24,7 +24,7 @@ const Header = () => {
             <NavLink to={'/'}><li>Home</li></NavLink>
             <li>Donation Request</li>
             <li>Blog</li>
-            {user && <NavLink to={'/dashboard'}><li>Dashboard</li></NavLink>}
+            
         </>
     );
 
@@ -49,6 +49,7 @@ const Header = () => {
                         </div>
                     </label>
                     <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box mt-3 w-52 p-2 shadow">
+                       
                         <li><Link to="/dashboard">Dashboard</Link></li>
                         <li><a onClick={handleLogout}>Logout</a></li>
                     </ul>

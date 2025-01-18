@@ -46,7 +46,7 @@ export default function Register() {
     const selectedDistrict = event.target.value;
     const foundDistrict = districts.find(d => d.district === selectedDistrict);
     setFilteredUpazilas(foundDistrict ? foundDistrict.upazilas : []);
-    reset({ upozela: "" }); // Clear the upazila field on district change
+    reset({ upozela: "" }); 
   };
 
   // Form submission
@@ -82,8 +82,8 @@ export default function Register() {
                 bloodGroup: data.bloodGroup,
                 district: data.district,
                 upazila: data.upozela,
-                status: "active",  // Default status is active
-                role: "donor",     // Default role is donor
+                status: "active", 
+                role: "donor",     
               };
 
               // Save user data to your database

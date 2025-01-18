@@ -24,6 +24,16 @@ export default function Dashboard() {
         <ul className="menu bg-red-300 text-black min-h-full w-80 mt-16 p-4 gap-4">
           {isAdmin && (
             <>
+            <li>
+                <NavLink
+                  to={'/dashboard/profile'}
+                  className={({ isActive }) =>
+                    isActive ? 'font-bold text-white' : 'text-black'
+                  }
+                >
+                  Profile
+                </NavLink>
+              </li>
               <li>
                 <NavLink
                   to={'/dashboard/adminhome'}
@@ -69,6 +79,16 @@ export default function Dashboard() {
 
           {!isAdmin && isVolunteer && (
             <>
+            <li>
+                <NavLink
+                  to={'/dashboard/profile'}
+                  className={({ isActive }) =>
+                    isActive ? 'font-bold text-white' : 'text-black'
+                  }
+                >
+                  Profile
+                </NavLink>
+              </li>
               <li>
                 <NavLink
                   to={'/dashboard/volunteerhome'}

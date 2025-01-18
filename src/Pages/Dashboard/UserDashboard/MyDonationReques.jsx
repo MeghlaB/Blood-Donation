@@ -50,7 +50,7 @@ export default function MyDonationRequests() {
   const currentRequests = filteredRequests.slice(indexOfFirstRequest, indexOfLastRequest);
 
   return (
-    <div className="mt-48 p-6">
+    <div className="mt-24 p-6">
       <h1 className="text-xl font-semibold mb-4">My Donation Requests</h1>
       
       {/* Filter by Status */}

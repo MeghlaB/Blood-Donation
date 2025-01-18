@@ -6,6 +6,7 @@ import Marquee from 'react-fast-marquee';
 import Swal from 'sweetalert2';
 import UseAuth from '../../../Components/Hooks/UseAuth';
 import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
+import { FaTrash } from 'react-icons/fa';
 
 export default function DashboardHome() {
   const { user } = UseAuth();
@@ -113,20 +114,7 @@ export default function DashboardHome() {
                       onClick={() => handleMenuDelete(request)}
                       className="flex items-center justify-center rounded-full bg-red-500 px-4 py-2 font-bold text-white shadow-md transition-all duration-300 hover:bg-red-700"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        className="mr-2 h-6 w-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
+                      <FaTrash></FaTrash>
                       Delete
                     </button>
                   </td>
