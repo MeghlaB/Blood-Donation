@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-
-
 import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
 import UseAuth from '../../../Components/Hooks/UseAuth';
+import { Link } from 'react-router-dom';
+import { FaTrash } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 
 export default function MyDonationRequests() {
   const { user } = UseAuth();
@@ -19,9 +20,9 @@ export default function MyDonationRequests() {
       try {
         const response = await axiosSecure.get(`/donation-requests/${user?.email}`);
         setRequests(response.data);
-        setFilteredRequests(response.data); 
+        setFilteredRequests(response.data);
       } catch (error) {
-        console.error("Error fetching donation requests:", error);
+        console.error('Error fetching donation requests:', error);
       }
     };
 
@@ -30,32 +31,56 @@ export default function MyDonationRequests() {
     }
   }, [user?.email, axiosSecure]);
 
+  const handleMenuDelete = async (item) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await axiosSecure.delete(`/donation/${item._id}`);
+          if (res.data.deletedCount > 0) {
+            setRequests((prev) => prev.filter((req) => req._id !== item._id));
+            Swal.fire('Deleted!', `${item.name} has been deleted.`, 'success');
+          }
+        } catch (error) {
+          console.error('Error deleting the item:', error);
+          Swal.fire('Error!', 'There was a problem deleting the item.', 'error');
+        }
+      }
+    });
+  };
 
   useEffect(() => {
     if (statusFilter === 'all') {
       setFilteredRequests(requests);
     } else {
-      setFilteredRequests(requests.filter(request => request.status === statusFilter));
+      setFilteredRequests(requests.filter((request) => request.status === statusFilter));
     }
   }, [statusFilter, requests]);
 
-  // Handle page change
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  
   const indexOfLastRequest = currentPage * requestsPerPage;
   const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
   const currentRequests = filteredRequests.slice(indexOfFirstRequest, indexOfLastRequest);
 
   return (
     <div className="mt-24 p-6">
-      <h1 className="text-xl font-semibold mb-4">My Donation Requests</h1>
-      
+      <h1 className="text-xl font-semibold mb-4">My Donation Requests:{requests.length}</h1>
+
       {/* Filter by Status */}
       <div className="mb-4">
-        <label htmlFor="statusFilter" className="mr-2">Filter by Status</label>
+        <label htmlFor="statusFilter" className="mr-2">
+          Filter by Status
+        </label>
         <select
           id="statusFilter"
           value={statusFilter}
@@ -75,22 +100,42 @@ export default function MyDonationRequests() {
         <thead>
           <tr>
             <th className="border-b px-4 py-2">Recipient Name</th>
-            <th className="border-b px-4 py-2">Hospital Name</th>
-            <th className="border-b px-4 py-2">Donation Date</th>
+            <th className="border-b px-4 py-2">Location</th>
+            <th className="border-b px-4 py-2">Date</th>
+            <th className="border-b px-4 py-2">Time</th>
+            <th className="border-b px-4 py-2">Blood Group</th>
             <th className="border-b px-4 py-2">Status</th>
-            <th className="border-b px-4 py-2">Actions</th>
+            <th className="border-b px-4 py-2">Edit</th>
+            <th className="border-b px-4 py-2">Delete</th>
           </tr>
         </thead>
         <tbody>
           {currentRequests.map((request) => (
             <tr key={request._id}>
               <td className="border-b px-4 py-2">{request.recipientName}</td>
-              <td className="border-b px-4 py-2">{request.hospitalName}</td>
+              <td className="border-b px-4 py-2">
+                {`${request.district}, ${request.upazila}`}
+              </td>
               <td className="border-b px-4 py-2">{request.donationDate}</td>
+              <td className="border-b px-4 py-2">{request.donationTime}</td>
+              <td className="border-b px-4 py-2">{request.bloodGroup}</td>
               <td className="border-b px-4 py-2">{request.status}</td>
               <td className="border-b px-4 py-2">
-                {/* Actions (like View Details or Edit) */}
-                <button className="text-blue-500 hover:underline">View</button>
+                <Link
+                  to={`/dashboard/edit/${request._id}`}
+                  className="btn btn-sm bg-blue-500 text-white rounded-md px-3 py-1"
+                >
+                  Edit
+                </Link>
+              </td>
+              <td className="border-b px-4 py-2 text-center">
+                <button
+                  onClick={() => handleMenuDelete(request)}
+                  className="flex items-center justify-center rounded-full bg-red-500 px-4 py-2 font-bold text-white shadow-md transition-all duration-300 hover:bg-red-700"
+                >
+                  <FaTrash />
+                  Delete
+                </button>
               </td>
             </tr>
           ))}
@@ -106,6 +151,20 @@ export default function MyDonationRequests() {
         >
           Previous
         </button>
+        {Array.from(
+          { length: Math.ceil(filteredRequests.length / requestsPerPage) },
+          (_, i) => (
+            <button
+              key={i}
+              onClick={() => handlePageChange(i + 1)}
+              className={`px-4 py-2 border rounded-md mx-2 ${
+                currentPage === i + 1 ? 'bg-blue-500 text-white' : ''
+              }`}
+            >
+              {i + 1}
+            </button>
+          )
+        )}
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === Math.ceil(filteredRequests.length / requestsPerPage)}

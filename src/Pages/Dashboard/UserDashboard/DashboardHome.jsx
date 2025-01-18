@@ -88,6 +88,7 @@ export default function DashboardHome() {
                 <th className="border-b px-4 py-2">Recipient Name</th>
                 <th className="border-b px-4 py-2">Location</th>
                 <th className="border-b px-4 py-2">Date</th>
+                <th className="border-b px-4 py-2">Time</th>
                 <th className="border-b px-4 py-2">Blood Group</th>
                 <th className="border-b px-4 py-2">Status</th>
                 <th className="border-b px-4 py-2">Edit</th>
@@ -102,6 +103,7 @@ export default function DashboardHome() {
                     {`${request.district}, ${request.upazila}`}
                   </td>
                   <td className="border-b px-4 py-2">{request.donationDate}</td>
+                  <td className="border-b px-4 py-2">{request.donationTime}</td>
                   <td className="border-b px-4 py-2">{request.bloodGroup}</td>
                   <td className="border-b px-4 py-2">{request.status}</td>
                   <td className="border-b px-4 py-2">
