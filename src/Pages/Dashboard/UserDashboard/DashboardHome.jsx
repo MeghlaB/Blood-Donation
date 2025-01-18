@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import UseAuth from '../../Components/Hooks/UseAuth';
-import AxiosSecure from '../../Components/Hooks/AxiosSecure';
+
+
 import { Link } from 'react-router-dom';
 import Marquee from 'react-fast-marquee';
 import Swal from 'sweetalert2';
+import UseAuth from '../../../Components/Hooks/UseAuth';
+import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
 
 export default function DashboardHome() {
   const { user } = UseAuth();

@@ -8,17 +8,21 @@ import Register from "../Components/Auth/Register";
 import Login from "../Components/Auth/Login";
 import Dashboard from '../Layout/DashBoard/Dashboard'
 import Proflie from "../Pages/Dashboard/Profile";
-import DashboardHome from "../Pages/Dashboard/DashboardHome";
-import MyDonationReques from "../Pages/Dashboard/MyDonationReques";
-import CreateDonationpage from "../Pages/Dashboard/CreateDonationpage";
 import AdminHome from "../Pages/Dashboard/DashboardAdimn/AdminHome";
 import Allusers from "../Pages/Dashboard/DashboardAdimn/Allusers";
 import Allbloodrequest from "../Pages/Dashboard/DashboardAdimn/Allbloodrequest";
 import ContentManagement from "../Pages/Dashboard/DashboardAdimn/ContentManagement";
 import Privet from "../PrivetRoute/Privet";
 import AdminRoute from "../PrivetRoute/AdminRoute";
-import Edit from "../Pages/Dashboard/Edit";
+
 import SearchPage from "../Pages/SearchPage/SearchPage";
+import VolunterHome from "../Pages/Dashboard/DashboardVolunter/VolunterHome";
+import DashboardHome from "../Pages/Dashboard/UserDashboard/DashboardHome";
+import Edit from "../Pages/Dashboard/UserDashboard/Edit";
+import MyDonationReques from "../Pages/Dashboard/UserDashboard/MyDonationReques";
+import MyDonationRequests from "../Pages/Dashboard/UserDashboard/MyDonationReques";
+import CreateDonationPage from "../Pages/Dashboard/UserDashboard/CreateDonationpage";
+import AllDonationRequest from "../Pages/Dashboard/DashboardVolunter/AllDonationRequest";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -67,9 +71,9 @@ const router = createBrowserRouter([
           }
           , {
             path: 'create-donation-request',
-            element: <CreateDonationpage></CreateDonationpage>
+            element: <CreateDonationPage></CreateDonationPage>
           },
-          // adimn collection
+          // adimn collection dashboard
           {
             path: 'adminhome',
             element: <AdminRoute><AdminHome></AdminHome></AdminRoute>
@@ -86,6 +90,19 @@ const router = createBrowserRouter([
             path: 'content-management',
             element: <AdminRoute><ContentManagement></ContentManagement></AdminRoute>
           },
+          // Volunteer Collection dashboard
+          {
+            path:'volunteerhome',
+            element:<VolunterHome></VolunterHome>
+          },
+          {
+            path:'all-blood-donation-request',
+            element:<AllDonationRequest></AllDonationRequest>
+          },
+          {
+            path:'content-management',
+            element:<ContentManagement></ContentManagement>
+          }
         ]
       },
 

@@ -1,14 +1,11 @@
-
-import React, { useEffect, useState } from 'react';
-import { Navigate, useLoaderData, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import AxiosSecure from '../../Components/Hooks/AxiosSecure';
-import UseAuth from '../../Components/Hooks/UseAuth';
 import axios from 'axios';
+import { Navigate, useNavigate } from 'react-router-dom';
+import UseAuth from '../../../Components/Hooks/UseAuth';
+import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
 
-export default function Edit() {
-    const item = useLoaderData();
-    console.log(item);
+const CreateDonationPage = () => {
     const { user } = UseAuth();
     const axiosSecure = AxiosSecure();
     const [recipientName, setRecipientName] = useState('');
@@ -23,8 +20,7 @@ export default function Edit() {
     const [donationTime, setDonationTime] = useState('');
     const [requestMessage, setRequestMessage] = useState('');
     const [isBlocked, setIsBlocked] = useState(false);
-    const navigate = useNavigate();
-
+const navigate = useNavigate()
     useEffect(() => {
         if (user?.status === 'blocked') {
             setIsBlocked(true);
@@ -76,16 +72,15 @@ export default function Edit() {
             requestMessage,
             status: 'pending',
         };
-
-        console.log(donationRequest);
+    console.log(donationRequest)
         try {
-            const res = await axiosSecure.patch(`/donation/${item._id}`, donationRequest);
-            console.log(res.data);
-            if (res.data.modifiedCount > 0) {
+            const res = await axiosSecure.post('/donation-requests', donationRequest);
+            console.log(res.data)
+            if (res.data.insertedId ) {
                 Swal.fire({
                     position: 'top-center',
                     icon: 'success',
-                    title: 'Donation request updated successfully!',
+                    title: 'Donation request created successfully!',
                     showConfirmButton: false,
                     timer: 1500,
                 });
@@ -99,10 +94,10 @@ export default function Edit() {
                 setDonationDate('');
                 setDonationTime('');
                 setRequestMessage('');
-               
             }
+           
         } catch (error) {
-            console.error('Error updating donation request:', error);
+            console.error('Error creating donation request:', error);
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
@@ -116,6 +111,7 @@ export default function Edit() {
             <form onSubmit={handleSubmit} className="container mx-auto space-y-6">
                 <fieldset className="p-6 rounded-md shadow-sm bg-white">
                     <div className="grid grid-cols-6 gap-4">
+                        {/* Requester Name */}
                         <div className="col-span-3">
                             <label htmlFor="requesterName" className="block text-sm">
                                 Requester Name*
@@ -123,11 +119,12 @@ export default function Edit() {
                             <input
                                 id="requesterName"
                                 type="text"
-                                defaultValue={user?.displayName}
+                                value={user?.displayName}
                                 readOnly
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                             />
                         </div>
+                        {/* Requester Email */}
                         <div className="col-span-3">
                             <label htmlFor="requesterEmail" className="block text-sm">
                                 Requester Email*
@@ -135,11 +132,12 @@ export default function Edit() {
                             <input
                                 id="requesterEmail"
                                 type="email"
-                                defaultValue={user?.email}
+                                value={user?.email}
                                 readOnly
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                             />
                         </div>
+                        {/* Recipient Name */}
                         <div className="col-span-3">
                             <label htmlFor="recipientName" className="block text-sm">
                                 Recipient Name
@@ -147,18 +145,19 @@ export default function Edit() {
                             <input
                                 id="recipientName"
                                 type="text"
-                                defaultValue={item.recipientName}
+                                value={recipientName}
                                 onChange={(e) => setRecipientName(e.target.value)}
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                             />
                         </div>
+                        {/* District */}
                         <div className="col-span-3">
                             <label htmlFor="district" className="block text-sm">
                                 District
                             </label>
                             <select
                                 id="district"
-                                defaultValue={selectedDistrict}
+                                value={selectedDistrict}
                                 onChange={handleDistrictChange}
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                             >
@@ -170,6 +169,7 @@ export default function Edit() {
                                 ))}
                             </select>
                         </div>
+                        {/* Upazila */}
                         <div className="col-span-3">
                             <label htmlFor="upazila" className="block text-sm">
                                 Upazila
@@ -188,6 +188,7 @@ export default function Edit() {
                                 ))}
                             </select>
                         </div>
+                        {/* Hospital Name */}
                         <div className="col-span-3">
                             <label htmlFor="hospitalName" className="block text-sm">
                                 Hospital Name
@@ -195,11 +196,12 @@ export default function Edit() {
                             <input
                                 id="hospitalName"
                                 type="text"
-                                defaultValue={item.hospitalName}
+                                value={hospitalName}
                                 onChange={(e) => setHospitalName(e.target.value)}
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                             />
                         </div>
+                        {/* Full Address */}
                         <div className="col-span-full">
                             <label htmlFor="fullAddress" className="block text-sm">
                                 Full Address
@@ -207,18 +209,19 @@ export default function Edit() {
                             <input
                                 id="fullAddress"
                                 type="text"
-                                defaultValue={item.fullAddress}
+                                value={fullAddress}
                                 onChange={(e) => setFullAddress(e.target.value)}
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                             />
                         </div>
+                        {/* Blood Group */}
                         <div className="col-span-2">
                             <label htmlFor="bloodGroup" className="block text-sm">
                                 Blood Group
                             </label>
                             <select
                                 id="bloodGroup"
-                                defaultValue={item.bloodGroup}
+                                value={bloodGroup}
                                 onChange={(e) => setBloodGroup(e.target.value)}
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                             >
@@ -233,6 +236,7 @@ export default function Edit() {
                                 <option value="O-">O-</option>
                             </select>
                         </div>
+                        {/* Donation Date */}
                         <div className="col-span-2">
                             <label htmlFor="donationDate" className="block text-sm">
                                 Donation Date
@@ -240,11 +244,12 @@ export default function Edit() {
                             <input
                                 id="donationDate"
                                 type="date"
-                                defaultValue={item.donationDate}
+                                value={donationDate}
                                 onChange={(e) => setDonationDate(e.target.value)}
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                             />
                         </div>
+                        {/* Donation Time */}
                         <div className="col-span-2">
                             <label htmlFor="donationTime" className="block text-sm">
                                 Donation Time
@@ -252,39 +257,41 @@ export default function Edit() {
                             <input
                                 id="donationTime"
                                 type="time"
-                                defaultValue={item.donationTime}
+                                value={donationTime}
                                 onChange={(e) => setDonationTime(e.target.value)}
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                             />
                         </div>
+                        {/* Request Message */}
                         <div className="col-span-full">
                             <label htmlFor="requestMessage" className="block text-sm">
                                 Request Message
                             </label>
                             <textarea
                                 id="requestMessage"
-                                value={item.requestMessage}
+                                value={requestMessage}
                                 onChange={(e) => setRequestMessage(e.target.value)}
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                                 rows="4"
                             />
                         </div>
                     </div>
+                    {/* Submit Button */}
                     <div className="text-right mt-4">
                         <button
                             type="submit"
                             disabled={isBlocked}
                             className={`px-6 py-2 ${
-                                isBlocked
-                                    ? 'bg-gray-400 cursor-not-allowed'
-                                    : 'bg-red-900 hover:bg-red-700'
+                                isBlocked ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-900 hover:bg-red-700'
                             } text-white rounded-md`}
                         >
-                            Edit Request
+                            Submit Request
                         </button>
                     </div>
                 </fieldset>
             </form>
         </section>
     );
-}
+};
+
+export default CreateDonationPage;

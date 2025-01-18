@@ -81,22 +81,22 @@ export default function Dashboard() {
               </li>
               <li>
                 <NavLink
-                  to={'/dashboard/manage-donations'}
+                  to={'/dashboard/all-blood-donation-request'}
                   className={({ isActive }) =>
                     isActive ? 'font-bold text-white' : 'text-black'
                   }
                 >
-                  Manage Donations
+                 All-Blood-Donation-Request
                 </NavLink>
               </li>
               <li>
                 <NavLink
-                  to={'/dashboard/volunteer-reports'}
+                  to={'/dashboard/content-management'}
                   className={({ isActive }) =>
                     isActive ? 'font-bold text-white' : 'text-black'
                   }
                 >
-                  Reports
+                  Content-Management
                 </NavLink>
               </li>
             </>

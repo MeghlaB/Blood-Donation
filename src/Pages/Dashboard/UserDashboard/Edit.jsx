@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import Swal from 'sweetalert2';
-import UseAuth from '../../Components/Hooks/UseAuth';
-import AxiosSecure from '../../Components/Hooks/AxiosSecure';
-import axios from 'axios';
-import { Navigate, useNavigate } from 'react-router-dom';
 
-const CreateDonationPage = () => {
+import React, { useEffect, useState } from 'react';
+import { Navigate, useLoaderData, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+
+
+import axios from 'axios';
+import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
+import UseAuth from '../../../Components/Hooks/UseAuth';
+
+export default function Edit() {
+    const item = useLoaderData();
+    console.log(item);
     const { user } = UseAuth();
     const axiosSecure = AxiosSecure();
     const [recipientName, setRecipientName] = useState('');
@@ -20,7 +25,8 @@ const CreateDonationPage = () => {
     const [donationTime, setDonationTime] = useState('');
     const [requestMessage, setRequestMessage] = useState('');
     const [isBlocked, setIsBlocked] = useState(false);
-const navigate = useNavigate()
+    const navigate = useNavigate();
+
     useEffect(() => {
         if (user?.status === 'blocked') {
             setIsBlocked(true);
@@ -72,15 +78,16 @@ const navigate = useNavigate()
             requestMessage,
             status: 'pending',
         };
-    console.log(donationRequest)
+
+        console.log(donationRequest);
         try {
-            const res = await axiosSecure.post('/donation-requests', donationRequest);
-            console.log(res.data)
-            if (res.data.insertedId ) {
+            const res = await axiosSecure.patch(`/donation/${item._id}`, donationRequest);
+            console.log(res.data);
+            if (res.data.modifiedCount > 0) {
                 Swal.fire({
                     position: 'top-center',
                     icon: 'success',
-                    title: 'Donation request created successfully!',
+                    title: 'Donation request updated successfully!',
                     showConfirmButton: false,
                     timer: 1500,
                 });
@@ -94,10 +101,10 @@ const navigate = useNavigate()
                 setDonationDate('');
                 setDonationTime('');
                 setRequestMessage('');
+               
             }
-           
         } catch (error) {
-            console.error('Error creating donation request:', error);
+            console.error('Error updating donation request:', error);
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
@@ -111,7 +118,6 @@ const navigate = useNavigate()
             <form onSubmit={handleSubmit} className="container mx-auto space-y-6">
                 <fieldset className="p-6 rounded-md shadow-sm bg-white">
                     <div className="grid grid-cols-6 gap-4">
-                        {/* Requester Name */}
                         <div className="col-span-3">
                             <label htmlFor="requesterName" className="block text-sm">
                                 Requester Name*
@@ -119,12 +125,11 @@ const navigate = useNavigate()
                             <input
                                 id="requesterName"
                                 type="text"
-                                value={user?.displayName}
+                                defaultValue={user?.displayName}
                                 readOnly
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                             />
                         </div>
-                        {/* Requester Email */}
                         <div className="col-span-3">
                             <label htmlFor="requesterEmail" className="block text-sm">
                                 Requester Email*
@@ -132,12 +137,11 @@ const navigate = useNavigate()
                             <input
                                 id="requesterEmail"
                                 type="email"
-                                value={user?.email}
+                                defaultValue={user?.email}
                                 readOnly
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                             />
                         </div>
-                        {/* Recipient Name */}
                         <div className="col-span-3">
                             <label htmlFor="recipientName" className="block text-sm">
                                 Recipient Name
@@ -145,19 +149,18 @@ const navigate = useNavigate()
                             <input
                                 id="recipientName"
                                 type="text"
-                                value={recipientName}
+                                defaultValue={item.recipientName}
                                 onChange={(e) => setRecipientName(e.target.value)}
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                             />
                         </div>
-                        {/* District */}
                         <div className="col-span-3">
                             <label htmlFor="district" className="block text-sm">
                                 District
                             </label>
                             <select
                                 id="district"
-                                value={selectedDistrict}
+                                defaultValue={selectedDistrict}
                                 onChange={handleDistrictChange}
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                             >
@@ -169,7 +172,6 @@ const navigate = useNavigate()
                                 ))}
                             </select>
                         </div>
-                        {/* Upazila */}
                         <div className="col-span-3">
                             <label htmlFor="upazila" className="block text-sm">
                                 Upazila
@@ -188,7 +190,6 @@ const navigate = useNavigate()
                                 ))}
                             </select>
                         </div>
-                        {/* Hospital Name */}
                         <div className="col-span-3">
                             <label htmlFor="hospitalName" className="block text-sm">
                                 Hospital Name
@@ -196,12 +197,11 @@ const navigate = useNavigate()
                             <input
                                 id="hospitalName"
                                 type="text"
-                                value={hospitalName}
+                                defaultValue={item.hospitalName}
                                 onChange={(e) => setHospitalName(e.target.value)}
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                             />
                         </div>
-                        {/* Full Address */}
                         <div className="col-span-full">
                             <label htmlFor="fullAddress" className="block text-sm">
                                 Full Address
@@ -209,19 +209,18 @@ const navigate = useNavigate()
                             <input
                                 id="fullAddress"
                                 type="text"
-                                value={fullAddress}
+                                defaultValue={item.fullAddress}
                                 onChange={(e) => setFullAddress(e.target.value)}
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                             />
                         </div>
-                        {/* Blood Group */}
                         <div className="col-span-2">
                             <label htmlFor="bloodGroup" className="block text-sm">
                                 Blood Group
                             </label>
                             <select
                                 id="bloodGroup"
-                                value={bloodGroup}
+                                defaultValue={item.bloodGroup}
                                 onChange={(e) => setBloodGroup(e.target.value)}
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                             >
@@ -236,7 +235,6 @@ const navigate = useNavigate()
                                 <option value="O-">O-</option>
                             </select>
                         </div>
-                        {/* Donation Date */}
                         <div className="col-span-2">
                             <label htmlFor="donationDate" className="block text-sm">
                                 Donation Date
@@ -244,12 +242,11 @@ const navigate = useNavigate()
                             <input
                                 id="donationDate"
                                 type="date"
-                                value={donationDate}
+                                defaultValue={item.donationDate}
                                 onChange={(e) => setDonationDate(e.target.value)}
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                             />
                         </div>
-                        {/* Donation Time */}
                         <div className="col-span-2">
                             <label htmlFor="donationTime" className="block text-sm">
                                 Donation Time
@@ -257,41 +254,39 @@ const navigate = useNavigate()
                             <input
                                 id="donationTime"
                                 type="time"
-                                value={donationTime}
+                                defaultValue={item.donationTime}
                                 onChange={(e) => setDonationTime(e.target.value)}
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                             />
                         </div>
-                        {/* Request Message */}
                         <div className="col-span-full">
                             <label htmlFor="requestMessage" className="block text-sm">
                                 Request Message
                             </label>
                             <textarea
                                 id="requestMessage"
-                                value={requestMessage}
+                                value={item.requestMessage}
                                 onChange={(e) => setRequestMessage(e.target.value)}
                                 className="w-full px-4 border py-2 rounded-md border-gray-300"
                                 rows="4"
                             />
                         </div>
                     </div>
-                    {/* Submit Button */}
                     <div className="text-right mt-4">
                         <button
                             type="submit"
                             disabled={isBlocked}
                             className={`px-6 py-2 ${
-                                isBlocked ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-900 hover:bg-red-700'
+                                isBlocked
+                                    ? 'bg-gray-400 cursor-not-allowed'
+                                    : 'bg-red-900 hover:bg-red-700'
                             } text-white rounded-md`}
                         >
-                            Submit Request
+                            Edit Request
                         </button>
                     </div>
                 </fieldset>
             </form>
         </section>
     );
-};
-
-export default CreateDonationPage;
+}

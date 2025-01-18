@@ -1,192 +1,186 @@
 import React, { useState } from 'react';
-import UseAuth from '../../../Components/Hooks/UseAuth';
 import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
 import { useQuery } from '@tanstack/react-query';
-import ReactPaginate from 'react-paginate';
 import Swal from 'sweetalert2';
+import { FaUserEdit } from 'react-icons/fa';
 
-export default function Allusers() {
-    const { user } = UseAuth();
+export default function AllUsers() {
     const axiosSecure = AxiosSecure();
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedRole, setSelectedRole] = useState('')
+    const [selectedStatus , setSelectedStatus] = useState('')
 
-    // State for filtering and pagination
-    const [statusFilter, setStatusFilter] = useState('all');
-    const [currentPage, setCurrentPage] = useState(0);
-
-    // Fetching users data
-    const { data: users = [] ,refetch} = useQuery({
+    // Fetch users
+    const { data: users = [], refetch } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
             const res = await axiosSecure.get('/users');
-            console.log(res.data);
             return res.data;
         },
     });
 
-    // Filter users by status
-    const filteredUsers = users.filter((user) => {
-        if (statusFilter === 'active') return user.status === 'active';
-        if (statusFilter === 'blocked') return user.status === 'blocked';
-        return true; // Show all users if filter is "all"
-    });
-
-    // Pagination logic
-    const usersPerPage = 5;
-    const pageCount = Math.ceil(filteredUsers.length / usersPerPage);
-    const currentUsers = filteredUsers.slice(
-        currentPage * usersPerPage,
-        (currentPage + 1) * usersPerPage
-    );
-
-    // Handle page change for pagination
-    const handlePageClick = (data) => {
-        setCurrentPage(data.selected);
-    };
-
-    // Handle status filter change
-    const handleStatusFilterChange = (e) => {
-        setStatusFilter(e.target.value);
-    };
-
-    // Block user
-    const handleBlock = async (userId) => {
-        try {
-            await axiosSecure.put(`/users/${userId}`);
-            // Refresh state or reload users as needed
-        } catch (error) {
-            console.error('Error blocking user:', error);
+  
+    const handleRoleChange = () => {
+        console.log('Selected User:', selectedUser);
+        console.log('Selected Role:', selectedRole);
+    
+        if (!selectedUser) {
+            Swal.fire('Error', 'No user selected for role update.', 'error');
+            return;
         }
-    };
-
-    // Unblock user
-    const handleUnblock = async (userId) => {
-        try {
-            await axiosSecure.put(`/users/${userId}`);
-            // Refresh state or reload users as needed
-        } catch (error) {
-            console.error('Error unblocking user:', error);
+        if (!selectedRole) {
+            Swal.fire('Error', 'Please select a role before submitting.', 'error');
+            return;
         }
+        axiosSecure.patch(`/users/AdimnroleChange/${selectedUser._id}`, { role: selectedRole })
+            .then((res) => {
+                console.log(res.data);
+                if (res?.data?.message === 'Role updated successfully') {
+                    Swal.fire('Success', `Role updated to ${selectedRole}.`, 'success');
+                    setSelectedRole('');  
+                    refetch();
+                }
+            })
+            .catch((err) => {
+                Swal.fire('Error', err.response?.data?.message || 'Failed to update role.', 'error');
+            });
     };
+    
 
-    // Make user a volunteer
-    const handleMakeVolunteer = async (userId) => {
-        try {
-            await axiosSecure.put(`/users/${userId}`);
-            // Refresh state or reload users as needed
-        } catch (error) {
-            console.error('Error making volunteer:', error);
+    const handleBlockUnblock = () => {
+        console.log('Selected User:',selectedUser)
+        console.log('Selected Status:',selectedStatus)
+        if(!selectedUser){
+            Swal.fire('Error', 'No user selected for Status update.', 'error')
+            return
         }
-    };
-
-    // Make user an admin
-    const handleMakeAdmin = async (user) => {
-       axiosSecure.patch(`/users/admin/${user._id}`)
-       .then(res=>{
-        console.log(res.data)
-        if(res.data.modifiedCount > 0){
-            refetch()
-            Swal.fire({
-                position: "top-center",
-                icon: "success",
-                title: `${user.name} is an Admin`,
-                showConfirmButton: false,
-                timer: 1500
-              });
+        if (!selectedStatus) {
+            Swal.fire('Error', 'Please select a Staus before submitting.', 'error');
+            return;
         }
-       })
-    };
-
-    // Make user a donor
-    const handleMakeDonor = async (userId) => {
-        try {
-            await axiosSecure.put(`/users/${userId}`);
-            // Refresh state or reload users as needed
-        } catch (error) {
-            console.error('Error making donor:', error);
-        }
+        axiosSecure.put(`/users/status/${selectedUser._id}`, { status: selectedStatus })
+        .then((res) => {
+            console.log(res.data);
+            if (res?.data?.message === 'Status updated successfully') {
+                Swal.fire('Success', `Role updated to ${selectedRole}.`, 'success');
+                setSelectedStatus('');  
+                refetch();
+            }
+        })
+        .catch((err) => {
+            Swal.fire('Error', err.response?.data?.message || 'Failed to update role.', 'error');
+        });
+        
     };
 
     return (
         <div className="p-6 mt-12">
-            <h1 className="text-2xl font-bold">All Users: {filteredUsers.length}</h1>
+            <h1 className="text-2xl font-bold">All Users: {users.length}</h1>
 
-            {/* Filter Dropdown */}
-            <div className="mt-4">
-                <select
-                    value={statusFilter}
-                    onChange={handleStatusFilterChange}
-                    className="select select-bordered w-full max-w-xs"
-                >
-                    <option value="all">All</option>
-                    <option value="active">Active</option>
-                    <option value="blocked">Blocked</option>
-                </select>
-            </div>
-            <div><h1>All users {user.length}</h1></div>
             {/* Table with Users */}
-            <table className="min-w-full mt-6 table-auto">
-                <thead>
-                    <tr>
-                        <th className="px-4 py-2 border-b">Avatar</th>
-                        <th className="px-4 py-2 border-b">Email</th>
-                        <th className="px-4 py-2 border-b">Name</th>
-                        <th className="px-4 py-2 border-b">Role</th>
-                        <th className="px-4 py-2 border-b">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {currentUsers.length > 0 ? (
-                        currentUsers.map((user) => (
+            <div className="overflow-x-auto ">
+                <table className="table ">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Avatar</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Role Action</th>
+                            <th>Status</th>
+                            <th>Status Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {users.map((user, index) => (
                             <tr key={user._id}>
-                                <td className="px-4 py-2 border-b">
+                                <th>{index + 1}</th>
+                                <td>
                                     <img
                                         src={user.avatar}
-                                        alt="Avatar"
-                                        className="rounded-full w-12 h-12"
+                                        alt="avatar"
+                                        className="w-10 h-10 rounded-full"
                                     />
                                 </td>
-                                <td className="px-4 py-2 border-b">{user.email}</td>
-                                <td className="px-4 py-2 border-b">{user.name}</td>
+                                <td>{user.name}</td>
+                                <td>{user.email}</td>
+                                <td>{user.role || 'User'}</td>
                                 <td>
-                                    { user.role === 'admin' ? 'Admin' : <button
-                                        onClick={() => handleMakeAdmin(user)}
-                                        className="btn ">
-                                        {user.role}
-                                    </button>}
+                                    <div className="dropdown dropdown-end">
+                                        <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                                            <div className="">
+                                                <FaUserEdit />
+                                            </div>
+                                        </label>
+                                        <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box mt-3 w-52 p-2 shadow">
+                                            <select
+                                                id="role"
+                                                className="select select-bordered w-full max-w-xs"
+                                                value={selectedRole}
+                                                onChange={(e) => setSelectedRole(e.target.value)}
+                                            >
+                                                <option disabled selected>
+                                                    Select a role
+                                                </option>
+                                                <option value="donor">Donor</option>
+                                                <option value="admin">Admin</option>
+                                                <option value="volunteer">Volunteer</option>
+                                            </select>
+                                            <div className="mt-4">
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedUser(user);
+                                                        handleRoleChange();
+                                                    }}
+                                                    className="btn btn-primary w-full"
+                                                >
+                                                    Submit
+                                                </button>
+                                            </div>
+                                        </ul>
+                                    </div>
                                 </td>
-                                <td 
-                                
-                                className="px-4 py-2 border-b">{user.status}</td>
-                                
+                                <td>{user.status}</td>
+                                <td>
+                                <div className="dropdown dropdown-end">
+                                        <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                                            <div className="">
+                                                <FaUserEdit />
+                                            </div>
+                                        </label>
+                                        <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box mt-3 w-52 p-2 shadow">
+                                            <select
+                                                id="role"
+                                                className="select select-bordered w-full max-w-xs"
+                                                value={selectedStatus}
+                                                onChange={(e) => setSelectedStatus(e.target.value)}
+                                            >
+                                                <option disabled selected>
+                                                    Select a role
+                                                </option>
+                                                <option value="active">Active</option>
+                                                <option value="block">Block</option>
+                                                <option value="unblock">Unblock</option>
+                                            </select>
+                                            <div className="mt-4">
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedUser(user);
+                                                        handleBlockUnblock();
+                                                    }}
+                                                    className="btn btn-primary w-full"
+                                                >
+                                                    Submit
+                                                </button>
+                                            </div>
+                                        </ul>
+                                    </div>
+                                </td>
                             </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="6" className="px-4 py-2 border-b text-center">
-                                No users found.
-                            </td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-
-            {/* Pagination */}
-            <div className="mt-4">
-                <ReactPaginate
-                    previousLabel={'Previous'}
-                    nextLabel={'Next'}
-                    breakLabel={'...'}
-                    pageCount={pageCount}
-                    onPageChange={handlePageClick}
-                    containerClassName={'pagination'}
-                    pageClassName={'page-item'}
-                    pageLinkClassName={'page-link'}
-                    previousClassName={'page-item'}
-                    previousLinkClassName={'page-link'}
-                    nextClassName={'page-item'}
-                    nextLinkClassName={'page-link'}
-                    activeClassName={'active'}
-                />
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );
