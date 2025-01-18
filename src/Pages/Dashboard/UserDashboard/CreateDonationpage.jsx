@@ -137,7 +137,7 @@ const CreateDonationPage = () => {
     };
 
     return (
-        <section className="p-6 mt-20 bg-gray-100 text-gray-900">
+        <section className="p-6 mt-9 bg-gray-100 text-gray-900">
             <form onSubmit={handleSubmit} className="container mx-auto space-y-6">
                 <fieldset className="p-6 rounded-md shadow-sm bg-white">
                 <div className="grid grid-cols-6 gap-4">

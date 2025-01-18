@@ -25,6 +25,7 @@ import CreateDonationPage from "../Pages/Dashboard/UserDashboard/CreateDonationp
 import AllDonationRequest from "../Pages/Dashboard/DashboardVolunter/AllDonationRequest";
 import DonationRequest from "../Pages/NavabarRoute/DonationRequest";
 import BloodDetails from "../Pages/NavabarRoute/BloodDetails";
+import AddBlogPage from "../Pages/Dashboard/DashboardAdimn/AddBlogPage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -56,7 +57,7 @@ const router = createBrowserRouter([
       },
       // Dashboard
       {
-        path: '/dashboard',
+        path: 'dashboard',
         element: <Dashboard></Dashboard>,
         children: [
           // Proflie
@@ -100,6 +101,10 @@ const router = createBrowserRouter([
           {
             path: 'content-management',
             element: <AdminRoute><ContentManagement></ContentManagement></AdminRoute>
+          },
+          {
+            path:'content-management/add-blog',
+            element:<AdminRoute><AddBlogPage></AddBlogPage></AdminRoute>
           },
           // Volunteer Collection dashboard
           {

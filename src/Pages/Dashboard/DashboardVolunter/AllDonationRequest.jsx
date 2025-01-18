@@ -81,11 +81,6 @@ export default function AllDonationRequest() {
 
 
 
-
-
-
-
-
   const totalPages = Math.ceil(requests.length / pageSize);
   const paginatedRequests = requests.slice(
     (currentPage - 1) * pageSize,
@@ -94,7 +89,7 @@ export default function AllDonationRequest() {
 
   return (
     <>
-      <div className="mt-16">
+      <div className="mt-9">
         <h1 className="text-xl font-bold mb-4">All Blood Donation Requests</h1>
         {requests.length > 0 ? (
           <table className="table-auto text-center w-full border-collapse border border-gray-300">

@@ -7,18 +7,24 @@ import Swal from 'sweetalert2';
 import UseAuth from '../../../Components/Hooks/UseAuth';
 import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
 import { FaTrash } from 'react-icons/fa';
+import AxiosPublic from '../../../Components/Hooks/AxiosPublic';
+import { BsThreeDots } from 'react-icons/bs';
 
 export default function DashboardHome() {
   const { user } = UseAuth();
   const axiosSecure = AxiosSecure();
+  const axiosPublic = AxiosPublic()
   const [recentRequests, setRecentRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState('');
 
   useEffect(() => {
     const fetchRequests = async () => {
       try {
         setLoading(true);
-        const response = await axiosSecure.get(`/donation-requests/${user?.email}`);
+        const response = await axiosSecure.get(`/requests/${user?.email}`);
+        console.log(response.data)
         const allRequests = response.data;
         const lastThreeRequests = allRequests.slice(-3);
         setRecentRequests(lastThreeRequests);
@@ -57,10 +63,34 @@ export default function DashboardHome() {
     });
   };
 
+  const handleStatusChange = () => {
+    if (!selectedUser || !selectedStatus) {
+      Swal.fire('Error', 'Please select a user and a status.', 'error');
+      return;
+    }
+  
+    axiosPublic.put(`/alldonar/status/${selectedUser._id}`, { status: selectedStatus })
+      .then((res) => {
+        if (res?.data?.message === 'Status updated successfully') {
+          Swal.fire('Success', `Status updated to ${selectedStatus}.`, 'success');
+          setRecentRequests(prevRequests =>
+            prevRequests.map((request) =>
+              request._id === selectedUser._id ? { ...request, status: selectedStatus } : request
+            )
+          );
+          setSelectedStatus('');
+          setSelectedUser(null);
+        }
+      })
+      .catch((err) => {
+        Swal.fire('Error', err.response?.data?.message || 'Failed to update status.', 'error');
+      });
+  };
+  
   return (
     <div>
       <Marquee>
-        <div className="p-6 mt-14 text-center bg-base-200 rounded-md w-full">
+        <div className="p-6 mt-8 text-center bg-base-200 rounded-md w-full">
           {user?.displayName ? (
             <h2 className="text-2xl font-bold px-96">
               Welcome, <span className="text-red-900">{user.displayName}</span>!
@@ -105,7 +135,42 @@ export default function DashboardHome() {
                   <td className="border-b px-4 py-2">{request.donationDate}</td>
                   <td className="border-b px-4 py-2">{request.donationTime}</td>
                   <td className="border-b px-4 py-2">{request.bloodGroup}</td>
-                  <td className="border-b px-4 py-2">{request.status}</td>
+                  <td className="border-b px-4 py-2">{request.status}
+                    <div className="dropdown dropdown-end">
+                      <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                        <BsThreeDots />
+                      </label>
+                      <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box -top-10 w-52 p-2 shadow">
+                        <select
+                          id="status"
+                          className="select select-bordered w-full max-w-xs"
+                          value={selectedStatus}
+                          onChange={(e) => setSelectedStatus(e.target.value)}
+                        >
+                          <option disabled>Select a Status</option>
+                          {request.status === 'inprogress' && (
+                            <>
+                              <option value="canceled">Canceled</option>
+                              <option value="done">Done</option>
+                              <option value="progress">Progress</option>
+                            </>
+                          )}
+                        </select>
+                        <div className="mt-4">
+                          <button
+                            onClick={() => {
+                              setSelectedUser(request);
+                              handlestausChange();
+                            }}
+                            className="btn bg-red-900 text-white hover:bg-red-900 w-full"
+                          >
+                            Submit
+                          </button>
+                        </div>
+                      </ul>
+                    </div>
+
+                  </td>
                   <td className="border-b px-4 py-2">
                     <Link to={`/dashboard/edit/${request._id}`} className="btn btn-sm">
                       Edit

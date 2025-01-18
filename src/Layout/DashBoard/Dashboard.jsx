@@ -165,12 +165,14 @@ export default function Dashboard() {
                   Create Donation Request
                 </NavLink>
               </li>
+            
             </>
+            
           )}
           <div className="divider ">OR</div>
           <li>
                 <NavLink
-                  to={'/'}
+                  to={'/dashboard/create-donation-request'}
                   className={({ isActive }) =>
                     isActive ? 'font-bold text-white' : 'text-black'
                   }

@@ -4,21 +4,24 @@ import UseAuth from '../../../Components/Hooks/UseAuth';
 import { Link } from 'react-router-dom';
 import { FaTrash } from 'react-icons/fa';
 import Swal from 'sweetalert2';
+import { BsThreeDots } from 'react-icons/bs';
+import AxiosPublic from '../../../Components/Hooks/AxiosPublic';
 
 export default function MyDonationRequests() {
   const { user } = UseAuth();
-  const axiosSecure = AxiosSecure();
-
+  const axiosPublic = AxiosPublic()
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState('');
   const [requests, setRequests] = useState([]);
   const [filteredRequests, setFilteredRequests] = useState([]);
   const [statusFilter, setStatusFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
-  const [requestsPerPage] = useState(5); 
+  const pageSize = 5;
 
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const response = await axiosSecure.get(`/donation-requests/${user?.email}`);
+        const response = await axiosPublic.get(`/requests/${user?.email}`);
         setRequests(response.data);
         setFilteredRequests(response.data);
       } catch (error) {
@@ -29,7 +32,7 @@ export default function MyDonationRequests() {
     if (user?.email) {
       fetchRequests();
     }
-  }, [user?.email, axiosSecure]);
+  }, [user?.email]);
 
   const handleMenuDelete = async (item) => {
     Swal.fire({
@@ -56,6 +59,36 @@ export default function MyDonationRequests() {
     });
   };
 
+
+  const handlestausChange = () => {
+    if (!selectedUser || !selectedStatus) {
+      Swal.fire('Error', 'Please select a user and a status.', 'error');
+      return;
+    }
+
+    axiosPublic.put(`/alldonar/status/${selectedUser._id}`, { status: selectedStatus })
+      .then((res) => {
+        if (res?.data?.message === 'Status updated successfully') {
+          Swal.fire('Success', `Status updated to ${selectedStatus}.`, 'success');
+          setRequests(prevRequests =>
+            prevRequests.map((request) =>
+              request._id === selectedUser._id ? { ...request, status: selectedStatus } : request
+            )
+          );
+          setSelectedStatus('');
+          setSelectedUser(null);
+        }
+      })
+      .catch((err) => {
+        Swal.fire('Error', err.response?.data?.message || 'Failed to update status.', 'error');
+      });
+  };
+
+
+
+
+
+
   useEffect(() => {
     if (statusFilter === 'all') {
       setFilteredRequests(requests);
@@ -64,16 +97,15 @@ export default function MyDonationRequests() {
     }
   }, [statusFilter, requests]);
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  const totalPages = Math.ceil(filteredRequests.length / pageSize);
+  const paginatedRequests = filteredRequests.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
-  const indexOfLastRequest = currentPage * requestsPerPage;
-  const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
-  const currentRequests = filteredRequests.slice(indexOfFirstRequest, indexOfLastRequest);
 
   return (
-    <div className="mt-24 p-6">
+    <div className="mt-9 p-6">
       <h1 className="text-xl font-semibold mb-4">My Donation Requests:{requests.length}</h1>
 
       {/* Filter by Status */}
@@ -110,7 +142,7 @@ export default function MyDonationRequests() {
           </tr>
         </thead>
         <tbody>
-          {currentRequests.map((request) => (
+          {paginatedRequests.map((request) => (
             <tr key={request._id}>
               <td className="border-b px-4 py-2">{request.recipientName}</td>
               <td className="border-b px-4 py-2">
@@ -119,7 +151,42 @@ export default function MyDonationRequests() {
               <td className="border-b px-4 py-2">{request.donationDate}</td>
               <td className="border-b px-4 py-2">{request.donationTime}</td>
               <td className="border-b px-4 py-2">{request.bloodGroup}</td>
-              <td className="border-b px-4 py-2">{request.status}</td>
+              <td className="border-b px-4 py-2">{request.status}
+                <div className="dropdown dropdown-end">
+                  <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                    <BsThreeDots />
+                  </label>
+                  <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box -top-10 w-52 p-2 shadow">
+                    <select
+                      id="status"
+                      className="select select-bordered w-full max-w-xs"
+                      value={selectedStatus}
+                      onChange={(e) => setSelectedStatus(e.target.value)}
+                    >
+                      <option disabled>Select a Status</option>
+                      {request.status === 'inprogress' && (
+                        <>
+                          <option value="canceled">Canceled</option>
+                          <option value="done">Done</option>
+                          <option value="progress">Progress</option>
+                        </>
+                      )}
+                    </select>
+                    <div className="mt-4">
+                      <button
+                        onClick={() => {
+                          setSelectedUser(request);
+                          handlestausChange();
+                        }}
+                        className="btn bg-red-900 text-white hover:bg-red-900 w-full"
+                      >
+                        Submit
+                      </button>
+                    </div>
+                  </ul>
+                </div>
+
+              </td>
               <td className="border-b px-4 py-2">
                 <Link
                   to={`/dashboard/edit/${request._id}`}
@@ -144,34 +211,15 @@ export default function MyDonationRequests() {
 
       {/* Pagination */}
       <div className="flex justify-center mt-4">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="px-4 py-2 border rounded-md mx-2"
-        >
-          Previous
-        </button>
-        {Array.from(
-          { length: Math.ceil(filteredRequests.length / requestsPerPage) },
-          (_, i) => (
-            <button
-              key={i}
-              onClick={() => handlePageChange(i + 1)}
-              className={`px-4 py-2 border rounded-md mx-2 ${
-                currentPage === i + 1 ? 'bg-blue-500 text-white' : ''
-              }`}
-            >
-              {i + 1}
-            </button>
-          )
-        )}
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === Math.ceil(filteredRequests.length / requestsPerPage)}
-          className="px-4 py-2 border rounded-md mx-2"
-        >
-          Next
-        </button>
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentPage(index + 1)}
+            className={`btn btn-sm mx-1 ${currentPage === index + 1 ? 'bg-red-900 text-white hover:bg-red-900' : 'btn-outline'}`}
+          >
+            {index + 1}
+          </button>
+        ))}
       </div>
     </div>
   );

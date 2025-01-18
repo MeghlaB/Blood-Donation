@@ -80,7 +80,7 @@ export default function AllUsers() {
 
     return (
        <div >
-         <div className="p-6 mt-12 mb-32 ">
+         <div className="mt-9  ">
             <h1 className="text-2xl font-bold">All Users: {users.length}</h1>
 
             {/* Filter by status */}
@@ -90,7 +90,7 @@ export default function AllUsers() {
                     id="filterStatus"
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className="border px-3 py-2 rounded-md"
+                    className="border px-3  rounded-md"
                 >
                     <option value="all">All</option>
                     <option value="active">Active</option>
@@ -166,7 +166,7 @@ export default function AllUsers() {
                                             <BsThreeDots />
                                             </div>
                                         </label>
-                                        <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box -top-10 w-52 p-2   shadow">
+                                        <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box -top-10 w-52    shadow">
                                             <select
                                                 id="role"
                                                 className="select select-bordered w-full max-w-xs"
