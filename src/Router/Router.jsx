@@ -25,6 +25,7 @@ import AllDonationRequest from "../Pages/Dashboard/DashboardVolunter/AllDonation
 import DonationRequest from "../Pages/NavabarRoute/DonationRequest";
 import BloodDetails from "../Pages/NavabarRoute/BloodDetails";
 import AddBlogPage from "../Pages/Dashboard/DashboardAdimn/AddBlogPage";
+import ProfileUpdate from "../Pages/Dashboard/ProfileUpdate";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -57,13 +58,18 @@ const router = createBrowserRouter([
       // Dashboard
       {
         path: 'dashboard',
-        element: <Dashboard></Dashboard>,
+        element: <Privet><Dashboard></Dashboard></Privet>,
         children: [
           // Proflie
           {
             path: 'profile',
             element: <Proflie></Proflie>,
-            loader:({params})=>fetch(`http://localhost:5000/users/profile/${params.email}`)
+          },
+          {
+            path:'profile/update/:id',
+            element:<ProfileUpdate></ProfileUpdate>,
+            loader:({params})=>fetch(`http://localhost:5000/update/${params.id}`)
+
           },
           // donar collection
           {

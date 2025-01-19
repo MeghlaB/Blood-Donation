@@ -114,7 +114,7 @@ export default function AllDonationRequest() {
                   <td className="border-b px-4 py-2">{request.bloodGroup}</td>
                   <td className="border-b px-4 py-2">
                     {request.status}
-                    <div className="dropdown dropdown-end">
+                    {/* <div className="dropdown dropdown-end">
                       <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                         <BsThreeDots />
                       </label>
@@ -141,7 +141,7 @@ export default function AllDonationRequest() {
                           </button>
                         </div>
                       </ul>
-                    </div>
+                    </div> */}
                   </td>
                   <td className="border-b px-4 py-2 text-center">
                 <button

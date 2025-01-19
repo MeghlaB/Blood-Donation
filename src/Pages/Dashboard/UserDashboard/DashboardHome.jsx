@@ -160,7 +160,7 @@ export default function DashboardHome() {
                           <button
                             onClick={() => {
                               setSelectedUser(request);
-                              handlestausChange();
+                              handleStatusChange ();
                             }}
                             className="btn bg-red-900 text-white hover:bg-red-900 w-full"
                           >
