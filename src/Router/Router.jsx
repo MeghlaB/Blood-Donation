@@ -26,6 +26,8 @@ import DonationRequest from "../Pages/NavabarRoute/DonationRequest";
 import BloodDetails from "../Pages/NavabarRoute/BloodDetails";
 import AddBlogPage from "../Pages/Dashboard/DashboardAdimn/AddBlogPage";
 import ProfileUpdate from "../Pages/Dashboard/ProfileUpdate";
+import Funding from "../Pages/NavabarRoute/Funding";
+import GiveFound from "../Pages/NavabarRoute/GiveFound";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -44,16 +46,24 @@ const router = createBrowserRouter([
         element: <Login></Login>
       },
       {
-        path:'/searchDonars',
-        element:<SearchPage></SearchPage>
+        path: '/searchDonars',
+        element: <SearchPage></SearchPage>
       },
       {
-        path:'/requestDonation',
-        element:<DonationRequest></DonationRequest>
+        path: '/requestDonation',
+        element: <DonationRequest></DonationRequest>
       },
       {
-        path:'/details/:id',
-        element:<Privet><BloodDetails></BloodDetails></Privet>
+        path: '/details/:id',
+        element: <Privet><BloodDetails></BloodDetails></Privet>
+      },
+      {
+        path: '/funding',
+        element: <Privet><Funding></Funding></Privet>
+      },
+      {
+        path: '/givefund',
+        element: <GiveFound></GiveFound>
       },
       // Dashboard
       {
@@ -66,9 +76,9 @@ const router = createBrowserRouter([
             element: <Proflie></Proflie>,
           },
           {
-            path:'profile/update/:id',
-            element:<ProfileUpdate></ProfileUpdate>,
-            loader:({params})=>fetch(`http://localhost:5000/update/${params.id}`)
+            path: 'profile/update/:id',
+            element: <ProfileUpdate></ProfileUpdate>,
+            loader: ({ params }) => fetch(`http://localhost:5000/update/${params.id}`)
 
           },
           // donar collection
@@ -79,8 +89,8 @@ const router = createBrowserRouter([
           {
             path: 'edit/:id',
             element: <Edit></Edit>,
-            loader:({params})=>fetch (`http://localhost:5000/donation/${params.id}`)
-           
+            loader: ({ params }) => fetch(`http://localhost:5000/donation/${params.id}`)
+
           },
           {
             path: 'my-donation-requests',
@@ -108,21 +118,21 @@ const router = createBrowserRouter([
             element: <AdminRoute><ContentManagement></ContentManagement></AdminRoute>
           },
           {
-            path:'content-management/add-blog',
-            element:<AdminRoute><AddBlogPage></AddBlogPage></AdminRoute>
+            path: 'content-management/add-blog',
+            element: <AdminRoute><AddBlogPage></AddBlogPage></AdminRoute>
           },
           // Volunteer Collection dashboard
           {
-            path:'volunteerhome',
-            element:<VolunterHome></VolunterHome>
+            path: 'volunteerhome',
+            element: <VolunterHome></VolunterHome>
           },
           {
-            path:'allblood-donation-request',
-            element:<AllDonationRequest></AllDonationRequest>
+            path: 'allblood-donation-request',
+            element: <AllDonationRequest></AllDonationRequest>
           },
           {
-            path:'contentmanagement',
-            element:<ContentManagement></ContentManagement>
+            path: 'contentmanagement',
+            element: <ContentManagement></ContentManagement>
           }
         ]
       },

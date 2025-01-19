@@ -9,6 +9,7 @@ import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
 import { FaTrash } from 'react-icons/fa';
 import AxiosPublic from '../../../Components/Hooks/AxiosPublic';
 import { BsThreeDots } from 'react-icons/bs';
+import { MdOutlineArrowDropDown } from 'react-icons/md';
 
 export default function DashboardHome() {
   const { user } = UseAuth();
@@ -18,6 +19,7 @@ export default function DashboardHome() {
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState('');
+  const [dropdownVisible, setDropdownVisible] = useState(false);
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -137,8 +139,8 @@ export default function DashboardHome() {
                   <td className="border-b px-4 py-2">{request.bloodGroup}</td>
                   <td className="border-b px-4 py-2">{request.status}
                     <div className="dropdown dropdown-end">
-                      <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                        <BsThreeDots />
+                      <label tabIndex={0} className="btn btn-ghost btn-sm">
+                      <MdOutlineArrowDropDown/>
                       </label>
                       <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box -top-10 w-52 p-2 shadow">
                         <select
@@ -160,7 +162,7 @@ export default function DashboardHome() {
                           <button
                             onClick={() => {
                               setSelectedUser(request);
-                              handleStatusChange ();
+                              handleStatusChange();
                             }}
                             className="btn bg-red-900 text-white hover:bg-red-900 w-full"
                           >
