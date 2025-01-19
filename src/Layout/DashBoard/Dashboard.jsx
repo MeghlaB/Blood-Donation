@@ -112,7 +112,7 @@ export default function Dashboard() {
               </li>
               <li>
                 <NavLink
-                  to={'/dashboard/content-management'}
+                  to={'/dashboard/contentmanagement'}
                   className={({ isActive }) =>
                     isActive ? 'font-bold text-white' : 'text-black'
                   }
@@ -172,7 +172,7 @@ export default function Dashboard() {
           <div className="divider ">OR</div>
           <li>
                 <NavLink
-                  to={'/dashboard/create-donation-request'}
+                  to={'/'}
                   className={({ isActive }) =>
                     isActive ? 'font-bold text-white' : 'text-black'
                   }

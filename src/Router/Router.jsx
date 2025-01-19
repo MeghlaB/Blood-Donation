@@ -14,7 +14,6 @@ import Allbloodrequest from "../Pages/Dashboard/DashboardAdimn/Allbloodrequest";
 import ContentManagement from "../Pages/Dashboard/DashboardAdimn/ContentManagement";
 import Privet from "../PrivetRoute/Privet";
 import AdminRoute from "../PrivetRoute/AdminRoute";
-
 import SearchPage from "../Pages/SearchPage/SearchPage";
 import VolunterHome from "../Pages/Dashboard/DashboardVolunter/VolunterHome";
 import DashboardHome from "../Pages/Dashboard/UserDashboard/DashboardHome";
@@ -116,7 +115,7 @@ const router = createBrowserRouter([
             element:<AllDonationRequest></AllDonationRequest>
           },
           {
-            path:'content-management',
+            path:'contentmanagement',
             element:<ContentManagement></ContentManagement>
           }
         ]
