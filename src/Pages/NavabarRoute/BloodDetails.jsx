@@ -16,7 +16,7 @@ export default function BloodDetails() {
     useEffect(() => {
         axiosPublic.get(`/alldonarPageRequest/${id}`)
             .then((res) => {
-                console.log(res.data)
+                // console.log(res.data)
                 setDonation(res.data);
             })
 
@@ -35,7 +35,7 @@ export default function BloodDetails() {
         axiosPublic
             .put(`/donation-requests/${id}`, updatedDonation)
             .then((res) => {
-                console.log(res.data)
+                // console.log(res.data)
                 setShowModal(false);
             })
             .catch((err) => {

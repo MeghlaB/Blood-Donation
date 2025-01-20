@@ -87,7 +87,7 @@ const CheckOurForm = () => {
             };
 
             const res = await axiosSecure.post('/funds', Fundling);
-            console.log('Payment saved:', res.data);
+            // console.log('Payment saved:', res.data);
 
             if (res.data?.paymentResult?.insertedId > 0) {
               await Swal.fire({

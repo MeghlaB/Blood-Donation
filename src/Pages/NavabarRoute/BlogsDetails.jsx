@@ -4,7 +4,7 @@ import AxiosSecure from '../../Components/Hooks/AxiosSecure';
 
 export default function BlogsDetails() {
   const { id } = useParams(); 
-  console.log(id); 
+  // console.log(id); 
   const axiosSecure = AxiosSecure();
   const [blogs, setBlogs] = useState(null);
   const [loading, setLoading] = useState(true); 
@@ -12,7 +12,7 @@ export default function BlogsDetails() {
   useEffect(() => {
     axiosSecure.get(`/blog/${id}`)
       .then((res) => {
-        console.log(res.data); 
+        // console.log(res.data); 
         if (res.data && Array.isArray(res.data)) {
           setBlogs(res.data[0]); 
         }

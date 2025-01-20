@@ -12,7 +12,7 @@ const Funding = () => {
     axiosSecure
       .get('/funds')
       .then((res) => {
-        console.log('Funds API Response:', res.data);
+        // console.log('Funds API Response:', res.data);
         setFunds(res.data);
       })
       .catch((error) => {

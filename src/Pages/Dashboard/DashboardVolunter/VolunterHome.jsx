@@ -13,7 +13,7 @@ const axiosSecure =AxiosSecure()
     queryKey:['stats'],
     queryFn: async()=>{
       const res = await axiosSecure.get('/stats')
-      console.log(res.data)
+      // console.log(res.data)
       return res.data
     }
   })

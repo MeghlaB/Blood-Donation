@@ -89,7 +89,7 @@ const router = createBrowserRouter([
           {
             path: 'profile/update/:id',
             element: <ProfileUpdate></ProfileUpdate>,
-            loader: ({ params }) => fetch(`http://localhost:5000/update/${params.id}`)
+            loader: ({ params }) => fetch(`https://blood-donation-server-side-psi.vercel.app/update/${params.id}`)
 
           },
           // donar collection
@@ -100,7 +100,7 @@ const router = createBrowserRouter([
           {
             path: 'edit/:id',
             element: <Edit></Edit>,
-            loader: ({ params }) => fetch(`http://localhost:5000/donation/${params.id}`)
+            loader: ({ params }) => fetch(`https://blood-donation-server-side-psi.vercel.app/donation/${params.id}`)
 
           },
           {

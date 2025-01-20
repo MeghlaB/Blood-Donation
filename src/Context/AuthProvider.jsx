@@ -55,7 +55,7 @@ export default function AuthProvider({ children }) {
         // TODO: remove token (if token stored in the client side: Local storage, caching, in memory)
         localStorage.removeItem('access-token');
       }
-      console.log('Current User ==>', currentUser);
+      // console.log('Current User ==>', currentUser);
       setLoading(false);
     });
 

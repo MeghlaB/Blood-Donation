@@ -13,12 +13,12 @@ export default function Login() {
     const email = form.email.value;
     const password = form.password.value;
 
-    console.log('Email:', email, 'Password:', password);
+    // console.log('Email:', email, 'Password:', password);
 
     donorUserLogin(email, password)
         .then((userCredential) => {
             const user = userCredential.user;
-            console.log('User Signed In:', user);
+            // console.log('User Signed In:', user);
             Swal.fire({
                 title: "User Login !",
                 icon: "success",

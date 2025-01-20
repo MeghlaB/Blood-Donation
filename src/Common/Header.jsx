@@ -11,7 +11,7 @@ const Header = () => {
     const handleLogout = () => {
         signout()
             .then(() => {
-                console.log('Logged out successfully');
+                // console.log('Logged out successfully');
                 navigate('/'); // Redirect to home
             })
             .catch((error) => {

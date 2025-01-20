@@ -67,7 +67,7 @@ export default function AddBlogPage() {
         setThumbnail('');
         setContent('<p></p>'); 
       }
-      console.log('Blog Response:', response.data);
+      // console.log('Blog Response:', response.data);
     } catch (error) {
       Swal.fire('Error', 'Failed to create blog', 'error');
     } finally {

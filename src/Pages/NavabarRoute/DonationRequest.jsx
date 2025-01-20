@@ -15,7 +15,7 @@ export default function DonationRequest() {
         axiosPublic
             .get('/alldonarrequest')
             .then((res) => {
-                console.log(res.data);
+                // console.log(res.data);
                 const pendingRequests = res.data.filter(
                     (request) => request.status === 'pending'
                 );

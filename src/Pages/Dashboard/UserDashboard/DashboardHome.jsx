@@ -26,7 +26,7 @@ export default function DashboardHome() {
       try {
         setLoading(true);
         const response = await axiosSecure.get(`/requests/${user?.email}`);
-        console.log(response.data)
+        // console.log(response.data)
         const allRequests = response.data;
         const lastThreeRequests = allRequests.slice(-3);
         setRecentRequests(lastThreeRequests);

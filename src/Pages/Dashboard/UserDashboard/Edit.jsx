@@ -10,7 +10,7 @@ import UseAuth from '../../../Components/Hooks/UseAuth';
 
 export default function Edit() {
     const item = useLoaderData();
-    console.log(item);
+    // console.log(item);
     const { user } = UseAuth();
     const axiosSecure = AxiosSecure();
     const [recipientName, setRecipientName] = useState('');
@@ -79,10 +79,10 @@ export default function Edit() {
             status: 'pending',
         };
 
-        console.log(donationRequest);
+        // console.log(donationRequest);
         try {
             const res = await axiosSecure.patch(`/donation/${item._id}`, donationRequest);
-            console.log(res.data);
+            // console.log(res.data);
             if (res.data.modifiedCount > 0) {
                 Swal.fire({
                     position: 'top-center',

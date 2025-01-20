@@ -14,7 +14,7 @@ export default function AllBloodRequest() {
       try {
         const res = await axiosSecure.get('/AlldonerRequest') 
         setRequests(res.data) 
-        console.log(res.data)
+        // console.log(res.data)
       } catch (error) {
         console.error('Error fetching all donor requests:', error) 
       }

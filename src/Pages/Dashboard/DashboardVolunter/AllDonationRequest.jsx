@@ -19,7 +19,7 @@ export default function AllDonationRequest() {
       try {
         const res = await axiosPublic.get('/alldonarrequest');
         setRequests(res.data);
-        console.log(res.data);
+        // console.log(res.data);
       } catch (error) {
         console.error('Error fetching all donor requests:', error);
       }

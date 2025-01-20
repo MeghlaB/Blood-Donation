@@ -18,17 +18,17 @@ export default function Profile() {
   // Fetch profile data for the user
   useEffect(() => {
     if (user?.email) {
-      console.log("Fetching profile data for:", user?.email);
+      // console.log("Fetching profile data for:", user?.email);
       axiosPublic.get(`/users/profile/${user?.email}`)
         .then((res) => {
-          console.log("Profile data response:", res.data);
+          // console.log("Profile data response:", res.data);
           setProfileData(res.data); 
         })
         .catch((error) => {
           console.error("Error fetching profile data:", error);
         });
     } else {
-      console.log("No user email found");
+      // console.log("No user email found");
     }
   }, [user?.email]);
 
