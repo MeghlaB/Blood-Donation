@@ -34,8 +34,8 @@ export default function BloodDetails() {
         setDonation(updatedDonation);
         axiosPublic
             .put(`/donation-requests/${id}`, updatedDonation)
-            .then(() => {
-
+            .then((res) => {
+                console.log(res.data)
                 setShowModal(false);
             })
             .catch((err) => {

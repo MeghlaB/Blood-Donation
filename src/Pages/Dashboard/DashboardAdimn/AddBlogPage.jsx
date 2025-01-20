@@ -8,7 +8,7 @@ export default function AddBlogPage() {
   const axioSecure = AxiosSecure();
   const [title, setTitle] = useState('');
   const [thumbnail, setThumbnail] = useState('');
-  const [content, setContent] = useState('<p></p>'); // Default empty content
+  const [content, setContent] = useState('<p></p>'); 
   const [loading, setLoading] = useState(false);
 
   const imageHostingKey = import.meta.env.VITE_IMAGE_HOSTING_KEY;

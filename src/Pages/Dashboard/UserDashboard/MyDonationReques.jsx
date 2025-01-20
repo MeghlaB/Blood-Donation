@@ -138,8 +138,10 @@ export default function MyDonationRequests() {
             <th className="border-b px-4 py-2">Time</th>
             <th className="border-b px-4 py-2">Blood Group</th>
             <th className="border-b px-4 py-2">Status</th>
+            <th className="border-b px-4 py-2">Donar Infromation</th>
             <th className="border-b px-4 py-2">Edit</th>
             <th className="border-b px-4 py-2">Delete</th>
+            <th className="border-b px-4 py-2">View Details</th>
           </tr>
         </thead>
         <tbody>
@@ -152,6 +154,7 @@ export default function MyDonationRequests() {
               <td className="border-b px-4 py-2">{request.donationDate}</td>
               <td className="border-b px-4 py-2">{request.donationTime}</td>
               <td className="border-b px-4 py-2">{request.bloodGroup}</td>
+            
              <td className="border-b px-4 py-2">{request.status}
                                  <div className="dropdown dropdown-end">
                                    <label tabIndex={0} className="btn btn-ghost btn-sm">
@@ -177,7 +180,7 @@ export default function MyDonationRequests() {
                                        <button
                                          onClick={() => {
                                            setSelectedUser(request);
-                                           handleStatusChange();
+                                           handlestausChange();
                                          }}
                                          className="btn bg-red-900 text-white hover:bg-red-900 w-full"
                                        >
@@ -187,7 +190,15 @@ export default function MyDonationRequests() {
                                    </ul>
                                  </div>
              
-                               </td>
+              </td>
+              <td className="border-b px-4 py-2">
+                    {request.status === 'inprogress' &&
+                     <div className="mt-2">
+                     <p className="text-sm font-semibold">Donor Name: {request.donorName|| 'N/A'}</p>
+                     <p className="text-sm">Email: {request.donorEmail|| 'N/A'}</p>
+                   </div>
+                    }
+                  </td>
               <td className="border-b px-4 py-2">
                 <Link
                   to={`/dashboard/edit/${request._id}`}
@@ -205,6 +216,7 @@ export default function MyDonationRequests() {
                   Delete
                 </button>
               </td>
+              <Link to={`/details/${request._id}`}> <td className="pt-9 text-sky-700 underline ">Details</td></Link>
             </tr>
           ))}
         </tbody>

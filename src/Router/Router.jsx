@@ -28,6 +28,8 @@ import AddBlogPage from "../Pages/Dashboard/DashboardAdimn/AddBlogPage";
 import ProfileUpdate from "../Pages/Dashboard/ProfileUpdate";
 import Funding from "../Pages/NavabarRoute/Funding";
 import GiveFound from "../Pages/NavabarRoute/GiveFound";
+import Blogs from "../Pages/NavabarRoute/Blogs";
+import BlogsDetails from "../Pages/NavabarRoute/BlogsDetails";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -64,6 +66,15 @@ const router = createBrowserRouter([
       {
         path: '/givefund',
         element: <GiveFound></GiveFound>
+      },
+      {
+        path:'/blogs',
+        element:<Blogs></Blogs>
+      },
+      {
+        path:'/blogs/:id',
+        element:<Privet><BlogsDetails></BlogsDetails></Privet>,
+      
       },
       // Dashboard
       {

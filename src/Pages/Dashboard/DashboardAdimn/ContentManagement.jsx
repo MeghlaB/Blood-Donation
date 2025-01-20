@@ -1,42 +1,62 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
 import Swal from 'sweetalert2';
 
 export default function ContentManagement() {
   const axiosSecure = AxiosSecure();
-  const [blogs, setBlogs] = useState([]);
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5;
 
   // Fetch blogs
-  useEffect(() => {
-    axiosSecure.get('/blogs')
-      .then((result) => {
-        setBlogs(result.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching blogs:', error);
-      });
-  }, []);
+  const { data: blogs = [], isLoading } = useQuery({
+    queryKey: ['blogs'],
+    queryFn: async () => {
+      const res = await axiosSecure.get('/blogs');
+      return res.data;
+    },
+  });
+
+  // Mutation for updating blog status
+  const updateBlogStatus = useMutation({
+    mutationFn: async ({ id, status }) => {
+      const updatedStatus = status === 'draft' ? 'published' : 'draft';
+      await axiosSecure.patch(`/blogs/${id}`, { status: updatedStatus });
+      return updatedStatus;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['blogs']);
+      Swal.fire('Success', 'Blog status updated successfully!', 'success');
+    },
+    onError: () => {
+      Swal.fire('Error', 'Failed to update blog status', 'error');
+    },
+  });
+
+  // Mutation for deleting a blog
+  const deleteBlog = useMutation({
+    mutationFn: async (id) => {
+      await axiosSecure.delete(`/blogs/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['blogs']);
+      Swal.fire('Deleted!', 'Blog has been deleted.', 'success');
+    },
+    onError: () => {
+      Swal.fire('Error', 'Failed to delete blog', 'error');
+    },
+  });
 
   // Handle publish/unpublish
-  const handleStatusChange = async (id, status) => {
-    const updatedStatus = status === 'draft' ? 'published' : 'draft';
-    try {
-      await axiosSecure.patch(`/blogs/${id}`, { status: updatedStatus });
-      setBlogs((prevBlogs) =>
-        prevBlogs.map((blog) =>
-          blog._id === id ? { ...blog, status: updatedStatus } : blog
-        )
-      );
-      Swal.fire('Success', `Blog ${updatedStatus} successfully!`, 'success');
-    } catch (error) {
-      Swal.fire('Error', 'Failed to update blog status', 'error');
-    }
+  const handleStatusChange = (id, status) => {
+    updateBlogStatus.mutate({ id, status });
   };
 
   // Handle delete blog
-  const handleDelete = async (id) => {
+  const handleDelete = (id) => {
     Swal.fire({
       title: 'Are you sure?',
       text: 'This blog will be deleted permanently!',
@@ -45,22 +65,32 @@ export default function ContentManagement() {
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
       confirmButtonText: 'Yes, delete it!',
-    }).then(async (result) => {
+    }).then((result) => {
       if (result.isConfirmed) {
-        try {
-          await axiosSecure.delete(`/blogs/${id}`);
-          setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog._id !== id));
-          Swal.fire('Deleted!', 'Blog has been deleted.', 'success');
-        } catch (error) {
-          Swal.fire('Error', 'Failed to delete blog', 'error');
-        }
+        deleteBlog.mutate(id);
       }
     });
   };
- 
+
   const filteredBlogs = blogs.filter(
     (blog) => filter === 'all' || blog.status === filter
   );
+
+  // Paginate the filtered blogs
+  const totalPages = Math.ceil(filteredBlogs.length / pageSize);
+  const paginatedBlogs = filteredBlogs.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
+  // Handle page change
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="p-4 max-w-6xl mx-auto">
@@ -71,10 +101,11 @@ export default function ContentManagement() {
           <button className="btn bg-blue-600 text-white">Add Blog</button>
         </Link>
       </div>
-
       {/* Filter Dropdown */}
       <div className="mb-4">
-        <label htmlFor="filter" className="mr-2 font-medium">Filter by Status:</label>
+        <label htmlFor="filter" className="mr-2 font-medium">
+          Filter by Status:
+        </label>
         <select
           id="filter"
           value={filter}
@@ -89,7 +120,7 @@ export default function ContentManagement() {
 
       {/* Blog List */}
       <div>
-        {filteredBlogs.length > 0 ? (
+        {paginatedBlogs.length > 0 ? (
           <table className="table-auto w-full border-collapse border border-gray-300">
             <thead>
               <tr className="bg-gray-100">
@@ -99,22 +130,30 @@ export default function ContentManagement() {
               </tr>
             </thead>
             <tbody>
-              {filteredBlogs.map((blog) => (
+              {paginatedBlogs.map((blog) => (
                 <tr key={blog._id}>
-                  <td className="border border-gray-300 px-4 py-2">{blog.title}</td>
-                  <td className="border border-gray-300 px-4 py-2 capitalize">{blog.status}</td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    {blog.title}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2 capitalize">
+                    {blog.status}
+                  </td>
                   <td className="border border-gray-300 px-4 py-2 flex gap-2">
                     {blog.status === 'draft' ? (
                       <button
                         className="btn btn-success"
-                        onClick={() => handleStatusChange(blog._id, blog.status)}
+                        onClick={() =>
+                          handleStatusChange(blog._id, blog.status)
+                        }
                       >
                         Publish
                       </button>
                     ) : (
                       <button
                         className="btn btn-warning"
-                        onClick={() => handleStatusChange(blog._id, blog.status)}
+                        onClick={() =>
+                          handleStatusChange(blog._id, blog.status)
+                        }
                       >
                         Unpublish
                       </button>
@@ -133,6 +172,19 @@ export default function ContentManagement() {
         ) : (
           <p className="text-center text-gray-500 mt-4">No blogs found.</p>
         )}
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-center mt-4">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentPage(index + 1)}
+            className={`btn btn-sm mx-1 ${currentPage === index + 1 ? 'bg-red-900 text-white hover:bg-red-900' : 'btn-outline'}`}
+          >
+            {index + 1}
+          </button>
+        ))}
       </div>
     </div>
   );

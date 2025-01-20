@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom'
 export default function AllBloodRequest() {
   const [requests, setRequests] = useState([])
   const axiosSecure = AxiosSecure()
+   const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 5;
 
   useEffect(() => {
     const fetchAllRequests = async () => {
@@ -46,6 +48,17 @@ export default function AllBloodRequest() {
       });
     };
 
+    const totalPages = Math.ceil(requests.length / pageSize);
+    const paginatedRequests = requests.slice(
+      (currentPage - 1) * pageSize,
+      currentPage * pageSize
+    );
+  
+
+
+
+
+
   return (
     <div className='mt-9'>
       <h1 className='text-xl font-bold mb-4'>All Blood Donation Requests</h1>
@@ -65,7 +78,7 @@ export default function AllBloodRequest() {
             </tr>
           </thead>
           <tbody>
-            {requests.map((request, index) => (
+            { paginatedRequests.map((request, index) => (
               <tr key={request._id}>
               <td className="border-b px-4 py-2">{request.recipientName}</td>
               <td className="border-b px-4 py-2">
@@ -100,6 +113,18 @@ export default function AllBloodRequest() {
       ) : (
         <p>No blood donation requests found.</p>
       )}
+        {/* Pagination */}
+        <div className="flex justify-center mt-4">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentPage(index + 1)}
+            className={`btn btn-sm mx-1 ${currentPage === index + 1 ? 'bg-red-900 text-white hover:bg-red-900' : 'btn-outline'}`}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
     </div>
   )
 }

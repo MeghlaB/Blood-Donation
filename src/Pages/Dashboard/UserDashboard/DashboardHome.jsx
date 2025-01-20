@@ -122,9 +122,13 @@ export default function DashboardHome() {
                 <th className="border-b px-4 py-2">Date</th>
                 <th className="border-b px-4 py-2">Time</th>
                 <th className="border-b px-4 py-2">Blood Group</th>
+               
                 <th className="border-b px-4 py-2">Status</th>
+                <th className="border-b px-4 py-2">Donar Infromation</th>
                 <th className="border-b px-4 py-2">Edit</th>
                 <th className="border-b px-4 py-2">Delete</th>
+                <th className="border-b px-4 py-2">View Details</th>
+
               </tr>
             </thead>
             <tbody>
@@ -174,6 +178,14 @@ export default function DashboardHome() {
 
                   </td>
                   <td className="border-b px-4 py-2">
+                    {request.status === 'inprogress' &&
+                     <div className="mt-2">
+                     <p className="text-sm font-semibold">Donor Name: {request.donorName|| 'N/A'}</p>
+                     <p className="text-sm">Email: {request.donorEmail|| 'N/A'}</p>
+                   </div>
+                    }
+                  </td>
+                  <td className="border-b px-4 py-2">
                     <Link to={`/dashboard/edit/${request._id}`} className="btn btn-sm">
                       Edit
                     </Link>
@@ -187,6 +199,7 @@ export default function DashboardHome() {
                       Delete
                     </button>
                   </td>
+                 <Link to={`/details/${request._id}`}> <td className="pt-9 text-sky-700 underline ">Details</td></Link>
                 </tr>
               ))}
             </tbody>
