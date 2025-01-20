@@ -104,7 +104,7 @@ const naviagte = useNavigate()
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-6 lg:p-12 mt-16">
+    <div className="flex flex-col items-center justify-center p-6 lg:p-12 ">
       <div className="w-full lg:w-1/2 pb-6 lg:mb-0">
         <h2 className="text-2xl lg:text-3xl font-semibold text-center">
           Update Profile

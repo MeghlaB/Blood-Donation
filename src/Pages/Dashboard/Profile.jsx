@@ -15,20 +15,20 @@ export default function Profile() {
   const [isLoading, setIsLoading] = useState(true);
   const [profileData, setProfileData] = useState(null);
 
-  // Fetch profile data for the user
+ 
   useEffect(() => {
     if (user?.email) {
-      // console.log("Fetching profile data for:", user?.email);
+     
       axiosPublic.get(`/users/profile/${user?.email}`)
         .then((res) => {
-          // console.log("Profile data response:", res.data);
+       
           setProfileData(res.data); 
         })
         .catch((error) => {
           console.error("Error fetching profile data:", error);
         });
     } else {
-      // console.log("No user email found");
+
     }
   }, [user?.email]);
 

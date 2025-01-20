@@ -13,17 +13,17 @@ export default function Edit() {
     // console.log(item);
     const { user } = UseAuth();
     const axiosSecure = AxiosSecure();
-    const [recipientName, setRecipientName] = useState('');
+    const [recipientName, setRecipientName] = useState(item?.recipientName ||'');
     const [districts, setDistricts] = useState([]);
     const [filteredUpazilas, setFilteredUpazilas] = useState([]);
     const [selectedDistrict, setSelectedDistrict] = useState('');
     const [selectedUpazila, setSelectedUpazila] = useState('');
-    const [hospitalName, setHospitalName] = useState('');
-    const [fullAddress, setFullAddress] = useState('');
-    const [bloodGroup, setBloodGroup] = useState('');
-    const [donationDate, setDonationDate] = useState('');
-    const [donationTime, setDonationTime] = useState('');
-    const [requestMessage, setRequestMessage] = useState('');
+    const [hospitalName, setHospitalName] = useState(item?.hospitalName || '');
+    const [fullAddress, setFullAddress] = useState(item?.fullAddress ||'');
+    const [bloodGroup, setBloodGroup] = useState(item?.bloodGroup||'');
+    const [donationDate, setDonationDate] = useState(item?.donationDate||'');
+    const [donationTime, setDonationTime] = useState(item?.donationTime ||'');
+    const [requestMessage, setRequestMessage] = useState(item?.requestMessage || '');
     const [isBlocked, setIsBlocked] = useState(false);
     const navigate = useNavigate();
 
@@ -91,6 +91,7 @@ export default function Edit() {
                     showConfirmButton: false,
                     timer: 1500,
                 });
+                navigate('/dashboard/my-donation-requests')
                 // Reset form
                 setRecipientName('');
                 setSelectedDistrict('');

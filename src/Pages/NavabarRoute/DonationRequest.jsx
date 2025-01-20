@@ -3,41 +3,28 @@ import UseAuth from '../../Components/Hooks/UseAuth';
 import AxiosPublic from '../../Components/Hooks/AxiosPublic';
 import { Link } from 'react-router-dom';
 import { LuCircleArrowLeft } from 'react-icons/lu';
+import { useQuery } from '@tanstack/react-query';
 
 export default function DonationRequest() {
     const { user } = UseAuth();
     const axiosPublic = AxiosPublic();
-    const [requests, setRequests] = useState([]); 
-    const [loading, setLoading] = useState(true); 
-
-    useEffect(() => {
-
-        axiosPublic
-            .get('/alldonarrequest')
-            .then((res) => {
-                // console.log(res.data);
-                const pendingRequests = res.data.filter(
-                    (request) => request.status === 'pending'
-                );
-                setRequests(pendingRequests); 
-            })
-            .catch((error) => {
-                console.error('Error fetching donation requests:', error);
-            })
-            .finally(() => {
-                setLoading(false); 
-            });
-    }, [axiosPublic]);
-
+    const {data:requests,isLoading} =useQuery({
+        queryKey:['alldonar'],
+        queryFn:async ()=>{
+            const res = await axiosPublic.get('/alldonar')
+            // console.log(res.data)
+            return res.data
+        }
+    })
 
 
     return (
-        <div className="mt-20 min-h-screen">
+        <div className="mt-20 ">
             <Link to={'/'} className='btn text-slate-600 mb-5 mx-6  '>
                     <LuCircleArrowLeft />
                     Back</Link>
             <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {loading ? (
+                {isLoading? (
                     <p className="text-center text-gray-500">Loading...</p>
                 ) : requests.length > 0 ? (
                     requests.map((request) => (
@@ -51,9 +38,10 @@ export default function DonationRequest() {
                             <p>Blood Group: {request.bloodGroup}</p>
                             <p>Date: {request.donationDate}</p>
                             <p>Time: {request.donationTime}</p>
+                            
                             <div className="card-actions justify-end">
                                <Link to={`/details/${request._id}`}>
-                               <button className="btn bg-red-400 text-white hover:bg-red-900">View </button>
+                               <button className="btn bg-red-900 text-white hover:bg-red-950">View </button>
                                </Link>
                             </div>
                         </div>

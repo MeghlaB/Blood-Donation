@@ -3,6 +3,7 @@ import logo from '../../src/assets/Image/Logo/Blood logo.png';
 import { Link, NavLink } from 'react-router-dom';
 import { AuthContext } from '../Context/AuthProvider';
 import { useNavigate } from 'react-router-dom';
+import { CiLogout } from 'react-icons/ci';
 
 const Header = () => {
     const { user, signout } = useContext(AuthContext);
@@ -12,7 +13,7 @@ const Header = () => {
         signout()
             .then(() => {
                 // console.log('Logged out successfully');
-                navigate('/'); // Redirect to home
+                navigate('/'); 
             })
             .catch((error) => {
                 console.error('Logout error:', error);
@@ -57,7 +58,7 @@ const Header = () => {
                         {user ? (
                             <li><a onClick={handleLogout}>Logout</a></li>
                         ) : (
-                            <li><Link to={'/login'}>Login</Link></li>
+                            <li><Link to={'/login'}><CiLogout /> Login</Link></li>
                         )}
                     </ul>
                 </div>

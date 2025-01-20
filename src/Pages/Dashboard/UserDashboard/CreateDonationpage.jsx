@@ -27,7 +27,7 @@ const CreateDonationPage = () => {
             try {
                 const response = await axiosSecure(`/users/${user?.email}`);
                 const userStatus = response.data.status;
-                console.log(userStatus);
+                // console.log(userStatus);
                 if (userStatus === 'block') {
                     setIsBlocked(true);
                 } else {
@@ -115,6 +115,7 @@ const CreateDonationPage = () => {
                     showConfirmButton: false,
                     timer: 1500,
                 });
+                navigate('/dashboard/my-donation-requests')
                 // Reset form
                 setRecipientName('');
                 setSelectedDistrict('');
@@ -137,8 +138,11 @@ const CreateDonationPage = () => {
     };
 
     return (
-        <section className="p-6 mt-9 bg-gray-100 text-gray-900">
-            <form onSubmit={handleSubmit} className="container mx-auto space-y-6">
+     <div> 
+        <h1 className='text-xl md:text-2xl lg:text-4xl font-bold text-center  '>Create Donation <span className='text-red-950'>Request Page</span></h1>
+           <section className="p-6 mt-5 bg-gray-100 container mx-auto text-gray-900">
+           
+            <form onSubmit={handleSubmit} className=" space-y-6">
                 <fieldset className="p-6 rounded-md shadow-sm bg-white">
                 <div className="grid grid-cols-6 gap-4">
                         {/* Requester Name */}
@@ -322,6 +326,7 @@ const CreateDonationPage = () => {
                 </fieldset>
             </form>
         </section>
+     </div>
     );
 };
 

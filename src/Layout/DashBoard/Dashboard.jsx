@@ -9,6 +9,7 @@ import { CgProfile } from 'react-icons/cg';
 import UserVolunteer from '../../Components/Hooks/UserVolunteer';
 import UserAdmin from '../../Components/Hooks/UserAdmin';
 import { AuthContext } from '../../Context/AuthProvider';
+import { CiLogout } from 'react-icons/ci';
 
 export default function Dashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -72,7 +73,7 @@ export default function Dashboard() {
                 <NavLink
                   to="/dashboard/profile"
                   className={({ isActive }) =>
-                    isActive ? 'font-bold text-white' : 'text-black'
+                    isActive ? 'font-bold text-red-900' : 'text-black'
                   }
                 >
                   <CgProfile />
@@ -83,7 +84,7 @@ export default function Dashboard() {
                 <NavLink
                   to="/dashboard/adminhome"
                   className={({ isActive }) =>
-                    isActive ? 'font-bold text-white' : 'text-black'
+                    isActive ? 'font-bold text-red-900' : 'text-black'
                   }
                 >
                   <FaHome />
@@ -105,7 +106,7 @@ export default function Dashboard() {
                 <NavLink
                   to="/dashboard/content-management"
                   className={({ isActive }) =>
-                    isActive ? 'font-bold text-white' : 'text-black'
+                    isActive ? 'font-bold text-red-900' : 'text-black'
                   }
                 >
                   <MdContentCopy />
@@ -116,7 +117,7 @@ export default function Dashboard() {
                 <NavLink
                   to="/dashboard/all-users"
                   className={({ isActive }) =>
-                    isActive ? 'font-bold text-white' : 'text-black'
+                    isActive ? 'font-bold text-red-900' : 'text-black'
                   }
                 >
                   <FaUsers />
@@ -131,7 +132,7 @@ export default function Dashboard() {
                 <NavLink
                   to="/dashboard/profile"
                   className={({ isActive }) =>
-                    isActive ? 'font-bold text-white' : 'text-black'
+                    isActive ? 'font-bold text-red-900' : 'text-black'
                   }
                 >
                   <CgProfile />
@@ -142,7 +143,7 @@ export default function Dashboard() {
                 <NavLink
                   to="/dashboard/volunteerhome"
                   className={({ isActive }) =>
-                    isActive ? 'font-bold text-white' : 'text-black'
+                    isActive ? 'font-bold text-red-900' : 'text-black'
                   }
                 >
                   <FaHome />
@@ -153,7 +154,7 @@ export default function Dashboard() {
                 <NavLink
                   to="/dashboard/allblood-donation-request"
                   className={({ isActive }) =>
-                    isActive ? 'font-bold text-white' : 'text-black'
+                    isActive ? 'font-bold text-red-900' : 'text-black'
                   }
                 >
                   <MdBloodtype />
@@ -164,7 +165,7 @@ export default function Dashboard() {
                 <NavLink
                   to="/dashboard/contentmanagement"
                   className={({ isActive }) =>
-                    isActive ? 'font-bold text-white' : 'text-black'
+                    isActive ? 'font-bold text-red-900' : 'text-black'
                   }
                 >
                   <MdContentCopy />
@@ -179,7 +180,7 @@ export default function Dashboard() {
                 <NavLink
                   to="/dashboard/profile"
                   className={({ isActive }) =>
-                    isActive ? 'font-bold text-white' : 'text-black'
+                    isActive ? 'font-bold text-red-900' : 'text-black'
                   }
                 >
                   <CgProfile />
@@ -190,7 +191,7 @@ export default function Dashboard() {
                 <NavLink
                   to="/dashboard/home"
                   className={({ isActive }) =>
-                    isActive ? 'font-bold text-white' : 'text-black'
+                    isActive ? 'font-bold text-red-900' : 'text-black'
                   }
                 >
                   <FaHome />
@@ -201,7 +202,7 @@ export default function Dashboard() {
                 <NavLink
                   to="/dashboard/my-donation-requests"
                   className={({ isActive }) =>
-                    isActive ? 'font-bold text-white' : 'text-black'
+                    isActive ? 'font-bold text-red-900' : 'text-black'
                   }
                 >
                   <VscRequestChanges />
@@ -212,7 +213,7 @@ export default function Dashboard() {
                 <NavLink
                   to="/dashboard/create-donation-request"
                   className={({ isActive }) =>
-                    isActive ? 'font-bold text-white' : 'text-black'
+                    isActive ? 'font-bold text-red-900' : 'text-black'
                   }
                 >
                   <IoCreate />
@@ -226,14 +227,14 @@ export default function Dashboard() {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                isActive ? 'font-bold text-white' : 'text-black'
+                isActive ? 'font-bold text-red-900' : 'text-black'
               }
             >
               <FaHome />
               Home
             </NavLink>
           </li>
-          <li><a onClick={handleLogout}>Logout</a></li>
+          <li><a onClick={handleLogout}> <CiLogout />Logout</a></li>
         </ul>
       </div>
 

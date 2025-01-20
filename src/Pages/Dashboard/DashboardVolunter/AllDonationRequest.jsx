@@ -1,58 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import AxiosPublic from '../../../Components/Hooks/AxiosPublic';
-import { BsThreeDots } from 'react-icons/bs';
-import Swal from 'sweetalert2';
 import { FaTrash } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
+import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
+import { FiEdit } from 'react-icons/fi';
 
 export default function AllDonationRequest() {
-  const axiosSecure = AxiosSecure()
-  const [requests, setRequests] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [selectedStatus, setSelectedStatus] = useState('');
+  const axiosSecure = AxiosSecure();
   const axiosPublic = AxiosPublic();
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
 
-  useEffect(() => {
-    const fetchAllRequests = async () => {
-      try {
-        const res = await axiosPublic.get('/alldonarrequest');
-        setRequests(res.data);
-        // console.log(res.data);
-      } catch (error) {
-        console.error('Error fetching all donor requests:', error);
-      }
-    };
-    fetchAllRequests();
-  }, [axiosPublic]);
-
-  const handlestausChange = () => {
-    if (!selectedUser || !selectedStatus) {
-      Swal.fire('Error', 'Please select a user and a status.', 'error');
-      return;
-    }
-
-    axiosPublic.put(`/alldonar/status/${selectedUser._id}`, { status: selectedStatus })
-      .then((res) => {
-        if (res?.data?.message === 'Status updated successfully') {
-          Swal.fire('Success', `Status updated to ${selectedStatus}.`, 'success');
-          setRequests(prevRequests =>
-            prevRequests.map((request) =>
-              request._id === selectedUser._id ? { ...request, status: selectedStatus } : request
-            )
-          );
-          setSelectedStatus('');
-          setSelectedUser(null);
-        }
-      })
-      .catch((err) => {
-        Swal.fire('Error', err.response?.data?.message || 'Failed to update status.', 'error');
-      });
-  };
-
-
-
+ 
+  const { data: requests = [], isLoading, refetch } = useQuery({
+    queryKey: ['alldonarrequest'],
+    queryFn: async () => {
+      const res = await axiosPublic.get('/alldonarrequest');
+      return res.data;
+    },
+  });
 
   const handleMenuDelete = async (item) => {
     Swal.fire({
@@ -68,8 +36,8 @@ export default function AllDonationRequest() {
         try {
           const res = await axiosSecure.delete(`/donation/${item._id}`);
           if (res.data.deletedCount > 0) {
-            setRequests((prev) => prev.filter((req) => req._id !== item._id));
             Swal.fire('Deleted!', `${item.name} has been deleted.`, 'success');
+            refetch(); // Refetch the data after deletion
           }
         } catch (error) {
           console.error('Error deleting the item:', error);
@@ -77,9 +45,7 @@ export default function AllDonationRequest() {
         }
       }
     });
-};
-
-
+  };
 
   const totalPages = Math.ceil(requests.length / pageSize);
   const paginatedRequests = requests.slice(
@@ -87,9 +53,13 @@ export default function AllDonationRequest() {
     currentPage * pageSize
   );
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
-      <div className="mt-9">
+      <div className="mt-9 container mx-auto">
         <h1 className="text-xl font-bold mb-4">All Blood Donation Requests</h1>
         {requests.length > 0 ? (
           <table className="table-auto text-center w-full border-collapse border border-gray-300">
@@ -101,7 +71,7 @@ export default function AllDonationRequest() {
                 <th className="border-b px-4 py-2">Time</th>
                 <th className="border-b px-4 py-2">Blood Group</th>
                 <th className="border-b px-4 py-2">Status</th>
-                <th className="border-b px-4 py-2">Delate</th>
+                <th className="border-b px-4 py-2">Edit</th>
               </tr>
             </thead>
             <tbody>
@@ -112,45 +82,14 @@ export default function AllDonationRequest() {
                   <td className="border-b px-4 py-2">{request.donationDate}</td>
                   <td className="border-b px-4 py-2">{request.donationTime}</td>
                   <td className="border-b px-4 py-2">{request.bloodGroup}</td>
+                  <td className="border-b px-4 py-2">{request.status}</td>
                   <td className="border-b px-4 py-2">
-                    {request.status}
-                    {/* <div className="dropdown dropdown-end">
-                      <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                        <BsThreeDots />
-                      </label>
-                      <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box -top-10 w-52 p-2 shadow">
-                        <select
-                          id="status"
-                          className="select select-bordered w-full max-w-xs"
-                          value={selectedStatus}
-                          onChange={(e) => setSelectedStatus(e.target.value)}
-                        >
-                          <option disabled>Select a Status</option>
-                          <option value="pending">Pending</option>
-                          <option value="inprogress">In Progress</option>
-                        </select>
-                        <div className="mt-4">
-                          <button
-                            onClick={() => {
-                              setSelectedUser(request);
-                              handlestausChange();
-                            }}
-                            className="btn bg-red-900 text-white hover:bg-red-900 w-full"
-                          >
-                            Submit
-                          </button>
-                        </div>
-                      </ul>
-                    </div> */}
-                  </td>
-                  <td className="border-b px-4 py-2 text-center">
-                <button
-                  onClick={() => handleMenuDelete(request)}
-                  className="flex items-center justify-center rounded-full bg-red-500 px-4 py-2 font-bold text-white shadow-md transition-all duration-300 hover:bg-red-700"
+                <Link
+                  to={`/dashboard/edit/${request._id}`}
+                  className="btn btn-sm bg-blue-500 text-white rounded-md px-3 py-1"
                 >
-                  <FaTrash />
-                  Delete
-                </button>
+                   <FiEdit />
+                </Link>
               </td>
                 </tr>
               ))}
@@ -167,7 +106,9 @@ export default function AllDonationRequest() {
           <button
             key={index}
             onClick={() => setCurrentPage(index + 1)}
-            className={`btn btn-sm mx-1 ${currentPage === index + 1 ? 'bg-red-900 text-white hover:bg-red-900' : 'btn-outline'}`}
+            className={`btn btn-sm mx-1 ${
+              currentPage === index + 1 ? 'bg-red-900 text-white hover:bg-red-900' : 'btn-outline'
+            }`}
           >
             {index + 1}
           </button>

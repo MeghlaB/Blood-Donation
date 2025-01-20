@@ -1,42 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import UseAuth from '../../Components/Hooks/UseAuth';
 import AxiosPublic from '../../Components/Hooks/AxiosPublic';
 import Modal from '../../Components/Modal/Modal';
 import { LuCircleArrowLeft } from 'react-icons/lu';
+import { useQuery } from '@tanstack/react-query';
 
 export default function BloodDetails() {
     const { id } = useParams();
     const { user } = UseAuth();
     const axiosPublic = AxiosPublic();
-    const [donation, setDonation] = useState({});
+    const navigate = useNavigate()
     const [showModal, setShowModal] = useState(false);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        axiosPublic.get(`/alldonarPageRequest/${id}`)
-            .then((res) => {
-                // console.log(res.data)
-                setDonation(res.data);
-            })
-
-    }, []);
+    const { data: donations ,refetch} = useQuery({
+        queryKey: ['alldonarPageRequest',id],
+        queryFn: async () => {
+            const res = await axiosPublic.get(`/alldonarPageRequest/${id}`)
+          
+            return res.data
+        }
+    })
 
     const handleConfirmDonation = () => {
-
         const updatedDonation = {
-            ...donation,
+            ...donations,
             status: 'inprogress',
             donorName: user.displayName,
             donorEmail: user.email,
         };
-
-        setDonation(updatedDonation);
+      
         axiosPublic
             .put(`/donation-requests/${id}`, updatedDonation)
-            .then((res) => {
+            .then(() => {
+                refetch()
                 // console.log(res.data)
                 setShowModal(false);
+                navigate('/requestDonation')
             })
             .catch((err) => {
                 setError('Failed to update donation status.');
@@ -46,40 +47,42 @@ export default function BloodDetails() {
 
 
     return (
-        <div className='max-h-full mb-60 '>
+        <div className='m-24 '>
+            <Link to={'/requestDonation'} className='btn text-slate-600  '>
+                <LuCircleArrowLeft />
+                Back</Link>
+            <div className="mt-10 w-1/2 mx-auto  ">
 
-            <div className="mt-32 container mx-auto  ">
-                <Link to={'/requestDonation'} className='btn text-slate-600  '>
-                    <LuCircleArrowLeft />
-                    Back</Link>
-                <h2 className="text-xl font-bold mb-6">Donation Request Details</h2>
+                <h2 className="text-xl font-bold mb-6">Donation Request <span className='text-red-950'>Details:</span></h2>
 
                 {error && <p className="text-red-500">{error}</p>}
                 <div className="card bg-white shadow-md p-4 rounded-md">
-                    <p><strong>Recipient Name:</strong> {donation?.recipientName || 'N/A'}</p>
-                    <p><strong>Location:</strong> {`${donation?.district}, ${donation?.upazila}` || 'N/A'}</p>
-                    <p><strong>Blood Group:</strong> {donation.bloodGroup || 'N/A'}</p>
-                    <p><strong>Date:</strong> {donation.donationDate || 'N/A'}</p>
-                    <p><strong>Time:</strong> {donation.donationTime || 'N/A'}</p>
+                    <p><strong>Recipient Name:</strong> {donations?.recipientName
+                        || 'N/A'}</p>
+                    <p><strong>Location:</strong> {`${donations?.district}, ${donations?.upazila}` || 'N/A'}</p>
+                    <p><strong>Blood Group:</strong> {donations?.bloodGroup || 'N/A'}</p>
+                    <p><strong>Date:</strong> {donations?.donationDate || 'N/A'}</p>
+                    <p><strong>Time:</strong> {donations?.donationTime || 'N/A'}</p>
+                    <p><strong>Request Message:</strong> {donations?.requestMessage || 'N/A'}</p>
                     <p>
                         <strong>Status:</strong>{' '}
                         <span
-                            className={`badge ${donation.status === 'pending'
-                                    ? 'bg-yellow-500 text-white'
-                                    : donation.status === 'inprogress'
-                                        ? 'bg-green-500 text-white'
-                                        : 'bg-gray-400 text-white'
+                            className={`badge ${donations?.status === 'pending'
+                                ? 'bg-yellow-500 text-white'
+                                : donations?.status === 'inprogress'
+                                    ? 'bg-green-500 text-white'
+                                    : 'bg-gray-400 text-white'
                                 }`}
                         >
-                            {donation.status || 'N/A'}
+                            {donations?.status || 'N/A'}
                         </span>
                     </p>
 
 
                     <button
-                        className="btn bg-red-500 text-white mt-4"
+                        className="btn bg-red-900 hover:bg-red-950 text-white mt-4"
                         onClick={() => setShowModal(true)}
-                        disabled={donation.status !== 'pending' && donation.status !== undefined}
+                        disabled={donations?.status !== 'pending' && donations?.status !== undefined}
                     >
                         Donate
                     </button>

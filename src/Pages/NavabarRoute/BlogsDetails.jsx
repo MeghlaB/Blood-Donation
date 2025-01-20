@@ -12,7 +12,7 @@ export default function BlogsDetails() {
   useEffect(() => {
     axiosSecure.get(`/blog/${id}`)
       .then((res) => {
-        // console.log(res.data); 
+      
         if (res.data && Array.isArray(res.data)) {
           setBlogs(res.data[0]); 
         }

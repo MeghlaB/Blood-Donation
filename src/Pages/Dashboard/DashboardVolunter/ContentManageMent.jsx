@@ -1,42 +1,68 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
 import Swal from 'sweetalert2';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
 
 export default function ContentManagement() {
   const axiosSecure = AxiosSecure();
-  const [blogs, setBlogs] = useState([]);
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState('all');
 
-  // Fetch blogs
-  useEffect(() => {
-    axiosSecure.get('/blogs')
-      .then((result) => {
-        setBlogs(result.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching blogs:', error);
-      });
-  }, []);
 
-  // Handle publish/unpublish
-  const handleStatusChange = async (id, status) => {
-    const updatedStatus = status === 'draft' ? 'published' : 'draft';
-    try {
+  const { data: blogs = [], isLoading } = useQuery(['blogs'], async () => {
+    const res = await axiosSecure.get('/blogs');
+    return res.data;
+  });
+
+  // Publish/Unpublish 
+  const statusMutation = useMutation(
+    async ({ id, status }) => {
+      const updatedStatus = status === 'draft' ? 'published' : 'draft';
       await axiosSecure.patch(`/blogs/${id}`, { status: updatedStatus });
-      setBlogs((prevBlogs) =>
-        prevBlogs.map((blog) =>
-          blog._id === id ? { ...blog, status: updatedStatus } : blog
-        )
-      );
-      Swal.fire('Success', `Blog ${updatedStatus} successfully!`, 'success');
-    } catch (error) {
-      Swal.fire('Error', 'Failed to update blog status', 'error');
+      return { id, updatedStatus };
+    },
+    {
+      onSuccess: ({ id, updatedStatus }) => {
+        queryClient.setQueryData(['blogs'], (oldData) =>
+          oldData.map((blog) =>
+            blog._id === id ? { ...blog, status: updatedStatus } : blog
+          )
+        );
+        Swal.fire('Success', `Blog ${updatedStatus} successfully!`, 'success');
+      },
+      onError: () => {
+        Swal.fire('Error', 'Failed to update blog status', 'error');
+      },
     }
+  );
+
+  // Delete Mutation
+  const deleteMutation = useMutation(
+    async (id) => {
+      await axiosSecure.delete(`/blogs/${id}`);
+      return id;
+    },
+    {
+      onSuccess: (id) => {
+        queryClient.setQueryData(['blogs'], (oldData) =>
+          oldData.filter((blog) => blog._id !== id)
+        );
+        Swal.fire('Deleted!', 'Blog has been deleted.', 'success');
+      },
+      onError: () => {
+        Swal.fire('Error', 'Failed to delete blog', 'error');
+      },
+    }
+  );
+
+  // Handle Publish/Unpublish
+  const handleStatusChange = (id, status) => {
+    statusMutation.mutate({ id, status });
   };
 
-  // Handle delete blog
-  const handleDelete = async (id) => {
+  // Handle Delete
+  const handleDelete = (id) => {
     Swal.fire({
       title: 'Are you sure?',
       text: 'This blog will be deleted permanently!',
@@ -45,37 +71,36 @@ export default function ContentManagement() {
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
       confirmButtonText: 'Yes, delete it!',
-    }).then(async (result) => {
+    }).then((result) => {
       if (result.isConfirmed) {
-        try {
-          await axiosSecure.delete(`/blogs/${id}`);
-          setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog._id !== id));
-          Swal.fire('Deleted!', 'Blog has been deleted.', 'success');
-        } catch (error) {
-          Swal.fire('Error', 'Failed to delete blog', 'error');
-        }
+        deleteMutation.mutate(id);
       }
     });
   };
 
-  // Filter blogs by status
-  const filteredBlogs = blogs.filter(
-    (blog) => filter === 'all' || blog.status === filter
-  );
+  // Filter Blogs by Status
+  const filteredBlogs =
+    filter === 'all' ? blogs : blogs.filter((blog) => blog.status === filter);
+
+  if (isLoading) {
+    return <p className="text-center text-gray-500 mt-4">Loading blogs...</p>;
+  }
 
   return (
     <div className="p-4 max-w-6xl mx-auto">
       {/* Add Blog Button */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Content Management</h1>
-        <Link to='add-blog'>
+        <Link to="add-blog">
           <button className="btn bg-blue-600 text-white">Add Blog</button>
         </Link>
       </div>
 
       {/* Filter Dropdown */}
       <div className="mb-4">
-        <label htmlFor="filter" className="mr-2 font-medium">Filter by Status:</label>
+        <label htmlFor="filter" className="mr-2 font-medium">
+          Filter by Status:
+        </label>
         <select
           id="filter"
           value={filter}

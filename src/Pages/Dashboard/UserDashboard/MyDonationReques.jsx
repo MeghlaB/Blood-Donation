@@ -12,6 +12,7 @@ import { FiEdit } from 'react-icons/fi';
 export default function MyDonationRequests() {
   const { user } = UseAuth();
   const axiosPublic = AxiosPublic()
+  const axiosSecure = AxiosSecure()
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState('');
   const [requests, setRequests] = useState([]);
@@ -87,10 +88,6 @@ export default function MyDonationRequests() {
   };
 
 
-
-
-
-
   useEffect(() => {
     if (statusFilter === 'all') {
       setFilteredRequests(requests);
@@ -155,57 +152,62 @@ export default function MyDonationRequests() {
               <td className="border-b px-4 py-2">{request.donationDate}</td>
               <td className="border-b px-4 py-2">{request.donationTime}</td>
               <td className="border-b px-4 py-2">{request.bloodGroup}</td>
-            
-             <td className="border-b px-4 py-2">{request.status}
-                                 <div className="dropdown dropdown-end">
-                                   <label tabIndex={0} className="btn btn-ghost btn-sm">
-                                   <MdOutlineArrowDropDown/>
-                                   </label>
-                                   <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box -top-10 w-52 p-2 shadow">
-                                     <select
-                                       id="status"
-                                       className="select select-bordered w-full max-w-xs"
-                                       value={selectedStatus}
-                                       onChange={(e) => setSelectedStatus(e.target.value)}
-                                     >
-                                       <option disabled>Select a Status</option>
-                                       {request.status === 'inprogress' && (
-                                         <>
-                                           <option value="canceled">Canceled</option>
-                                           <option value="done">Done</option>
-                                           <option value="progress">Progress</option>
-                                         </>
-                                       )}
-                                     </select>
-                                     <div className="mt-4">
-                                       <button
-                                         onClick={() => {
-                                           setSelectedUser(request);
-                                           handlestausChange();
-                                         }}
-                                         className="btn bg-red-900 text-white hover:bg-red-900 w-full"
-                                       >
-                                         Submit
-                                       </button>
-                                     </div>
-                                   </ul>
-                                 </div>
-             
-              </td>
               <td className="border-b px-4 py-2">
-                    {request.status === 'inprogress' &&
-                     <div className="mt-2">
-                     <p className="text-sm font-semibold">Donor Name: {request.donorName|| 'N/A'}</p>
-                     <p className="text-sm">Email: {request.donorEmail|| 'N/A'}</p>
-                   </div>
-                    }
-                  </td>
+                {/* Display the current status */}
+                {request.status}
+
+                {/* If status is 'inprogress', show the dropdown */}
+                {request.status === 'inprogress' && (
+                  <div className="dropdown dropdown-end">
+                    <label tabIndex={0} className="btn btn-ghost btn-sm">
+                      <MdOutlineArrowDropDown />
+                    </label>
+                    <ul
+                      tabIndex={0}
+                      className="menu menu-sm dropdown-content bg-base-100 rounded-box -top-10 w-52 p-2 shadow"
+                    >
+                      <select
+                        id="status"
+                        className="select select-bordered w-full max-w-xs"
+                        value={selectedStatus}
+                        onChange={(e) => setSelectedStatus(e.target.value)}
+                      >
+                        <option disabled>Select a Status</option>
+                        <option value="canceled">Canceled</option>
+                        <option value="done">Done</option>
+                        <option value="progress">Progress</option>
+                      </select>
+                      <div className="mt-4">
+                        <button
+                          onClick={() => {
+                            setSelectedUser(request);
+                          handlestausChange();
+                          }}
+                          className="btn bg-red-900 text-white hover:bg-red-900 w-full"
+                        >
+                          Submit
+                        </button>
+                      </div>
+                    </ul>
+                  </div>
+                )}
+              </td>
+
+
+              <td className="border-b px-4 py-2">
+                {request.status === 'inprogress' &&
+                  <div className="mt-2">
+                    <p className="text-sm font-semibold">Donor Name: {request.donorName || 'N/A'}</p>
+                    <p className="text-sm">Email: {request.donorEmail || 'N/A'}</p>
+                  </div>
+                }
+              </td>
               <td className="border-b px-4 py-2">
                 <Link
                   to={`/dashboard/edit/${request._id}`}
                   className="btn btn-sm bg-blue-500 text-white rounded-md px-3 py-1"
                 >
-                   <FiEdit />
+                  <FiEdit />
                 </Link>
               </td>
               <td className="border-b px-4 py-2 text-center">
@@ -214,7 +216,7 @@ export default function MyDonationRequests() {
                   className="flex items-center justify-center rounded-full bg-red-500 px-2 py-2 font-bold text-white shadow-md transition-all duration-300 hover:bg-red-700"
                 >
                   <FaTrash />
-                  
+
                 </button>
               </td>
               <Link to={`/details/${request._id}`}> <td className="px-5 text-sky-700 underline ">Details</td></Link>
