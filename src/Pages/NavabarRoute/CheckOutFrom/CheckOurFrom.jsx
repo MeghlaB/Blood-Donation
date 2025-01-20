@@ -76,7 +76,6 @@ const CheckOurForm = () => {
           if (paymentIntent.status === 'succeeded') {
             setTransactionId(paymentIntent.id);
             setTransactionDate(new Date(paymentIntent.created * 1000).toLocaleString());
-
             // Now save the payment in the database
             const Fundling = {
               email: user?.email,
@@ -88,8 +87,7 @@ const CheckOurForm = () => {
 
             const res = await axiosSecure.post('/funds', Fundling);
             // console.log('Payment saved:', res.data);
-
-            if (res.data?.paymentResult?.insertedId > 0) {
+            if (res.data?.acknowledged) {
               await Swal.fire({
                 position: 'top-center',
                 icon: 'success',
@@ -97,9 +95,10 @@ const CheckOurForm = () => {
                 showConfirmButton: false,
                 timer: 1500,
               });
+              navigate('/funding'); 
               
             }
-            navigate('/funding'); 
+           
           }
         }
       }
@@ -115,9 +114,9 @@ const CheckOurForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className='border-2 p-6 bg-base-100 border-red-900'>
       <div>
-        <label htmlFor="amount">Funding Amount</label>
+        <label htmlFor="amount ">Funding Amount</label>
         <input
           type="number"
           id="amount"

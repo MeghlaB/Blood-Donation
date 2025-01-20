@@ -24,7 +24,7 @@ const Funding = () => {
   }, []);
 
   return (
-    <div className="container mt-20 mx-auto">
+    <div className="container mt-20 mx-auto mb-40">
       <h2 className="text-2xl font-bold text-center">Funding Page</h2>
 
       <div className="mt-4 text-center">
@@ -40,7 +40,7 @@ const Funding = () => {
           <p className="text-center text-gray-500">No funding data available.</p>
         ) : (
           <table className="table-auto w-full border border-gray-300 rounded-lg shadow-md">
-            <thead className="bg-blue-100 text-blue-700">
+            <thead className="bg-blue-100 text-red-900">
               <tr>
                 <th className="px-4 py-2 border">Donor Name</th>
                 <th className="px-4 py-2 border">Fund Amount</th>

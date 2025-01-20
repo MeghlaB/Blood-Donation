@@ -4,15 +4,16 @@ import Swal from "sweetalert2";
 import axios from "axios";
 
 export default function SearchPage() {
-  const axiosPublic = AxiosPublic();
-  const [bloodGroup, setBloodGroup] = useState("");
-  const [districts, setDistricts] = useState([]);
-  const [filteredUpazilas, setFilteredUpazilas] = useState([]);
-  const [selectedDistrict, setSelectedDistrict] = useState("");
-  const [selectedUpazila, setSelectedUpazila] = useState("");
-  const [donors, setDonors] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const axiosPublic = AxiosPublic(); // Custom Axios instance
+  const [bloodGroup, setBloodGroup] = useState(""); // Selected blood group
+  const [districts, setDistricts] = useState([]); // List of districts
+  const [filteredUpazilas, setFilteredUpazilas] = useState([]); // Filtered upazilas for selected district
+  const [selectedDistrict, setSelectedDistrict] = useState(""); // Selected district
+  const [selectedUpazila, setSelectedUpazila] = useState(""); // Selected upazila
+  const [donors, setDonors] = useState([]); // List of donors fetched from API
+  const [loading, setLoading] = useState(false); // Loading state for search operation
 
+  // Fetch district data on component mount
   useEffect(() => {
     axios
       .get("/distric.json")
@@ -33,55 +34,60 @@ export default function SearchPage() {
       });
   }, []);
 
+  // Handle change in district dropdown
   const handleDistrictChange = (event) => {
     const selected = event.target.value;
     setSelectedDistrict(selected);
     const foundDistrict = districts.find((d) => d.district === selected);
     setFilteredUpazilas(foundDistrict ? foundDistrict.upazilas : []);
-    setSelectedUpazila(""); 
+    setSelectedUpazila(""); // Reset upazila when district changes
   };
 
-const handleSearch = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  try {
-    const response = await axiosPublic.get("/donars", {
-      params: {
-        bloodGroup,
-        district: selectedDistrict,
-        upazila: selectedUpazila,
-      },
-    });
-    setDonors(response.data);
-    if (response.data.length === 0) {
-      Swal.fire({
-        icon: "info",
-        title: "No Results",
-        text: "No donors found for the selected criteria.",
+  // Handle search form submission
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const response = await axiosPublic.get("/donars", {
+        params: {
+          bloodGroup,
+          district: selectedDistrict,
+          upazila: selectedUpazila,
+        },
       });
+      setDonors(response.data);
+
+      // If no donors found, show info alert
+      if (response.data.length === 0) {
+        Swal.fire({
+          icon: "info",
+          title: "No Results",
+          text: "No donors found for the selected criteria.",
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching donors:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "No Data Entry. Please try again later.",
+      });
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Error fetching donors:", error);
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "Failed to fetch donor data. Please try again later.",
-    });
-  } finally {
-    setLoading(false);
-  }
-}
+  };
+
   return (
-    <div className="p-6 mt-48">
-      {/* Search Form */}
+    <div className="p-6 w-full md:w-1/2 mx-auto">
+      {/* Search Form Section */}
       <section className="p-6 mt-20 bg-gray-100 text-gray-900">
         <form onSubmit={handleSearch} className="container mx-auto space-y-6">
           <fieldset className="p-6 rounded-md shadow-sm bg-white">
-            <div className="grid grid-cols-6 gap-4">
-              {/* District */}
+            <div className="grid grid-cols-3 gap-4">
+              {/* District Dropdown */}
               <div className="col-span-3">
-                <label htmlFor="district" className="block text-sm">
-                  District
+                <label htmlFor="district" className="block text-sm font-bold text-black">
+                  District:
                 </label>
                 <select
                   id="district"
@@ -97,10 +103,11 @@ const handleSearch = async (e) => {
                   ))}
                 </select>
               </div>
-              {/* Upazila */}
+
+              {/* Upazila Dropdown */}
               <div className="col-span-3">
-                <label htmlFor="upazila" className="block text-sm">
-                  Upazila
+                <label htmlFor="upazila" className="block text-sm font-bold text-black">
+                  Upazila:
                 </label>
                 <select
                   id="upazila"
@@ -116,10 +123,11 @@ const handleSearch = async (e) => {
                   ))}
                 </select>
               </div>
-              {/* Blood Group */}
+
+              {/* Blood Group Dropdown */}
               <div className="col-span-2">
-                <label htmlFor="bloodGroup" className="block text-sm">
-                  Blood Group
+                <label htmlFor="bloodGroup" className="block text-sm font-bold text-black">
+                  Blood Group:
                 </label>
                 <select
                   id="bloodGroup"
@@ -139,14 +147,13 @@ const handleSearch = async (e) => {
                 </select>
               </div>
             </div>
+
             {/* Submit Button */}
             <div className="text-right mt-4">
               <button
                 type="submit"
                 className={`px-6 py-2 ${
-                  loading
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-red-900 hover:bg-red-700"
+                  loading ? "bg-gray-400 cursor-not-allowed" : "bg-red-900 hover:bg-red-700"
                 } text-white rounded-md`}
                 disabled={loading}
               >
@@ -157,16 +164,13 @@ const handleSearch = async (e) => {
         </form>
       </section>
 
-      {/* Donors List */}
+      {/* Donors List Section */}
       {donors.length > 0 && (
         <section className="mt-8">
           <h2 className="text-2xl font-bold mb-4">Donor List</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {donors.map((donor) => (
-              <div
-                key={donor.id}
-                className="p-4 border rounded-lg shadow-sm bg-white"
-              >
+              <div key={donor.id} className="p-4 border rounded-lg shadow-sm bg-white">
                 <h3 className="text-lg font-semibold">{donor.name}</h3>
                 <p>Blood Group: {donor.bloodGroup}</p>
                 <p>District: {donor.district}</p>
@@ -176,6 +180,8 @@ const handleSearch = async (e) => {
           </div>
         </section>
       )}
+
+      {/* No Donors Found Message */}
       {donors.length === 0 && !loading && (
         <p className="text-center mt-8">No donors found for the selected criteria.</p>
       )}

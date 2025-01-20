@@ -20,7 +20,7 @@ const axiosSecure =AxiosSecure()
 
 
   return (
-    <div className=' mt-3'>
+    <div className=' container mx-auto mt-3'>
         <Marquee>
         <div className="p-6 mt-6 text-center bg-base-200 rounded-md w-full">
           {user?.displayName ? (

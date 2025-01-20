@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { BsThreeDots } from 'react-icons/bs';
 import AxiosPublic from '../../../Components/Hooks/AxiosPublic';
 import { MdOutlineArrowDropDown } from 'react-icons/md';
+import { FiEdit } from 'react-icons/fi';
 
 export default function MyDonationRequests() {
   const { user } = UseAuth();
@@ -106,8 +107,8 @@ export default function MyDonationRequests() {
 
 
   return (
-    <div className="mt-9 p-6">
-      <h1 className="text-xl font-semibold mb-4">My Donation Requests:{requests.length}</h1>
+    <div className="mt-9 p-6 container mx-auto">
+      <h1 className="text-xl font-bold mb-4">My Donation Requests:{requests.length}</h1>
 
       {/* Filter by Status */}
       <div className="mb-4">
@@ -204,19 +205,19 @@ export default function MyDonationRequests() {
                   to={`/dashboard/edit/${request._id}`}
                   className="btn btn-sm bg-blue-500 text-white rounded-md px-3 py-1"
                 >
-                  Edit
+                   <FiEdit />
                 </Link>
               </td>
               <td className="border-b px-4 py-2 text-center">
                 <button
                   onClick={() => handleMenuDelete(request)}
-                  className="flex items-center justify-center rounded-full bg-red-500 px-4 py-2 font-bold text-white shadow-md transition-all duration-300 hover:bg-red-700"
+                  className="flex items-center justify-center rounded-full bg-red-500 px-2 py-2 font-bold text-white shadow-md transition-all duration-300 hover:bg-red-700"
                 >
                   <FaTrash />
-                  Delete
+                  
                 </button>
               </td>
-              <Link to={`/details/${request._id}`}> <td className="pt-9 text-sky-700 underline ">Details</td></Link>
+              <Link to={`/details/${request._id}`}> <td className="px-5 text-sky-700 underline ">Details</td></Link>
             </tr>
           ))}
         </tbody>

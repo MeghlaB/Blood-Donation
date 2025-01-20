@@ -110,7 +110,7 @@ export default function ContentManagement() {
           id="filter"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="select select-bordered"
+          className="select select-bordered w-full"
         >
           <option value="all">All</option>
           <option value="draft">Draft</option>

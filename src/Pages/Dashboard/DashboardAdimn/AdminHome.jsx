@@ -17,12 +17,10 @@ const axiosSecure =AxiosSecure()
       return res.data
     }
   })
-
-
   return (
-    <div className=' mt-3'>
-        <Marquee>
-        <div className="p-6 mt-6 text-center bg-base-200 rounded-md w-full">
+    <div className='mt-3 container mx-auto '>
+     <Marquee>
+        <div className="p-6 mt-6 text-center bg-base-200 rounded-md w-full overflow-hidden">
           {user?.displayName ? (
             <h2 className="text-2xl font-bold px-96">
               Welcome, <span className="text-red-900">{user.displayName}</span>!
@@ -34,15 +32,15 @@ const axiosSecure =AxiosSecure()
             Thank you for being a part of our donor community.
           </p>
         </div>
-      </Marquee>
+        </Marquee>
           {/* Featured Statistics Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-14">
+          <div className=" container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4  mt-14">
         {/* Total Donors Card */}
         <div className="bg-white shadow-lg rounded-lg p-6 flex items-center justify-between">
           <div className="text-center ">
-            <FaUsers className="text-4xl text-blue-500" />
+            <FaUsers className="lg:text-4xl text-blue-500" />
            <div>
-           <h3 className="mt-4 text-xl font-semibold">Total Donors</h3>
+           <h3 className="mt-4 lg:text-xl font-semibold">Total Donors</h3>
            <p className="text-2xl font-bold">{stats?.user}</p>
            </div>
           </div>
@@ -51,9 +49,9 @@ const axiosSecure =AxiosSecure()
         {/* Total Funds Card */}
         <div className="bg-white shadow-lg rounded-lg p-6 flex items-center justify-between">
           <div className="text-center ">
-            <FaDonate className="text-4xl text-green-500" />
+            <FaDonate className="lg:text-4xl text-green-500" />
             <div>
-            <h3 className="mt-4 text-xl font-semibold">Total Funds</h3>
+            <h3 className="mt-4 lg:text-xl font-semibold">Total Funds</h3>
             <p className="text-2xl font-bold">${stats?.funding}</p>
             </div>
           </div>
@@ -62,9 +60,9 @@ const axiosSecure =AxiosSecure()
         {/* Total Blood Donation Requests Card */}
         <div className="bg-white shadow-lg rounded-lg p-6 flex items-center justify-between">
           <div className="text-center  ">
-            <FaHospital className="text-4xl text-red-500" />
+            <FaHospital className="lg:text-4xl text-red-500" />
            <div>
-           <h3 className="mt-4 text-xl font-semibold">Total Blood Donation Requests</h3>
+           <h3 className="mt-4 lg:text-xl font-semibold">Total Blood Donation Requests</h3>
            <p className="text-2xl font-bold">{stats?.donarRequset}</p>
            </div>
           </div>

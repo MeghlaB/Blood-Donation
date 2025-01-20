@@ -60,7 +60,7 @@ export default function AllBloodRequest() {
 
 
   return (
-    <div className='mt-9'>
+    <div className=' container mx-auto mt-9'>
       <h1 className='text-xl font-bold mb-4'>All Blood Donation Requests</h1>
       {requests.length > 0 ? (
         <table className='table-auto text-center w-full border-collapse border border-gray-300'>

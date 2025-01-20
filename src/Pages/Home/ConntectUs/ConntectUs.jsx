@@ -1,9 +1,16 @@
 import React from "react";
+import Swal from "sweetalert2";
 
 export default function ConnectUs() {
   const handleSubmit = (event) => {
     event.preventDefault();
-    alert("Thank you for contacting us!");
+    Swal.fire({
+      position: "top-end",
+      icon: "success",
+      title: "Thank you for contacting us!",
+      showConfirmButton: false,
+      timer: 1500
+    });
   };
 
   return (

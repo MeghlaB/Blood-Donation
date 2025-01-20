@@ -3,7 +3,7 @@ import UseAuth from '../Components/Hooks/UseAuth'
 import UserVolunteer from '../Components/Hooks/UserVolunteer'
 import { Navigate, useLocation } from 'react-router-dom'
 
-export default function VlounteerRoute() {
+export default function VlounteerRoute({children}) {
     const {user,loading} = UseAuth()
     const [isvolunteer,isvolunteerLoading] =  UserVolunteer()
     const location =  useLocation()

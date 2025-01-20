@@ -30,6 +30,10 @@ import Funding from "../Pages/NavabarRoute/Funding";
 import GiveFound from "../Pages/NavabarRoute/GiveFound";
 import Blogs from "../Pages/NavabarRoute/Blogs";
 import BlogsDetails from "../Pages/NavabarRoute/BlogsDetails";
+import VlounteerRoute from "../PrivetRoute/VlounteerRoute"
+
+
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -135,16 +139,20 @@ const router = createBrowserRouter([
           // Volunteer Collection dashboard
           {
             path: 'volunteerhome',
-            element: <VolunterHome></VolunterHome>
+            element: <VlounteerRoute><VolunterHome></VolunterHome></VlounteerRoute>
           },
           {
             path: 'allblood-donation-request',
-            element: <AllDonationRequest></AllDonationRequest>
+            element: <VlounteerRoute><AllDonationRequest></AllDonationRequest></VlounteerRoute>,
           },
           {
             path: 'contentmanagement',
-            element: <ContentManagement></ContentManagement>
-          }
+            element: <VlounteerRoute><ContentManagement></ContentManagement></VlounteerRoute>
+          },
+          {
+            path: 'contentmanagement/add-blog',
+            element: <VlounteerRoute><AddBlogPage></AddBlogPage></VlounteerRoute>
+          },
         ]
       },
 

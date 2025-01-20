@@ -10,6 +10,7 @@ import { FaTrash } from 'react-icons/fa';
 import AxiosPublic from '../../../Components/Hooks/AxiosPublic';
 import { BsThreeDots } from 'react-icons/bs';
 import { MdOutlineArrowDropDown } from 'react-icons/md';
+import { FiEdit } from 'react-icons/fi';
 
 export default function DashboardHome() {
   const { user } = UseAuth();
@@ -90,9 +91,9 @@ export default function DashboardHome() {
   };
   
   return (
-    <div>
+    <div className='container mx-auto'>
       <Marquee>
-        <div className="p-6 mt-8 text-center bg-base-200 rounded-md w-full">
+        <div className="  p-6 mt-8 text-center bg-base-200 rounded-md w-full">
           {user?.displayName ? (
             <h2 className="text-2xl font-bold px-96">
               Welcome, <span className="text-red-900">{user.displayName}</span>!
@@ -114,7 +115,7 @@ export default function DashboardHome() {
             <p className="ml-4 text-red-500">Loading recent donations...</p>
           </div>
         ) : recentRequests.length > 0 ? (
-          <table className="min-w-full table-auto border-collapse mt-4 mb-8">
+          <table className=" container mx-auto table-auto border-collapse mt-4 mb-8">
             <thead>
               <tr>
                 <th className="border-b px-4 py-2">Recipient Name</th>
@@ -187,19 +188,19 @@ export default function DashboardHome() {
                   </td>
                   <td className="border-b px-4 py-2">
                     <Link to={`/dashboard/edit/${request._id}`} className="btn btn-sm">
-                      Edit
+                    <FiEdit />
                     </Link>
                   </td>
                   <td className="border-b px-4 py-2 text-center">
                     <button
                       onClick={() => handleMenuDelete(request)}
-                      className="flex items-center justify-center rounded-full bg-red-500 px-4 py-2 font-bold text-white shadow-md transition-all duration-300 hover:bg-red-700"
+                      className="flex items-center justify-center rounded-full bg-red-500 px-2 py-2 font-bold text-white shadow-md transition-all duration-300 hover:bg-red-700"
                     >
                       <FaTrash></FaTrash>
-                      Delete
+                     
                     </button>
                   </td>
-                 <Link to={`/details/${request._id}`}> <td className="pt-9 text-sky-700 underline ">Details</td></Link>
+                 <Link to={`/details/${request._id}`}> <td className=" px-5 text-sky-700 underline ">Details</td></Link>
                 </tr>
               ))}
             </tbody>
