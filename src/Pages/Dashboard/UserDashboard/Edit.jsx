@@ -115,8 +115,8 @@ export default function Edit() {
     };
 
     return (
-        <section className="p-6 mt-20 bg-gray-100 text-gray-900">
-            <form onSubmit={handleSubmit} className="container mx-auto space-y-6">
+        <section className="p-6 mt-15 bg-gray-100 container mx-auto text-gray-900">
+            <form onSubmit={handleSubmit} className=" space-y-6">
                 <fieldset className="p-6 rounded-md shadow-sm bg-white">
                     <div className="grid grid-cols-6 gap-4">
                         <div className="col-span-3">

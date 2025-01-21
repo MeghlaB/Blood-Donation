@@ -16,46 +16,51 @@ export default function Dashboard() {
   const [isAdmin] = UserAdmin();
   const [isvolunteer] = UserVolunteer();
   const navigate = useNavigate()
-  
-   const { user, signout } = useContext(AuthContext);
-    
-  
-      const handleLogout = () => {
-          signout()
-              .then(() => {
-            
-                  navigate('/'); 
-              })
-              .catch((error) => {
-                  console.error('Logout error:', error);
-              });
-      };
-  
+  const { user, signout, setLoading } = useContext(AuthContext);
+
+
+  const handleLogout = () => {
+    signout()
+      .then(() => {
+
+        navigate('/');
+      })
+      .catch((error) => {
+        console.error('Logout error:', error);
+      });
+  };
 
   useEffect(() => {
- 
-    if (isAdmin) {
-      navigate('/dashboard/adminhome');
-    } else if (isvolunteer) {
-      navigate('/dashboard/volunteerhome');
-    } else {
-      navigate('/dashboard/home');
+    if (user) {
+      if (isAdmin) {
+        setLoading(false)
+        navigate('/dashboard/adminhome');
+
+      } else if (isvolunteer) {
+        setLoading(false)
+        navigate('/dashboard/volunteerhome');
+
+      } else {
+        setLoading(false)
+        navigate('/dashboard/home');
+
+      }
+      setLoading(false)
     }
-  }, [isAdmin , isvolunteer, navigate]);
+  }, [isAdmin, isvolunteer, navigate]);
 
 
 
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen); 
+    setIsSidebarOpen(!isSidebarOpen);
   };
 
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 z-40 transform ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } transition-transform duration-300 bg-base-200 w-80 min-h-screen p-4`}
+        className={`fixed top-0 left-0 z-40 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          } transition-transform duration-300 bg-base-200 w-80 min-h-screen p-4`}
       >
         {/* CloseButton */}
         <button
@@ -95,7 +100,7 @@ export default function Dashboard() {
                 <NavLink
                   to="/dashboard/all-blood-donation-request"
                   className={({ isActive }) =>
-                    isActive ? 'font-bold text-white' : 'text-black'
+                    isActive ? 'font-bold text-red-900' : 'text-black'
                   }
                 >
                   <MdBloodtype />
@@ -234,7 +239,7 @@ export default function Dashboard() {
               Home
             </NavLink>
           </li>
-          <li><a onClick={handleLogout}> <CiLogout />Logout</a></li>
+          <li className='pt-11'><a onClick={handleLogout}> <CiLogout />Logout</a></li>
         </ul>
       </div>
 

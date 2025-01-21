@@ -33,7 +33,7 @@ export default function Login() {
 
 
   return (
-    <div className="mx-auto w-full mb-52 max-w-md mt-20 space-y-4 rounded-lg border bg-white p-10 shadow-lg pb-8">
+    <div className="mx-auto w-full mb-52 max-w-md mt-24 space-y-4 rounded-lg border bg-white p-10 shadow-lg pb-8">
     <h1 className="text-3xl font-semibold">Sign In</h1>
     <form onSubmit={handleSubmit} className="space-y-6">
         {/* Email Field */}
@@ -78,7 +78,7 @@ export default function Login() {
     <p className="text-center text-sm text-zinc-700 dark:text-zinc-300">
         Don&apos;t have an account?{' '}
         <Link to={'/register'}>
-            <span className="font-semibold underline text-blue-500">Signup</span>
+            <span className="font-semibold underline text-blue-500">Register</span>
         </Link>
     </p>
    

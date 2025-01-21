@@ -31,6 +31,9 @@ import GiveFound from "../Pages/NavabarRoute/GiveFound";
 import Blogs from "../Pages/NavabarRoute/Blogs";
 import BlogsDetails from "../Pages/NavabarRoute/BlogsDetails";
 import VlounteerRoute from "../PrivetRoute/VlounteerRoute"
+import ContentManageMent from "../Pages/Dashboard/DashboardVolunter/ContentManageMent";
+import ErrorPaged from "../Pages/ErrorPages";
+import ErrorPages from "../Pages/ErrorPages";
 
 
 
@@ -38,6 +41,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout></MainLayout>,
+    errorElement:<ErrorPages></ErrorPages>,
     children: [
       {
         path: '/',
@@ -147,7 +151,7 @@ const router = createBrowserRouter([
           },
           {
             path: 'contentmanagement',
-            element: <VlounteerRoute><ContentManagement></ContentManagement></VlounteerRoute>
+            element: <VlounteerRoute><ContentManageMent></ContentManageMent></VlounteerRoute>
           },
           {
             path: 'contentmanagement/add-blog',

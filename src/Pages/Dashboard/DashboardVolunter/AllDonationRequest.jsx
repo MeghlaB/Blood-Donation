@@ -6,14 +6,16 @@ import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { FiEdit } from 'react-icons/fi';
+import { MdOutlineArrowDropDown } from 'react-icons/md';
 
 export default function AllDonationRequest() {
   const axiosSecure = AxiosSecure();
   const axiosPublic = AxiosPublic();
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState('');
+  const [request, setRequests] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
-
- 
   const { data: requests = [], isLoading, refetch } = useQuery({
     queryKey: ['alldonarrequest'],
     queryFn: async () => {
@@ -47,6 +49,36 @@ export default function AllDonationRequest() {
     });
   };
 
+
+  const handlestausChange = () => {
+    if (!selectedUser || !selectedStatus) {
+      Swal.fire('Error', 'Please select a user and a status.', 'error');
+      return;
+    }
+
+    axiosPublic.put(`/alldonar/status/${selectedUser._id}`, { status: selectedStatus })
+      .then((res) => {
+        if (res?.data?.message === 'Status updated successfully') {
+          refetch()
+          Swal.fire('Success', `Status updated to ${selectedStatus}.`, 'success');
+         
+          setRequests(prevRequests =>
+            prevRequests.map((request) =>
+              request._id === selectedUser._id ? { ...request, status: selectedStatus } : request
+            )
+          );
+          setSelectedStatus('');
+          setSelectedUser(null);
+        }
+      })
+      .catch((err) => {
+        Swal.fire('Error', err.response?.data?.message || 'Failed to update status.', 'error');
+      });
+  };
+
+
+
+
   const totalPages = Math.ceil(requests.length / pageSize);
   const paginatedRequests = requests.slice(
     (currentPage - 1) * pageSize,
@@ -71,7 +103,7 @@ export default function AllDonationRequest() {
                 <th className="border-b px-4 py-2">Time</th>
                 <th className="border-b px-4 py-2">Blood Group</th>
                 <th className="border-b px-4 py-2">Status</th>
-                <th className="border-b px-4 py-2">Edit</th>
+                {/* <th className="border-b px-4 py-2">Edit</th> */}
               </tr>
             </thead>
             <tbody>
@@ -82,15 +114,51 @@ export default function AllDonationRequest() {
                   <td className="border-b px-4 py-2">{request.donationDate}</td>
                   <td className="border-b px-4 py-2">{request.donationTime}</td>
                   <td className="border-b px-4 py-2">{request.bloodGroup}</td>
-                  <td className="border-b px-4 py-2">{request.status}</td>
                   <td className="border-b px-4 py-2">
+                    {request.status}
+                    {request.status === 'inprogress' && (
+                      <div className="dropdown dropdown-end">
+                        <label tabIndex={0} className="btn btn-ghost btn-sm">
+                          <MdOutlineArrowDropDown />
+                        </label>
+                        <ul
+                          tabIndex={0}
+                          className="menu menu-sm dropdown-content bg-base-100 rounded-box -top-10 w-52 p-2 shadow"
+                        >
+                          <select
+                            id="status"
+                            className="select select-bordered w-full max-w-xs"
+                            value={selectedStatus}
+                            onChange={(e) => setSelectedStatus(e.target.value)}
+                          >
+                            <option disabled>Select a Status</option>
+                            <option value="canceled">Canceled</option>
+                            <option value="done">Done</option>
+                            <option value="progress">Progress</option>
+                          </select>
+                          <div className="mt-4">
+                            <button
+                              onClick={() => {
+                              setSelectedUser(request);
+                              handlestausChange();
+                              }}
+                              className="btn bg-red-900 text-white hover:bg-red-900 w-full"
+                            >
+                              Submit
+                            </button>
+                          </div>
+                        </ul>
+                      </div>
+                    )}
+                  </td>
+                  {/* <td className="border-b px-4 py-2">
                 <Link
                   to={`/dashboard/edit/${request._id}`}
                   className="btn btn-sm bg-blue-500 text-white rounded-md px-3 py-1"
                 >
                    <FiEdit />
                 </Link>
-              </td>
+              </td> */}
                 </tr>
               ))}
             </tbody>

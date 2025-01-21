@@ -1,86 +1,32 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
 
 export default function ContentManagement() {
   const axiosSecure = AxiosSecure();
-  const queryClient = useQueryClient();
   const [filter, setFilter] = useState('all');
 
-
-  const { data: blogs = [], isLoading } = useQuery(['blogs'], async () => {
-    const res = await axiosSecure.get('/blogs');
-    return res.data;
+  const { data: blogs = [], isLoading } = useQuery({
+    queryKey: ['blogsfilter', filter], 
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/blogsfilter?status=${filter}`);
+      return res.data;
+    },
   });
 
-  // Publish/Unpublish 
-  const statusMutation = useMutation(
-    async ({ id, status }) => {
-      const updatedStatus = status === 'draft' ? 'published' : 'draft';
-      await axiosSecure.patch(`/blogs/${id}`, { status: updatedStatus });
-      return { id, updatedStatus };
-    },
-    {
-      onSuccess: ({ id, updatedStatus }) => {
-        queryClient.setQueryData(['blogs'], (oldData) =>
-          oldData.map((blog) =>
-            blog._id === id ? { ...blog, status: updatedStatus } : blog
-          )
-        );
-        Swal.fire('Success', `Blog ${updatedStatus} successfully!`, 'success');
-      },
-      onError: () => {
-        Swal.fire('Error', 'Failed to update blog status', 'error');
-      },
-    }
-  );
-
-  // Delete Mutation
-  const deleteMutation = useMutation(
-    async (id) => {
-      await axiosSecure.delete(`/blogs/${id}`);
-      return id;
-    },
-    {
-      onSuccess: (id) => {
-        queryClient.setQueryData(['blogs'], (oldData) =>
-          oldData.filter((blog) => blog._id !== id)
-        );
-        Swal.fire('Deleted!', 'Blog has been deleted.', 'success');
-      },
-      onError: () => {
-        Swal.fire('Error', 'Failed to delete blog', 'error');
-      },
-    }
-  );
-
-  // Handle Publish/Unpublish
-  const handleStatusChange = (id, status) => {
-    statusMutation.mutate({ id, status });
+  // voluteer status to 'draft'
+  const handleSetToDraft = (blogId) => {
+    axiosSecure
+      .patch(`/bloges/${blogId}`, { status: 'draft' })
+      .then((response) => {
+        Swal.fire('Success', response.data.message, 'success');
+      })
+      .catch((error) => {
+        Swal.fire('Error', error.response?.data?.message || 'Failed to update status', 'error');
+      });
   };
-
-  // Handle Delete
-  const handleDelete = (id) => {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'This blog will be deleted permanently!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        deleteMutation.mutate(id);
-      }
-    });
-  };
-
-  // Filter Blogs by Status
-  const filteredBlogs =
-    filter === 'all' ? blogs : blogs.filter((blog) => blog.status === filter);
 
   if (isLoading) {
     return <p className="text-center text-gray-500 mt-4">Loading blogs...</p>;
@@ -105,7 +51,7 @@ export default function ContentManagement() {
           id="filter"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="select select-bordered"
+          className="select select-bordered w-full"
         >
           <option value="all">All</option>
           <option value="draft">Draft</option>
@@ -115,7 +61,7 @@ export default function ContentManagement() {
 
       {/* Blog List */}
       <div>
-        {filteredBlogs.length > 0 ? (
+        {blogs.length > 0 ? (
           <table className="table-auto w-full border-collapse border border-gray-300">
             <thead>
               <tr className="bg-gray-100">
@@ -125,32 +71,19 @@ export default function ContentManagement() {
               </tr>
             </thead>
             <tbody>
-              {filteredBlogs.map((blog) => (
+              {blogs.map((blog) => (
                 <tr key={blog._id}>
                   <td className="border border-gray-300 px-4 py-2">{blog.title}</td>
                   <td className="border border-gray-300 px-4 py-2 capitalize">{blog.status}</td>
-                  <td className="border border-gray-300 px-4 py-2 flex gap-2">
-                    {blog.status === 'draft' ? (
+                  <td className="border border-gray-300 px-4 py-2">
+                    {blog.status !== 'draft' && (
                       <button
-                        className="btn btn-success"
-                        onClick={() => handleStatusChange(blog._id, blog.status)}
+                        className="btn btn-sm bg-yellow-600 text-white"
+                        onClick={() => handleSetToDraft(blog._id)}
                       >
-                        Publish
-                      </button>
-                    ) : (
-                      <button
-                        className="btn btn-warning"
-                        onClick={() => handleStatusChange(blog._id, blog.status)}
-                      >
-                        Unpublish
+                        Set to Draft
                       </button>
                     )}
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => handleDelete(blog._id)}
-                    >
-                      Delete
-                    </button>
                   </td>
                 </tr>
               ))}

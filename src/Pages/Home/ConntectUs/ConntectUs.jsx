@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Swal from "sweetalert2";
-
+import 'aos/dist/aos.css';
+import Aos from "aos";
 export default function ConnectUs() {
+
+
   const handleSubmit = (event) => {
     event.preventDefault();
     Swal.fire({
@@ -12,6 +15,16 @@ export default function ConnectUs() {
       timer: 1500
     });
   };
+
+  useEffect(() => {
+    
+    Aos.init({
+      duration: 1000, 
+      once: true, 
+    });
+  }, []);
+
+
 
   return (
     <div>
@@ -28,7 +41,9 @@ export default function ConnectUs() {
           </div>
 
           {/* Contact Section Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8"
+          data-aos="fade-up"
+          >
             {/* Contact Form */}
             <div className="bg-white shadow-md rounded-lg p-6">
               <h3 className="text-2xl font-bold text-gray-800 mb-6">

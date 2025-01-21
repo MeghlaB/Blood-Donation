@@ -11,16 +11,16 @@ export default function ContentManagement() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
 
-  // Fetch blogs
-  const { data: blogs = [], isLoading } = useQuery({
-    queryKey: ['blogs'],
-    queryFn: async () => {
-      const res = await axiosSecure.get('/blogs');
-      return res.data;
-    },
-  });
+  // fecth data and filter 
+   const { data: blogs = [], isLoading } = useQuery({
+     queryKey: ['blogsfilter', filter], 
+     queryFn: async () => {
+       const res = await axiosSecure.get(`/blogsfilter?status=${filter}`);
+       return res.data;
+     },
+   });
 
-  // Mutation for updating blog status
+  // Update blog status
   const updateBlogStatus = useMutation({
     mutationFn: async ({ id, status }) => {
       const updatedStatus = status === 'draft' ? 'published' : 'draft';
@@ -36,7 +36,7 @@ export default function ContentManagement() {
     },
   });
 
-  // Mutation for deleting a blog
+  // Delete blog
   const deleteBlog = useMutation({
     mutationFn: async (id) => {
       await axiosSecure.delete(`/blogs/${id}`);
@@ -50,12 +50,35 @@ export default function ContentManagement() {
     },
   });
 
-  // Handle publish/unpublish
+  // Edit blog
+  const editBlog = useMutation({
+    mutationFn: async (blog) => {
+      await axiosSecure.put(`/blogs/${blog._id}`, blog);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['blogs']);
+      Swal.fire('Success', 'Blog updated successfully!', 'success');
+      setEditingBlog(null);
+    },
+    onError: () => {
+      Swal.fire('Error', 'Failed to update blog', 'error');
+    },
+  });
+
+  const filteredBlogs = blogs.filter(
+    (blog) => filter === 'all' || blog.status === filter
+  );
+
+  const totalPages = Math.ceil(filteredBlogs.length / pageSize);
+  const paginatedBlogs = filteredBlogs.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
   const handleStatusChange = (id, status) => {
     updateBlogStatus.mutate({ id, status });
   };
 
-  // Handle delete blog
   const handleDelete = (id) => {
     Swal.fire({
       title: 'Are you sure?',
@@ -72,20 +95,18 @@ export default function ContentManagement() {
     });
   };
 
-  const filteredBlogs = blogs.filter(
-    (blog) => filter === 'all' || blog.status === filter
-  );
+  const handleEdit = (blog) => {
+    setEditingBlog(blog);
+  };
 
-  // Paginate the filtered blogs
-  const totalPages = Math.ceil(filteredBlogs.length / pageSize);
-  const paginatedBlogs = filteredBlogs.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
-
-  // Handle page change
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const updatedBlog = {
+      ...editingBlog,
+      title: formData.get('title'),
+    };
+    editBlog.mutate(updatedBlog);
   };
 
   if (isLoading) {
@@ -94,14 +115,13 @@ export default function ContentManagement() {
 
   return (
     <div className="p-4 max-w-6xl mx-auto">
-      {/* Add Blog Button */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Content Management</h1>
         <Link to="add-blog">
           <button className="btn bg-blue-600 text-white">Add Blog</button>
         </Link>
       </div>
-      {/* Filter Dropdown */}
+
       <div className="mb-4">
         <label htmlFor="filter" className="mr-2 font-medium">
           Filter by Status:
@@ -118,74 +138,73 @@ export default function ContentManagement() {
         </select>
       </div>
 
-      {/* Blog List */}
       <div>
-        {paginatedBlogs.length > 0 ? (
-          <table className="table-auto w-full border-collapse border border-gray-300">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border border-gray-300 px-4 py-2">Title</th>
-                <th className="border border-gray-300 px-4 py-2">Status</th>
-                <th className="border border-gray-300 px-4 py-2">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedBlogs.map((blog) => (
-                <tr key={blog._id}>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {blog.title}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2 capitalize">
-                    {blog.status}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2 flex gap-2">
-                    {blog.status === 'draft' ? (
-                      <button
-                        className="btn btn-success"
-                        onClick={() =>
-                          handleStatusChange(blog._id, blog.status)
-                        }
-                      >
-                        Publish
-                      </button>
-                    ) : (
-                      <button
-                        className="btn btn-warning"
-                        onClick={() =>
-                          handleStatusChange(blog._id, blog.status)
-                        }
-                      >
-                        Unpublish
-                      </button>
-                    )}
+        <table className="table-auto w-full border-collapse border border-gray-300">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border border-gray-300 px-4 py-2">Title</th>
+              <th className="border border-gray-300 px-4 py-2">Status</th>
+              <th className="border border-gray-300 px-4 py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedBlogs.map((blog) => (
+              <tr key={blog._id}>
+                <td className="border border-gray-300 px-4 py-2">
+                  {blog.title}
+                </td>
+                <td className="border border-gray-300 px-4 py-2 capitalize">
+                  {blog.status}
+                </td>
+                <td className="border border-gray-300 px-4 py-2 flex gap-2">
+                  {blog.status === 'draft' ? (
                     <button
-                      className="btn btn-danger"
-                      onClick={() => handleDelete(blog._id)}
+                      className="btn btn-success"
+                      onClick={() =>
+                        handleStatusChange(blog._id, blog.status)
+                      }
                     >
-                      Delete
+                      Publish
                     </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p className="text-center text-gray-500 mt-4">No blogs found.</p>
-        )}
+                  ) : (
+                    <button
+                      className="btn btn-warning"
+                      onClick={() =>
+                        handleStatusChange(blog._id, blog.status)
+                      }
+                    >
+                      Unpublish
+                    </button>
+                  )}
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => handleDelete(blog._id)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      {/* Pagination */}
       <div className="flex justify-center mt-4">
         {Array.from({ length: totalPages }, (_, index) => (
           <button
             key={index}
             onClick={() => setCurrentPage(index + 1)}
-            className={`btn btn-sm mx-1 ${currentPage === index + 1 ? 'bg-red-900 text-white hover:bg-red-900' : 'btn-outline'}`}
+            className={`btn btn-sm mx-1 ${
+              currentPage === index + 1
+                ? 'bg-red-900 text-white hover:bg-red-900'
+                : 'btn-outline'
+            }`}
           >
             {index + 1}
           </button>
         ))}
       </div>
+
     </div>
   );
 }

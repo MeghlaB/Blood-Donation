@@ -8,6 +8,7 @@ import { BsThreeDots } from 'react-icons/bs';
 import AxiosPublic from '../../../Components/Hooks/AxiosPublic';
 import { MdOutlineArrowDropDown } from 'react-icons/md';
 import { FiEdit } from 'react-icons/fi';
+import { useQuery } from '@tanstack/react-query';
 
 export default function MyDonationRequests() {
   const { user } = UseAuth();
@@ -36,6 +37,16 @@ export default function MyDonationRequests() {
       fetchRequests();
     }
   }, [user?.email]);
+
+
+const {data}=useQuery({
+  queryKey:['request'],
+  queryFn:async ()=>{
+    const res = axiosSecure.get(`/requests/${user?.email}`)
+    // console.log(res.data)
+  }
+})
+
 
   const handleMenuDelete = async (item) => {
     Swal.fire({
@@ -153,10 +164,7 @@ export default function MyDonationRequests() {
               <td className="border-b px-4 py-2">{request.donationTime}</td>
               <td className="border-b px-4 py-2">{request.bloodGroup}</td>
               <td className="border-b px-4 py-2">
-                {/* Display the current status */}
                 {request.status}
-
-                {/* If status is 'inprogress', show the dropdown */}
                 {request.status === 'inprogress' && (
                   <div className="dropdown dropdown-end">
                     <label tabIndex={0} className="btn btn-ghost btn-sm">
@@ -192,8 +200,6 @@ export default function MyDonationRequests() {
                   </div>
                 )}
               </td>
-
-
               <td className="border-b px-4 py-2">
                 {request.status === 'inprogress' &&
                   <div className="mt-2">
@@ -219,7 +225,7 @@ export default function MyDonationRequests() {
 
                 </button>
               </td>
-              <Link to={`/details/${request._id}`}> <td className="px-5 text-sky-700 underline ">Details</td></Link>
+              <Link to={`/details/${request._id}`}> <td className="px-5 pt-3 text-sky-700 underline ">Details</td></Link>
             </tr>
           ))}
         </tbody>

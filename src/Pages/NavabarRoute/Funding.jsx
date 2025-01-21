@@ -1,31 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import AxiosSecure from '../../Components/Hooks/AxiosSecure';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 
 const Funding = () => {
   const axiosSecure = AxiosSecure();
-  const [funds, setFunds] = useState([]);
   const [loading, setLoading] = useState(true);
+ const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5;
 
-  useEffect(() => {
-    setLoading(true); 
-    axiosSecure
-      .get('/funds')
-      .then((res) => {
-        // console.log('Funds API Response:', res.data);
-        setFunds(res.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching funds:', error);
-      })
-      .finally(() => {
-        setLoading(false); 
-      });
-  }, []);
+  const {data :funds ,isLoading} =useQuery({
+    queryKey:['funds'],
+    queryFn:async ()=>{
+      const res = await axiosSecure('funds')
+      // console.log(res.data)
+      return res.data
+    }
+  })
+
+  const totalPages = Math.ceil(funds.length / pageSize);
+  const paginatedRequests = funds.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
 
   return (
     <div className="container mt-20 mx-auto mb-40">
-      <h2 className="text-2xl font-bold text-center">Funding Page</h2>
+      <h2 className="text-2xl font-bold text-center text-red-900">Funding Page</h2>
 
       <div className="mt-4 text-center">
         <Link to="/givefund" className="btn btn-success">
@@ -34,7 +36,7 @@ const Funding = () => {
       </div>
 
       <div className="mt-6">
-        {loading ? (
+        {isLoading ? (
           <div className="text-center text-red-500">Loading funds...</div>
         ) : funds.length === 0 ? (
           <p className="text-center text-gray-500">No funding data available.</p>
@@ -48,7 +50,7 @@ const Funding = () => {
               </tr>
             </thead>
             <tbody className="text-gray-600">
-              {funds.map((fund) => (
+              {paginatedRequests.map((fund) => (
                 <tr key={fund._id}>
                   <td className="px-4 py-2 border">{fund?.name || 'N/A'}</td>
                   <td className="px-4 py-2 border">${fund?.amount || 0}</td>
@@ -64,6 +66,18 @@ const Funding = () => {
             </tbody>
           </table>
         )}
+      </div>
+        {/* Pagination */}
+        <div className="flex justify-center mt-4">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentPage(index + 1)}
+            className={`btn btn-sm mx-1 ${currentPage === index + 1 ? 'bg-red-900 text-white hover:bg-red-900' : 'btn-outline'}`}
+          >
+            {index + 1}
+          </button>
+        ))}
       </div>
     </div>
   );

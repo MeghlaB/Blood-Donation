@@ -71,6 +71,7 @@ export default function AuthProvider({ children }) {
     donorUserLogin,
     donateUserRegistration,
     signout,
+    setLoading,
     name: 'meghla'
   }
   return (

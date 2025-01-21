@@ -4,14 +4,14 @@ import Swal from "sweetalert2";
 import axios from "axios";
 
 export default function SearchPage() {
-  const axiosPublic = AxiosPublic(); // Custom Axios instance
-  const [bloodGroup, setBloodGroup] = useState(""); // Selected blood group
-  const [districts, setDistricts] = useState([]); // List of districts
-  const [filteredUpazilas, setFilteredUpazilas] = useState([]); // Filtered upazilas for selected district
-  const [selectedDistrict, setSelectedDistrict] = useState(""); // Selected district
-  const [selectedUpazila, setSelectedUpazila] = useState(""); // Selected upazila
-  const [donors, setDonors] = useState([]); // List of donors fetched from API
-  const [loading, setLoading] = useState(false); // Loading state for search operation
+  const axiosPublic = AxiosPublic(); 
+  const [bloodGroup, setBloodGroup] = useState(""); 
+  const [districts, setDistricts] = useState([]); 
+  const [filteredUpazilas, setFilteredUpazilas] = useState([]);
+  const [selectedDistrict, setSelectedDistrict] = useState(""); 
+  const [selectedUpazila, setSelectedUpazila] = useState(""); 
+  const [donors, setDonors] = useState([]); 
+  const [loading, setLoading] = useState(false);
 
   // Fetch district data on component mount
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function SearchPage() {
     setSelectedDistrict(selected);
     const foundDistrict = districts.find((d) => d.district === selected);
     setFilteredUpazilas(foundDistrict ? foundDistrict.upazilas : []);
-    setSelectedUpazila(""); // Reset upazila when district changes
+    setSelectedUpazila(""); 
   };
 
   // Handle search form submission
