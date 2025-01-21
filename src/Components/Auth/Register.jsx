@@ -25,7 +25,7 @@ export default function Register() {
   } = useForm();
   const navigate = useNavigate();
 
-  // Fetch districts and upazilas from the JSON file
+  // Fetch districts and upazilas f
   useEffect(() => {
     axios
       .get("/distric.json")
