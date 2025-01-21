@@ -43,6 +43,7 @@ const Header = () => {
     const navLinks = (
         <>
             <li><NavLink to={'/'}>Home</NavLink></li>
+            <li><NavLink to={'/searchDonars'}>Search Donors</NavLink></li>
             <li><NavLink to={'/requestDonation'}>Donation Request</NavLink></li>
             <li><NavLink to={'/funding'}>Funding</NavLink></li>
             <li><NavLink to={'/blogs'}>Blog</NavLink></li>
