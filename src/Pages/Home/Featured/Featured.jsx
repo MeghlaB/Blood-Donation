@@ -18,7 +18,7 @@ export default function Featured() {
           {/* Section title */}
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-red-600">
-              Why Donate Blood Through <span className="text-gray-800">Our Platform?</span>
+            Our <span className="text-gray-800">Featured Section!</span>
             </h2>
             <p className="text-gray-600 mt-4">
               Saving lives has never been easier! Join hands with us and make an impact.

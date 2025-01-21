@@ -30,33 +30,48 @@ export default function AuthProvider({ children }) {
   }
 
   // Logout
-  const signout = () => {
-    return signOut(auth)
-  }
+  // const signout = () => {
+  //   setLoading(true)
+  //   return signOut(auth)
+  // }
+  const signout = async () => {
+    setLoading(true);
+    try {
+      await signOut(auth);
+      setUser(null); 
+    } finally {
+      setLoading(false);
+    }
+};
 
 
 
   // Auth State
   useEffect(() => {
+
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+      setLoading(false)
       if (currentUser) {
+
+        setUser(currentUser);
         // get token and store client
         const userInfo = { email: currentUser.email }
         axiosPublic.post('/jwt', userInfo)
           .then(res => {
             // console.log(res.data)
             if (res.data.token) {
+              setLoading(false)
               localStorage.setItem('access-token', res.data.token)
             }
           })
       }
       else {
         // TODO: remove token (if token stored in the client side: Local storage, caching, in memory)
+        setLoading(false)
         localStorage.removeItem('access-token');
       }
       // console.log('Current User ==>', currentUser);
-      setLoading(false);
+      setLoading(false)
     });
 
     // Cleanup function for onAuthStateChanged

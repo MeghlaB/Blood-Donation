@@ -1,29 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import AxiosSecure from '../../Components/Hooks/AxiosSecure';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
 const Funding = () => {
   const axiosSecure = AxiosSecure();
-  const [loading, setLoading] = useState(true);
- const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
 
-  const {data :funds ,isLoading} =useQuery({
-    queryKey:['funds'],
-    queryFn:async ()=>{
-      const res = await axiosSecure('funds')
-      // console.log(res.data)
-      return res.data
-    }
-  })
+  const { data: funds = [], isLoading } = useQuery({
+    queryKey: ['funds'],
+    queryFn: async () => {
+      const res = await axiosSecure('funds');
+      return res.data;
+    },
+  });
 
   const totalPages = Math.ceil(funds.length / pageSize);
+
   const paginatedRequests = funds.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
-
 
   return (
     <div className="container mt-20 mx-auto mb-40">
@@ -67,13 +65,16 @@ const Funding = () => {
           </table>
         )}
       </div>
-        {/* Pagination */}
-        <div className="flex justify-center mt-4">
+
+      {/* Pagination */}
+      <div className="flex justify-center mt-4">
         {Array.from({ length: totalPages }, (_, index) => (
           <button
             key={index}
             onClick={() => setCurrentPage(index + 1)}
-            className={`btn btn-sm mx-1 ${currentPage === index + 1 ? 'bg-red-900 text-white hover:bg-red-900' : 'btn-outline'}`}
+            className={`btn btn-sm mx-1 ${
+              currentPage === index + 1 ? 'bg-red-900 text-white hover:bg-red-900' : 'btn-outline'
+            }`}
           >
             {index + 1}
           </button>

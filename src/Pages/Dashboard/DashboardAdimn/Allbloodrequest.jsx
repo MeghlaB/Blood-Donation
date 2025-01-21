@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
 import { FaTrash } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
@@ -11,9 +11,11 @@ import { FiEdit } from 'react-icons/fi';
 export default function AllBloodRequest() {
   const axiosSecure = AxiosSecure();
   const axiosPublic = AxiosPublic();
+
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState('');
-  const [request, setRequests] = useState([]);
+  const [filteredRequests, setFilteredRequests] = useState([]);
+  const [statusFilter, setStatusFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
 
@@ -25,7 +27,16 @@ export default function AllBloodRequest() {
     },
   });
 
-  // Handle delete functionality (for admin only)
+  useEffect(() => {
+    if (statusFilter === 'all') {
+      setFilteredRequests(requests);
+    } else {
+      setFilteredRequests(
+        requests.filter((request) => request.status === statusFilter)
+      );
+    }
+  }, [statusFilter, requests]);
+
   const handleMenuDelete = async (item) => {
     Swal.fire({
       title: 'Are you sure?',
@@ -40,46 +51,38 @@ export default function AllBloodRequest() {
         try {
           const res = await axiosSecure.delete(`/donation/${item._id}`);
           if (res.data.deletedCount > 0) {
-            refetch(); // Refresh the data
             Swal.fire('Deleted!', `${item.recipientName} has been deleted.`, 'success');
+            refetch();
           }
         } catch (error) {
-          console.error('Error deleting the item:', error);
-          Swal.fire('Error!', 'There was a problem deleting the item.', 'error');
+          Swal.fire('Error!', 'Unable to delete the item.', 'error');
         }
       }
     });
   };
 
-  // Handle status change (volunteers only)
   const handlestausChange = () => {
-     if (!selectedUser || !selectedStatus) {
-       Swal.fire('Error', 'Please select a user and a status.', 'error');
-       return;
-     }
- 
-     axiosPublic.put(`/alldonar/status/${selectedUser._id}`, { status: selectedStatus })
-       .then((res) => {
-         if (res?.data?.message === 'Status updated successfully') {
-          refetch()
-           Swal.fire('Success', `Status updated to ${selectedStatus}.`, 'success');
-           setRequests(prevRequests =>
-             prevRequests.map((request) =>
-               request._id === selectedUser._id ? { ...request, status: selectedStatus } : request
-             )
-           );
-           setSelectedStatus('');
-           setSelectedUser(null);
-         }
-       })
-       .catch((err) => {
-         Swal.fire('Error', err.response?.data?.message || 'Failed to update status.', 'error');
-       });
-   };
+    if (!selectedUser || !selectedStatus) {
+      Swal.fire('Error', 'Please select a user and a status.', 'error');
+      return;
+    }
 
-  // Pagination logic
-  const totalPages = Math.ceil(requests.length / pageSize);
-  const paginatedRequests = requests.slice(
+    axiosPublic.put(`/alldonar/status/${selectedUser._id}`, { status: selectedStatus })
+      .then((res) => {
+        if (res?.data?.message === 'Status updated successfully') {
+          refetch();
+          Swal.fire('Success', `Status updated to ${selectedStatus}.`, 'success');
+          setSelectedStatus('');
+          setSelectedUser(null);
+        }
+      })
+      .catch((err) => {
+        Swal.fire('Error', err.response?.data?.message || 'Failed to update status.', 'error');
+      });
+  };
+
+  const totalPages = Math.ceil(filteredRequests.length / pageSize);
+  const paginatedRequests = filteredRequests.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
@@ -87,9 +90,27 @@ export default function AllBloodRequest() {
   return (
     <div className="container mx-auto mt-9">
       <h1 className="text-xl font-bold mb-4">All Blood Donation Requests</h1>
+
+      {/* Filter by Status */}
+      <div className="mb-4">
+        <label htmlFor="statusFilter" className="mr-2">Filter by Status</label>
+        <select
+          id="statusFilter"
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="border px-3 py-2 rounded-md w-full"
+        >
+          <option value="all">All</option>
+          <option value="pending">Pending</option>
+          <option value="inprogress">In Progress</option>
+          <option value="done">Done</option>
+          <option value="canceled">Canceled</option>
+        </select>
+      </div>
+
       {isLoading ? (
         <p>Loading...</p>
-      ) : requests.length > 0 ? (
+      ) : filteredRequests.length > 0 ? (
         <table className="table-auto text-center w-full border-collapse border border-gray-300">
           <thead>
             <tr className="bg-gray-100">
@@ -131,10 +152,10 @@ export default function AllBloodRequest() {
                           value={selectedStatus}
                           onChange={(e) => setSelectedStatus(e.target.value)}
                         >
-                          <option disabled>Select a Status</option>
+                          <option disabled value="">Select a Status</option>
                           <option value="canceled">Canceled</option>
                           <option value="done">Done</option>
-                          <option value="progress">Progress</option>
+                          <option value="inprogress">In Progress</option>
                         </select>
                         <div className="mt-4">
                           <button
@@ -142,7 +163,7 @@ export default function AllBloodRequest() {
                               setSelectedUser(request);
                               handlestausChange();
                             }}
-                            className="btn bg-red-900 text-white hover:bg-red-900 w-full"
+                            className="btn bg-red-900 text-white hover:bg-red-700 w-full"
                           >
                             Submit
                           </button>
@@ -156,20 +177,16 @@ export default function AllBloodRequest() {
                     to={`/dashboard/edit/${request._id}`}
                     className="btn btn-sm bg-blue-500 text-white rounded-md px-3 py-1"
                   >
-                     <FiEdit />
+                    <FiEdit />
                   </Link>
                 </td>
-                
                 <td className="border-b px-4 py-2 text-center">
-                 
-                    <button
-                      onClick={() => handleMenuDelete(request)}
-                      className="flex items-center justify-center rounded-full bg-red-500 px-4 py-4 font-bold text-white shadow-md transition-all duration-300 hover:bg-red-700"
-                    >
-                      <FaTrash />
-                   
-                    </button>
-                  
+                  <button
+                    onClick={() => handleMenuDelete(request)}
+                    className="flex items-center justify-center rounded-full bg-red-500 px-4 py-4 font-bold text-white shadow-md transition-all duration-300 hover:bg-red-700"
+                  >
+                    <FaTrash />
+                  </button>
                 </td>
                 <td className="border-b px-4 py-2">
                   <Link

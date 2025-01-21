@@ -7,7 +7,7 @@ export default function UserAdmin() {
   const {user} =UseAuth()
   // console.log(user)
   const axiosSecure = AxiosSecure()
-const {data: isAdmin ,isPending: isAdminLoading } = useQuery({
+const {data: isAdmin ,isLoading: isAdminLoading } = useQuery({
   queryKey:[user?.email ,'isAdmin'],
   queryFn:async ()=>{
     const result = await axiosSecure.get(`/users/admin/${user.email}`)

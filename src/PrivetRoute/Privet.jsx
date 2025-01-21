@@ -4,7 +4,9 @@ import { AuthContext } from '../Context/AuthProvider';
 
 export default function Privet({ children }) {
   const { user, loading } = useContext(AuthContext);
-  const location = useLocation(); // Correct usage of useLocation()
+  
+  const location = useLocation();
+  
 
   // Show a loader when authentication is still in progress
   if (loading) {

@@ -127,7 +127,7 @@ const {data}=useQuery({
           id="statusFilter"
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="border px-3 py-2 rounded-md"
+          className="border px-3 py-2 rounded-md w-full"
         >
           <option value="all">All</option>
           <option value="pending">Pending</option>

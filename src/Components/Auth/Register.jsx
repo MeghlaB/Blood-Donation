@@ -12,7 +12,7 @@ const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_ke
 export default function Register() {
   const axiosPublic = AxiosPublic();
 
-  const { donateUserRegistration, UpdateProfile } = useContext(AuthContext);
+  const { donateUserRegistration, UpdateProfile ,setLoading} = useContext(AuthContext);
   const [districts, setDistricts] = useState([]);
   const [filteredUpazilas, setFilteredUpazilas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -70,7 +70,9 @@ export default function Register() {
 
       // Register user and update profile
       const result = await donateUserRegistration(data.email, data.password);
+      setLoading(false)
       const loggedUser = result.user;
+      // console.log(loggedUser)
 
       await UpdateProfile(data.name, imageURL);
 
@@ -85,7 +87,7 @@ export default function Register() {
         status: "active",
         role: "donor",
       };
-
+      // console.log(userData)
       const saveResponse = await axiosPublic.post("/users", userData);
       if (saveResponse.data.insertedId) {
         reset();
@@ -93,15 +95,16 @@ export default function Register() {
           title: "Success!",
           text: "Account created successfully.",
           icon: "success",
+          timer:1500,
         });
         navigate("/");
       }
     } catch (error) {
-      console.error("Registration Error:", error.message);
+      console.error();
       Swal.fire({
         icon: "error",
         title: "Registration Failed",
-        text: "Something went wrong. Please try again later.",
+        text: `{"Registration Error:", ${error.message}}`,
       });
     }
   };

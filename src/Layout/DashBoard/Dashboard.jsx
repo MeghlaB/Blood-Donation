@@ -16,7 +16,7 @@ export default function Dashboard() {
   const [isAdmin] = UserAdmin();
   const [isvolunteer] = UserVolunteer();
   const navigate = useNavigate()
-  const { user, signout, setLoading } = useContext(AuthContext);
+  const { user, signout, setLoading ,loading} = useContext(AuthContext);
 
 
   const handleLogout = () => {
@@ -30,24 +30,8 @@ export default function Dashboard() {
       });
   };
 
-  useEffect(() => {
-    if (user) {
-      if (isAdmin) {
-        setLoading(false)
-        navigate('/dashboard/adminhome');
 
-      } else if (isvolunteer) {
-        setLoading(false)
-        navigate('/dashboard/volunteerhome');
-
-      } else {
-        setLoading(false)
-        navigate('/dashboard/home');
-
-      }
-      setLoading(false)
-    }
-  }, [isAdmin, isvolunteer, navigate]);
+ 
 
 
 
