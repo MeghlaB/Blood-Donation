@@ -23,7 +23,7 @@ export default function Banner() {
     <button className='btn bg-red-900 text-white hover:bg-red-900 border-none'>Join as a donor</button>
   </Link>
   <Link to={'/searchDonars'}>
-    <button className='btn bg-white text-red-900 hover:bg-red-800 border'>Search Donor</button>
+    <button className='btn bg-white text-red-900 border'>Search Donor</button>
   </Link>
 </div>
         </div>

@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 export default function Login() {
 
   const {donorUserLogin}=useContext(AuthContext)
-  const navgate = useNavigate()
+  const navigate = useNavigate()
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -14,20 +14,26 @@ export default function Login() {
     const password = form.password.value;
 
     // console.log('Email:', email, 'Password:', password);
-
     donorUserLogin(email, password)
-        .then((userCredential) => {
-            const user = userCredential.user;
-            // console.log('User Signed In:', user);
-            Swal.fire({
-                title: "User Login !",
-                icon: "success",
-                draggable: true
-              });
-              navgate('/')
-             
-        })
-       
+    .then((userCredential) => {
+      const user = userCredential.user;
+      Swal.fire({
+        title: "Login Successful!",
+        icon: "success",
+        draggable: true,
+      });
+      navigate('/');
+    })
+    .catch((error) => {
+      const errorMessage = error.message;
+      Swal.fire({
+        title: "Login Failed!",
+        text: errorMessage,
+        icon: "error",
+        draggable: true,
+      });
+    });
+
 };
 
 
