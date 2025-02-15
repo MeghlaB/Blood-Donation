@@ -3,6 +3,7 @@ import Header from '../../Common/Header'
 import Banner from './Banner/Banner'
 import Featured from './Featured/Featured'
 import ConnectUs from './ConntectUs/ConntectUs'
+import Benifits from './Benifits/Benifits'
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <Banner></Banner>
       <Featured></Featured>
       <ConnectUs></ConnectUs>
+      <Benifits></Benifits>
     </div>
   )
 }
