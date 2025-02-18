@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { motion } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { ThemeContext } from "../../../Context/ThemeProvider";
+
 
 const faqs = [
   {
@@ -26,6 +28,7 @@ const faqs = [
 ];
 
 const Faqs = () => {
+  const { theme } = useContext(ThemeContext);
   const [openIndex, setOpenIndex] = useState(null);
 
   const toggleFAQ = (index) => {
@@ -33,17 +36,17 @@ const Faqs = () => {
   };
 
   return (
-    <section className="container mx-auto px-6 py-12">
+    <section className={`container mx-auto px-6 py-12`}>
       <motion.div
         className="text-center mb-8"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <h2 className="text-3xl font-bold ">
+        <h2 className="text-3xl font-bold">
           Frequently Asked Questions
         </h2>
-        <p className="text-gray-600 mt-2">
+        <p className={`${theme === "dark" ? "text-gray-400" : "text-gray-600"} mt-2`}>
           Find answers to common questions about blood donation.
         </p>
       </motion.div>
@@ -52,14 +55,14 @@ const Faqs = () => {
         {faqs.map((faq, index) => (
           <motion.div
             key={index}
-            className="border border-gray-200 rounded-xl mb-4 shadow-sm bg-white"
+            className={`border rounded-xl mb-4 shadow-sm `}
             whileHover={{ scale: 1.02 }}
           >
             <button
               className="w-full p-4 flex justify-between items-center text-left"
               onClick={() => toggleFAQ(index)}
             >
-              <span className="text-lg font-semibold text-gray-800">
+              <span className="text-lg font-semibold">
                 {faq.question}
               </span>
               {openIndex === index ? (
@@ -71,7 +74,7 @@ const Faqs = () => {
 
             {openIndex === index && (
               <motion.div
-                className="p-4 bg-gray-50 text-gray-600 rounded-b-xl"
+                className={`p-4 rounded-b-xl ${theme === "dark" ? "bg-gray-800 text-gray-300" : "bg-gray-50 text-gray-600"}`}
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
