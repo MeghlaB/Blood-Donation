@@ -96,7 +96,7 @@ export default function AllDonationRequest() {
         {requests.length > 0 ? (
           <table className="table-auto text-center w-full border-collapse border border-gray-300">
             <thead>
-              <tr className="bg-gray-100">
+              <tr className="bg-gray-500">
                 <th className="border-b px-4 py-2">Recipient Name</th>
                 <th className="border-b px-4 py-2">Location</th>
                 <th className="border-b px-4 py-2">Date</th>

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import UseAuth from '../../../Components/Hooks/UseAuth';
 import Marquee from 'react-fast-marquee';
 import { FaDonate, FaHospital, FaUsers } from 'react-icons/fa';
 import { useQuery } from '@tanstack/react-query';
 import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
 import { Treemap, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
+import { ThemeContext } from '../../../Context/ThemeProvider';
 
 const CustomTooltip = ({ active, payload, label, data }) => {
   if (active && payload && payload.length) {
@@ -25,9 +26,15 @@ const CustomTooltip = ({ active, payload, label, data }) => {
 };
 
 export default function AdminHome() {
+  const { theme } = useContext(ThemeContext);
   const { user } = UseAuth();
   const axiosSecure = AxiosSecure();
   
+  const getBgClass = () => (theme === 'dark' ? 'bg-slate-900 text-gray-100' : 'bg-white text-gray-900');
+  const getCardBgClass = () => (theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-white text-gray-800');
+  const getTextClass = () => (theme === 'dark' ? 'text-gray-200' : 'text-gray-700');
+  const getSubTextClass = () => (theme === 'dark' ? 'text-gray-400' : 'text-gray-600');
+
   const { data: stats, error, isLoading } = useQuery({
     queryKey: ['stats'],
     queryFn: async () => {
@@ -78,76 +85,78 @@ export default function AdminHome() {
 
   return (
     <div className="mt-3 container mx-auto px-4">
-      <Marquee>
-        <div className="p-6 mt-6 text-center bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 rounded-md w-full overflow-hidden">
-          {user?.displayName ? (
-            <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl text-white">
-              Welcome, <span className="text-yellow-300">{user.displayName}</span>!
-            </h2>
-          ) : (
-            <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl text-white">Welcome, Donor!</h2>
-          )}
-          <p className="text-gray-200 mt-2 sm:text-lg lg:text-xl">
-            Thank you for being a part of our donor community.
-          </p>
-        </div>
-      </Marquee>
+<Marquee>
+  <div className="p-8 mt-6 text-center rounded-lg w-full overflow-hidden bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500 shadow-lg">
+    {user?.displayName ? (
+      <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl text-white">
+        Welcome, <span className="text-red-600">{user.displayName}</span>!
+      </h2>
+    ) : (
+      <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl text-white">Welcome, Donor!</h2>
+    )}
+    <p className="text-gray-200 mt-2 sm:text-lg lg:text-xl">
+      Thank you for being a part of our donor community.
+    </p>
+  </div>
+</Marquee>
+
+
+
       <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto">
-  <div className="bg-white shadow-lg w-full rounded-lg p-6 flex items-center justify-between hover:scale-105 transform transition-all duration-300">
-    <div className="text-center">
-      <FaUsers className="lg:text-4xl text-3xl text-blue-500 mx-auto" />
-      <div>
-        <h3 className="mt-4 text-lg sm:text-xl font-semibold">Total Donors</h3>
-        <p className="text-2xl font-bold">{stats?.user}</p>
+        <div className={`bg-white w-full shadow-lg rounded-lg p-6 flex items-center justify-between hover:scale-105 transform transition-all duration-300 ${getBgClass()}`}>
+          <div className="text-center">
+            <FaUsers className="lg:text-4xl text-3xl text-blue-500 mx-auto" />
+            <div>
+              <h3 className="mt-4 text-lg sm:text-xl font-semibold">Total Donors</h3>
+              <p className="text-2xl font-bold">{stats?.user}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className={`bg-white w-full shadow-lg rounded-lg p-6 flex items-center justify-between hover:scale-105 transform transition-all duration-300 ${getBgClass()}`}>
+          <div className="text-center">
+            <FaDonate className="lg:text-4xl text-3xl text-green-500 mx-auto" />
+            <div>
+              <h3 className="mt-4 text-lg sm:text-xl font-semibold">Total Funds</h3>
+              <p className="text-2xl font-bold">${stats?.funding}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className={`bg-white w-full shadow-lg rounded-lg p-6 flex items-center justify-between hover:scale-105 transform transition-all duration-300 ${getBgClass()}`}>
+          <div className="text-center">
+            <FaHospital className="lg:text-4xl text-3xl text-red-500 mx-auto" />
+            <div>
+              <h3 className="mt-4 text-lg sm:text-xl font-semibold">Total Blood Donation Requests</h3>
+              <p className="text-2xl font-bold">{stats?.donarRequset}</p>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <div className="bg-white w-full shadow-lg rounded-lg p-6 flex items-center justify-between hover:scale-105 transform transition-all duration-300">
-    <div className="text-center">
-      <FaDonate className="lg:text-4xl text-3xl text-green-500 mx-auto" />
-      <div>
-        <h3 className="mt-4 text-lg sm:text-xl font-semibold">Total Funds</h3>
-        <p className="text-2xl font-bold">${stats?.funding}</p>
+      <div className={`mt-14 bg-white p-8 rounded-lg shadow-md ${getBgClass()}`}>
+        <h2 className="text-xl sm:text-2xl font-semibold text-center mb-6">Donation Stats Overview (Bar Chart)</h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart
+            width={500}
+            height={300}
+            data={barChartData}
+            margin={{
+              top: 5,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip content={<CustomTooltip data={data} />} />
+            <Legend />
+            <Bar dataKey="pv" barSize={20} fill="#8884d8" />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
-    </div>
-  </div>
-
-  <div className="bg-white w-full shadow-lg rounded-lg p-6 flex items-center justify-between hover:scale-105 transform transition-all duration-300">
-    <div className="text-center">
-      <FaHospital className="lg:text-4xl text-3xl text-red-500 mx-auto" />
-      <div>
-        <h3 className="mt-4 text-lg sm:text-xl font-semibold">Total Blood Donation Requests</h3>
-        <p className="text-2xl font-bold">{stats?.donarRequset}</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div className="mt-14 bg-white p-8 rounded-lg shadow-md">
-  <h2 className="text-xl sm:text-2xl font-semibold text-center mb-6">Donation Stats Overview (Bar Chart)</h2>
-  <ResponsiveContainer width="100%" height={300}> {/* Adjusted the height here */}
-    <BarChart
-      width={500}
-      height={300}
-      data={barChartData}
-      margin={{
-        top: 5,
-        right: 30,
-        left: 20,
-        bottom: 5,
-      }}
-    >
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="name" />
-      <YAxis />
-      <Tooltip content={<CustomTooltip data={data} />} />
-      <Legend />
-      <Bar dataKey="pv" barSize={20} fill="#8884d8" />
-    </BarChart>
-  </ResponsiveContainer>
-</div>
-
     </div>
   );
 }

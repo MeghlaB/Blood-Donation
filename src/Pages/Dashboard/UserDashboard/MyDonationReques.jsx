@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import AxiosSecure from '../../../Components/Hooks/AxiosSecure';
 import UseAuth from '../../../Components/Hooks/UseAuth';
 import { Link } from 'react-router-dom';
@@ -9,8 +9,10 @@ import AxiosPublic from '../../../Components/Hooks/AxiosPublic';
 import { MdOutlineArrowDropDown } from 'react-icons/md';
 import { FiEdit } from 'react-icons/fi';
 import { useQuery } from '@tanstack/react-query';
+import { ThemeContext } from '../../../Context/ThemeProvider';
 
 export default function MyDonationRequests() {
+  const {theme} = useContext(ThemeContext)
   const { user } = UseAuth();
   const axiosPublic = AxiosPublic()
   const axiosSecure = AxiosSecure()
@@ -21,6 +23,13 @@ export default function MyDonationRequests() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
+
+  const getBgClass = () => (theme === 'dark' ? 'bg-slate-900 text-gray-100' : 'bg-white text-gray-900');
+  const getCardBgClass = () => (theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-white text-gray-800');
+  const getTextClass = () => (theme === 'dark' ? 'text-gray-200' : 'text-gray-700');
+  const getSubTextClass = () => (theme === 'dark' ? 'text-gray-400' : 'text-gray-600');
+
+
 
   useEffect(() => {
     const fetchRequests = async () => {

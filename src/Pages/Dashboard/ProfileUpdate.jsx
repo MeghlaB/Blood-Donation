@@ -5,25 +5,26 @@ import { AuthContext } from "../../Context/AuthProvider";
 import axios from "axios";
 import Swal from "sweetalert2";
 import AxiosPublic from "../../Components/Hooks/AxiosPublic";
+import { ThemeContext } from "../../Context/ThemeProvider";
 
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
 export default function ProfileUpdate() {
+  const { theme } = useContext(ThemeContext);
   const userProfile = useLoaderData();
   const axiosPublic = AxiosPublic();
   const { UpdateProfile } = useContext(AuthContext);
-  
+  const navigate = useNavigate();
+
+  const getBgClass = () => (theme === 'dark' ? 'bg-slate-900 text-gray-100' : 'bg-white text-gray-900');
+  const getCardBgClass = () => (theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-white text-gray-800');
+  const getTextClass = () => (theme === 'dark' ? 'text-gray-200' : 'text-gray-700');
+  const getSubTextClass = () => (theme === 'dark' ? 'text-gray-400' : 'text-gray-600');
+
   const [districts, setDistricts] = useState([]);
   const [filteredUpazilas, setFilteredUpazilas] = useState([]);
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm();
-const naviagte = useNavigate()
-
+  const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
   useEffect(() => {
     axios
@@ -45,27 +46,22 @@ const naviagte = useNavigate()
       });
   }, []);
 
-
   const handleDistrictChange = (event) => {
     const selectedDistrict = event.target.value;
-    const foundDistrict = districts.find(
-      (d) => d.district === selectedDistrict
-    );
+    const foundDistrict = districts.find(d => d.district === selectedDistrict);
     setFilteredUpazilas(foundDistrict ? foundDistrict.upazilas : []);
-    reset({ upazila: "" });
+    reset({ upazila: "" }); // Reset upazila when district changes
   };
 
-  // Handle form submission
   const onSubmit = async (data) => {
-    let avatarUrl = userProfile.avatar; 
+    let avatarUrl = userProfile.avatar;
 
-  
     if (data.photo?.[0]) {
       try {
         const imageFile = new FormData();
         imageFile.append("image", data.photo[0]);
-        const response = await axios.post(image_hosting_api, imageFile); 
-        avatarUrl = response.data.data.display_url; 
+        const response = await axios.post(image_hosting_api, imageFile);
+        avatarUrl = response.data.data.display_url;
       } catch (error) {
         console.error("Image Upload Error:", error);
         Swal.fire({
@@ -73,25 +69,26 @@ const naviagte = useNavigate()
           title: "Image Upload Failed",
           text: "Could not upload the image. Please try again.",
         });
-        return; 
+        return;
       }
     }
+
     const updatedData = {
       name: data.name,
       district: data.district,
       upazila: data.upazila,
       bloodGroup: data.bloodGroup,
-      avatar: avatarUrl, 
+      avatar: avatarUrl,
     };
+
     try {
       const response = await axiosPublic.put(`/update/${userProfile._id}`, updatedData);
-      if(response.data){
+      if (response.data) {
         Swal.fire({
           title: "Profile updated successfully",
           icon: "success",
         });
-        naviagte('/dashboard/profile')
-
+        navigate('/dashboard/profile');
       }
     } catch (error) {
       console.error("Profile Update Error:", error);
@@ -104,14 +101,12 @@ const naviagte = useNavigate()
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-6 lg:p-12 ">
-      <div className="w-full lg:w-1/2 pb-6 lg:mb-0">
-        <h2 className="text-2xl lg:text-3xl font-semibold text-center">
-          Update Profile
-        </h2>
+    <div className="flex flex-col items-center justify-center p-6 lg:p-12">
+      <div className={`w-full lg:w-1/2 pb-6 lg:mb-0 `}>
+        <h2 className="text-2xl lg:text-3xl font-semibold text-center">Update Profile</h2>
       </div>
 
-      <div className="w-full lg:w-1/2 space-y-4 rounded-lg border bg-white px-6 lg:px-20 py-8 lg:py-10 shadow-lg">
+      <div className={`w-full lg:w-1/2 space-y-4 rounded-lg border bg-white px-6 lg:px-20 py-8 lg:py-10 shadow-lg ${getBgClass()}`}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Full Name */}
           <div>
@@ -173,9 +168,7 @@ const naviagte = useNavigate()
                 </option>
               ))}
             </select>
-            {errors.district && (
-              <p className="text-red-500">{errors.district.message}</p>
-            )}
+            {errors.district && <p className="text-red-500">{errors.district.message}</p>}
           </div>
 
           {/* Upazila */}
@@ -196,9 +189,7 @@ const naviagte = useNavigate()
                 </option>
               ))}
             </select>
-            {errors.upazila && (
-              <p className="text-red-500">{errors.upazila.message}</p>
-            )}
+            {errors.upazila && <p className="text-red-500">{errors.upazila.message}</p>}
           </div>
 
           {/* Blood Group */}
@@ -210,14 +201,10 @@ const naviagte = useNavigate()
               id="bloodGroup"
               type="text"
               defaultValue={userProfile.bloodGroup}
-              {...register("bloodGroup", {
-                required: "Blood group is required",
-              })}
+              {...register("bloodGroup", { required: "Blood group is required" })}
               className="flex h-10 w-full rounded-md border px-3 py-2 text-sm focus:ring-1 focus:ring-blue-500"
             />
-            {errors.bloodGroup && (
-              <p className="text-red-500">{errors.bloodGroup.message}</p>
-            )}
+            {errors.bloodGroup && <p className="text-red-500">{errors.bloodGroup.message}</p>}
           </div>
 
           {/* Submit Button */}

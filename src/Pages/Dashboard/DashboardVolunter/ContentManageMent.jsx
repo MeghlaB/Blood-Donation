@@ -81,7 +81,7 @@ export default function ContentManagement() {
         {blogs.length > 0 ? (
           <table className="table-auto w-full border-collapse border border-gray-300">
             <thead>
-              <tr className="bg-gray-100">
+              <tr className="bg-gray-500">
                 <th className="border border-gray-300 px-4 py-2">Title</th>
                 <th className="border border-gray-300 px-4 py-2">Status</th>
                 <th className="border border-gray-300 px-4 py-2">Actions</th>
