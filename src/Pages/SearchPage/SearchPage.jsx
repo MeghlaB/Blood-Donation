@@ -152,7 +152,7 @@ export default function SearchPage() {
               </div>
             ))}
           </div>
-          Show "See All" 
+        
           {!showAll && (
             <div className="mt-6 text-center">
               <button
