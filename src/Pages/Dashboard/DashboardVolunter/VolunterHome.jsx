@@ -86,20 +86,19 @@ export default function Volunter() {
   return (
     <div className="mt-3 container mx-auto px-4">
 <Marquee>
-  <div className="p-8 mt-6 text-center rounded-lg w-full overflow-hidden bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500 shadow-lg">
-    {user?.displayName ? (
-      <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl text-white">
-        Welcome, <span className="text-red-600">{user.displayName}</span>!
-      </h2>
-    ) : (
-      <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl text-white">Welcome, Donor!</h2>
-    )}
-    <p className="text-gray-200 mt-2 sm:text-lg lg:text-xl">
-      Thank you for being a part of our donor community.
-    </p>
-  </div>
-</Marquee>
-
+          <div className="p-8 mt-6 text-center rounded-lg w-full overflow-hidden bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500 shadow-lg">
+            {user?.displayName ? (
+              <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl text-white">
+                Welcome, <span className="text-red-600">{user.displayName}</span>!
+              </h2>
+            ) : (
+              <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl text-white">Welcome, Donor!</h2>
+            )}
+            <p className="text-gray-200 mt-2 sm:text-lg lg:text-xl">
+              Thank you for being a part of our donor community.
+            </p>
+          </div>
+        </Marquee>
 
 
       <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto">

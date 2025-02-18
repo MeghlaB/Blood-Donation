@@ -19,13 +19,16 @@ const Header = () => {
 
   // Navigation links
   const navLinks = (
-    <>
-      <li><NavLink to={'/'}>Home</NavLink></li>
-      <li><NavLink to={'/searchDonars'}>Search Donors</NavLink></li>
-      <li><NavLink to={'/requestDonation'}>Donation Request</NavLink></li>
-      <li><NavLink to={'/funding'}>Funding</NavLink></li>
-      <li><NavLink to={'/blogs'}>Blog</NavLink></li>
-    </>
+   
+        <>
+          <li><NavLink to={'/'}>Home</NavLink></li>
+          <li><NavLink to={'/searchDonars'}>Search Donors</NavLink></li>
+          {user && <li><NavLink to={'/requestDonation'}>Donation Request</NavLink></li>}
+          {user && <li><NavLink to={'/funding'}>Funding</NavLink></li>}
+          <li><NavLink to={'/blogs'}>Blog</NavLink></li>
+        </>
+      
+      
   );
 
   // Function to determine dashboard link based on user role

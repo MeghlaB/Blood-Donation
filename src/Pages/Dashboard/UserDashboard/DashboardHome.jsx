@@ -92,20 +92,20 @@ export default function DashboardHome() {
   
   return (
     <div className='container mx-auto'>
-      <Marquee>
-        <div className="  p-6 mt-8 text-center bg-base-200 rounded-md w-full">
-          {user?.displayName ? (
-            <h2 className="text-2xl font-bold px-96">
-              Welcome, <span className="text-red-900">{user.displayName}</span>!
-            </h2>
-          ) : (
-            <h2 className="text-2xl font-bold">Welcome, Donor!</h2>
-          )}
-          <p className="text-gray-600 mt-2">
-            Thank you for being a part of our donor community.
-          </p>
-        </div>
-      </Marquee>
+    <Marquee>
+          <div className="p-8 mt-6 text-center rounded-lg w-full overflow-hidden bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500 shadow-lg">
+            {user?.displayName ? (
+              <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl text-white">
+                Welcome, <span className="text-red-600">{user.displayName}</span>!
+              </h2>
+            ) : (
+              <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl text-white">Welcome, Donor!</h2>
+            )}
+            <p className="text-gray-200 mt-2 sm:text-lg lg:text-xl">
+              Thank you for being a part of our donor community.
+            </p>
+          </div>
+        </Marquee>
 
       <div>
         <h1 className="text-2xl font-bold text-center mt-6">Recent Donations</h1>

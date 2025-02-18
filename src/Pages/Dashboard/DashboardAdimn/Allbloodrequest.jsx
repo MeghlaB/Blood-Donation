@@ -111,10 +111,10 @@ export default function AllBloodRequest() {
   {isLoading ? (
     <p>Loading...</p>
   ) : filteredRequests.length > 0 ? (
-    <div className="overflow-x-auto">
-      <table className="table-auto text-center w-full border-collapse border border-gray-300">
+    <div className="overflow-x-auto ">
+      <table className="table-auto text-center w-full border-collapse border border-gray-300 overflow-hidden ">
         <thead>
-          <tr className="bg-gray-100">
+          <tr className="bg-gray-500">
             <th className="border-b px-4 py-2">Recipient Name</th>
             <th className="border-b px-4 py-2">Location</th>
             <th className="border-b px-4 py-2">Date</th>
