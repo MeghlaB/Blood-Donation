@@ -4,7 +4,7 @@ import { Heart, UserCheck, RefreshCcw } from "lucide-react";
 
 const About = () => {
   return (
-    <section className="container mx-auto px-6 py-12">
+    <section className="container mx-auto px-2 py-12">
       <motion.div
         className="  p-8"
         initial={{ opacity: 0, y: 50 }}
