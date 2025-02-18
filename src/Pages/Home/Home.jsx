@@ -7,6 +7,7 @@ import Benifits from './Benifits/Benifits'
 import Blood from './Blood'
 import About from './About/About'
 import Testimonials from './Testimonials/Testimonials'
+import Faqs from './Fqas/Faqs'
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
       <Testimonials></Testimonials>
       <Blood></Blood>
       <ConnectUs></ConnectUs>
+      <Faqs></Faqs>
     </div>
   )
 }
