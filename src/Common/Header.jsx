@@ -51,7 +51,7 @@ const Header = () => {
     );
 
     return (
-        <div className="navbar px-4 lg:px-6 fixed z-50 top-0 left-0 bg-[#FCE0DF] text-red-500">
+        <div className="navbar px-4 lg:px-6 fixed  z-50 top-0 left-0 bg-[#FCE0DF] text-red-500">
             {/* Logo Section */}
             <div className="navbar-start flex items-center gap-2">
                 <img className="w-10 h-10 rounded-full" src={logo} alt="Logo" />
