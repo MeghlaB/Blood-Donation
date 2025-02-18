@@ -6,6 +6,7 @@ import ConnectUs from './ConntectUs/ConntectUs'
 import Benifits from './Benifits/Benifits'
 import Blood from './Blood'
 import About from './About/About'
+import Testimonials from './Testimonials/Testimonials'
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <About></About>
       <Featured></Featured>
       <Benifits></Benifits>
+      <Testimonials></Testimonials>
       <Blood></Blood>
       <ConnectUs></ConnectUs>
     </div>
