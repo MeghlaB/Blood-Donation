@@ -3,19 +3,24 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ThemeContext } from "../../Context/ThemeProvider";
 
-
 function Blood() {
   const { theme } = useContext(ThemeContext);
 
-  const getBgClass = () => (theme === "dark" ? "bg-gray-800 text-gray-100" : "bg-white text-gray-900");
-  const getCardBgClass = () => (theme === "dark" ? "bg-gray-700 text-gray-300" : "bg-white text-gray-800");
-  const getTextClass = () => (theme === "dark" ? "text-gray-200" : "text-gray-700");
-  const getSubTextClass = () => (theme === "dark" ? "text-gray-400" : "text-gray-600");
+  const getBgClass = () =>
+    theme === "dark" ? "bg-gray-800 text-gray-100" : "bg-white text-gray-900";
+  const getCardBgClass = () =>
+    theme === "dark" ? "bg-gray-700 text-gray-300" : "bg-white text-gray-800";
+  const getTextClass = () =>
+    theme === "dark" ? "text-gray-200" : "text-gray-700";
+  const getSubTextClass = () =>
+    theme === "dark" ? "text-gray-400" : "text-gray-600";
 
   return (
     <section className={`container mx-auto px-6 py-12 `}>
       {/* Section Title */}
-      <h2 className="text-3xl font-bold text-center mb-8">Blood Donation & Awareness</h2>
+      <h2 className="text-3xl font-bold text-center mb-8">
+        Blood Donation & Awareness
+      </h2>
 
       {/* Grid Layout */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -44,8 +49,12 @@ function Blood() {
           transition={{ duration: 0.8, delay: 0.4 }}
           whileHover={{ scale: 1.05 }}
         >
-          <h2 className={`text-lg font-semibold ${getTextClass()}`}>Join Us on Facebook</h2>
-          <p className={`text-xs ${getSubTextClass()}`}>Commit to Blood Donation, Bangladesh</p>
+          <h2 className={`text-lg font-semibold ${getTextClass()}`}>
+            Join Us on Facebook
+          </h2>
+          <p className={`text-xs ${getSubTextClass()}`}>
+            Commit to Blood Donation, Bangladesh
+          </p>
           <div className="w-full max-w-xs">
             <iframe
               className="w-full rounded-lg shadow-md mt-2"
@@ -59,19 +68,25 @@ function Blood() {
 
         {/* Blood Donation Awareness Section */}
         <motion.div
-          className={`p-6 text-center rounded-xl shadow-lg flex flex-col justify-center items-center h-[250px] ${theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}
+          className={`p-6 text-center rounded-xl shadow-lg flex flex-col justify-center items-center h-[250px] ${
+            theme === "dark"
+              ? "bg-gray-900 text-white"
+              : "bg-gray-100 text-black"
+          }`}
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
           whileHover={{ scale: 1.05 }}
         >
           <h2 className="text-lg font-bold">Donate Blood, Save Lives</h2>
-          <p className="text-xs italic">A single blood donation can save a life.</p>
+          <p className="text-xs italic">
+            A single blood donation can save a life.
+          </p>
           <div className="w-full max-w-xs">
             <iframe
               className="w-full rounded-lg shadow-md mt-2"
               height="100"
-              src="https://www.youtube.com/embed/Q_xlUuHzYIc" 
+              src="https://www.youtube.com/embed/632uoaC36C4"
               frameBorder="0"
               allowFullScreen
             ></iframe>
