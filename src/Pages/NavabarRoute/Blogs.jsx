@@ -1,11 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import AxiosSecure from '../../Components/Hooks/AxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import Aos from 'aos';
 import DOMPurify from 'dompurify';
+import { ThemeContext } from '../../Context/ThemeProvider';
 
 export default function Blogs() {
+    const { theme } = useContext(ThemeContext);
+
+    const getBgClass = () => (theme === 'dark' ? 'bg-slate-900 text-gray-100' : 'bg-white text-gray-900');
+    const getCardBgClass = () => (theme === 'dark' ? 'bg-gray-700 text-gray-300' : 'bg-white text-gray-800');
+    const getTextClass = () => (theme === 'dark' ? 'text-gray-200' : 'text-gray-700'); 
+    const getSubTextClass = () => (theme === 'dark' ? 'text-gray-400' : 'text-gray-600');
+    const getText = () => (theme === 'dark' ? 'text-gray-200' : '');
+
     const axiosSecure = AxiosSecure();
 
     const { data: blog, isLoading, isError, error, refetch } = useQuery({
@@ -16,6 +25,7 @@ export default function Blogs() {
         },
     });
 
+    // AOS initialization
     useEffect(() => {
         Aos.init({
             duration: 1000,
@@ -23,6 +33,7 @@ export default function Blogs() {
         });
     }, []);
 
+    // Loading state
     if (isLoading) {
         return (
             <div className="text-center mt-20">
@@ -32,6 +43,7 @@ export default function Blogs() {
         );
     }
 
+    // Error state
     if (isError) {
         return (
             <div className="text-center mt-20 text-red-500">
@@ -47,8 +59,8 @@ export default function Blogs() {
     }
 
     return (
-        <div className="mt-16 px-6 mb-7">
-            <h1 className="text-2xl font-bold mb-6 pt-10 text-red-900 text-center underline">
+        <div className={`mt-16 px-6 pb-20 ${getBgClass()}`}>
+            <h1 className={`text-2xl font-bold mb-6 pt-10 text-center underline ${getText()}`}>
                 Published Blogs
             </h1>
             {blog && blog.length > 0 ? (
@@ -59,11 +71,11 @@ export default function Blogs() {
                     {blog.map((blog) => (
                         <div
                             key={blog._id}
-                            className="border p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105"
+                            className={`border p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105 ${getCardBgClass()}`}
                         >
-                            <h2 className="text-xl font-semibold">{blog.title}</h2>
+                            <h2 className={`text-xl font-semibold ${getTextClass()}`}>{blog.title}</h2>
                             <div
-                                className="blog-content mt-2 text-sm text-gray-700"
+                                className={`blog-content mt-2 text-sm ${getSubTextClass()}`}
                                 dangerouslySetInnerHTML={{
                                     __html: DOMPurify.sanitize(blog?.content?.slice(0, 100) + '...'),
                                 }}

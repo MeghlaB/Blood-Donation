@@ -5,7 +5,7 @@ import { ThemeContext } from "../Context/ThemeProvider";
 export default function Footer() {
   const { theme } = useContext(ThemeContext);
 
-  const getBgClass = () => (theme === "dark" ? "bg-gray-800 text-gray-100" : "bg-white text-gray-900");
+  const getBgClass = () => (theme === "dark" ? "bg-gray-800 text-gray-100" : "bg-red-100 text-gray-900");
 
   return (
     <footer className={`flex flex-col justify-around gap-5 py-8 ${getBgClass()}`}>

@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import AxiosSecure from '../../Components/Hooks/AxiosSecure';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { ThemeContext } from '../../Context/ThemeProvider';
 
 const Funding = () => {
+       const { theme } = useContext(ThemeContext);
+     const getBgClass = () => (theme === 'dark' ? 'bg-slate-900 text-gray-100' : 'bg-white text-gray-900');
+     const getCardBgClass = () => (theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-white text-gray-800');
+     const getTextClass = () => (theme === 'dark' ? 'text-gray-200' : 'text-gray-700'); 
+     const getSubTextClass = () => (theme === 'dark' ? 'text-gray-400' : 'text-gray-600');
+     const getText = () => (theme === 'dark' ? 'text-gray-200' : 'text-red-900 ');
   const axiosSecure = AxiosSecure();
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
@@ -25,7 +32,7 @@ const Funding = () => {
 
   return (
     <div className="container mt-20 mx-auto mb-40">
-      <h2 className="text-2xl font-bold text-center text-red-900">Funding Page</h2>
+      <h2 className={`text-2xl font-bold text-center ${getText()}`}>Funding Page</h2>
 
       <div className="mt-4 text-center">
         <Link to="/givefund" className="btn btn-success">
@@ -50,9 +57,9 @@ const Funding = () => {
             <tbody className="text-gray-600">
               {paginatedRequests.map((fund) => (
                 <tr key={fund._id}>
-                  <td className="px-4 py-2 border">{fund?.name || 'N/A'}</td>
-                  <td className="px-4 py-2 border">${fund?.amount || 0}</td>
-                  <td className="px-4 py-2 border">
+                  <td className={`px-4 py-2 border ${getTextClass()}`}>{fund?.name || 'N/A'}</td>
+                  <td className={`px-4 py-2 border ${getTextClass()}`}>${fund?.amount || 0}</td>
+                  <td className={`px-4 py-2 border ${getTextClass()}`}>
                     {new Date(fund?.date).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'long',

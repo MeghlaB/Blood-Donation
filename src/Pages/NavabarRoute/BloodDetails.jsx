@@ -10,18 +10,22 @@ export default function BloodDetails() {
     const { id } = useParams();
     const { user } = UseAuth();
     const axiosPublic = AxiosPublic();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
     const [error, setError] = useState(null);
+    const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') === 'true');
 
-    const { data: donations ,refetch} = useQuery({
-        queryKey: ['alldonarPageRequest',id],
+    const { data: donations, refetch } = useQuery({
+        queryKey: ['alldonarPageRequest', id],
         queryFn: async () => {
-            const res = await axiosPublic.get(`/alldonarPageRequest/${id}`)
-          
-            return res.data
+            const res = await axiosPublic.get(`/alldonarPageRequest/${id}`);
+            return res.data;
         }
-    })
+    });
+
+    useEffect(() => {
+        localStorage.setItem('darkMode', darkMode);
+    }, [darkMode]);
 
     const handleConfirmDonation = () => {
         const updatedDonation = {
@@ -30,14 +34,13 @@ export default function BloodDetails() {
             donorName: user.displayName,
             donorEmail: user.email,
         };
-      
+
         axiosPublic
             .put(`/donation-requests/${id}`, updatedDonation)
             .then(() => {
-                refetch()
-                // console.log(res.data)
+                refetch();
                 setShowModal(false);
-                navigate('/requestDonation')
+                navigate('/requestDonation');
             })
             .catch((err) => {
                 setError('Failed to update donation status.');
@@ -45,20 +48,23 @@ export default function BloodDetails() {
             });
     };
 
-
     return (
-        <div className='m-24 '>
-            <Link to={'/requestDonation'} className='btn text-slate-600  '>
-                <LuCircleArrowLeft />
-                Back</Link>
-            <div className="mt-10 w-1/2 mx-auto  ">
+        <div className={`${darkMode ? 'dark bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'} min-h-screen p-6`}>
+            
 
-                <h2 className="text-xl font-bold mb-6">Donation Request <span className='text-red-950'>Details:</span></h2>
+            <Link to={'/requestDonation'} className='btn text-slate-600'>
+                <LuCircleArrowLeft /> Back
+            </Link>
+
+            <div className="mt-10 w-1/2 mx-auto">
+                <h2 className="text-xl font-bold mb-6">
+                    Donation Request <span className='text-red-950'>Details:</span>
+                </h2>
 
                 {error && <p className="text-red-500">{error}</p>}
-                <div className="card bg-white shadow-md p-4 rounded-md">
-                    <p><strong>Recipient Name:</strong> {donations?.recipientName
-                        || 'N/A'}</p>
+
+                <div className="card bg-white dark:bg-gray-800 shadow-md p-4 rounded-md">
+                    <p><strong>Recipient Name:</strong> {donations?.recipientName || 'N/A'}</p>
                     <p><strong>Location:</strong> {`${donations?.district}, ${donations?.upazila}` || 'N/A'}</p>
                     <p><strong>Blood Group:</strong> {donations?.bloodGroup || 'N/A'}</p>
                     <p><strong>Date:</strong> {donations?.donationDate || 'N/A'}</p>
@@ -66,18 +72,16 @@ export default function BloodDetails() {
                     <p><strong>Request Message:</strong> {donations?.requestMessage || 'N/A'}</p>
                     <p>
                         <strong>Status:</strong>{' '}
-                        <span
-                            className={`badge ${donations?.status === 'pending'
-                                ? 'bg-yellow-500 text-white'
-                                : donations?.status === 'inprogress'
-                                    ? 'bg-green-500 text-white'
-                                    : 'bg-gray-400 text-white'
-                                }`}
+                        <span className={`badge ${donations?.status === 'pending'
+                            ? 'bg-yellow-500 text-white'
+                            : donations?.status === 'inprogress'
+                                ? 'bg-green-500 text-white'
+                                : 'bg-gray-400 text-white'
+                            }`}
                         >
                             {donations?.status || 'N/A'}
                         </span>
                     </p>
-
 
                     <button
                         className="btn bg-red-900 hover:bg-red-950 text-white mt-4"
@@ -94,27 +98,13 @@ export default function BloodDetails() {
                             <h3 className="text-lg font-bold mb-4">Confirm Donation</h3>
                             <div className="mb-4">
                                 <label className="block font-semibold">Donor Name</label>
-                                <input
-                                    type="text"
-                                    value={user.displayName}
-                                    readOnly
-                                    className="input input-bordered w-full"
-                                />
+                                <input type="text" value={user.displayName} readOnly className="input input-bordered w-full" />
                             </div>
                             <div className="mb-4">
                                 <label className="block font-semibold">Donor Email</label>
-                                <input
-                                    type="email"
-                                    value={user.email}
-                                    readOnly
-                                    className="input input-bordered w-full"
-                                />
+                                <input type="email" value={user.email} readOnly className="input input-bordered w-full" />
                             </div>
-                            <button
-                                type="button"
-                                className="btn bg-green-500 text-white"
-                                onClick={handleConfirmDonation}
-                            >
+                            <button type="button" className="btn bg-green-500 text-white" onClick={handleConfirmDonation}>
                                 Confirm Donation
                             </button>
                         </form>
