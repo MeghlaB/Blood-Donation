@@ -11,9 +11,10 @@ import { ThemeContext } from '../../Context/ThemeProvider';
 export default function DonationRequest() {
     const { user } = UseAuth();
     const axiosPublic = AxiosPublic();
-      const { theme } = useContext(ThemeContext);
+    const { theme } = useContext(ThemeContext);
+    const [sortOrder, setSortOrder] = useState('asc'); 
 
-    const { data: requests, isLoading } = useQuery({
+    const { data: requests = [], isLoading } = useQuery({
         queryKey: ['alldonars'],
         queryFn: async () => {
             const res = await axiosPublic.get('/alldonars');
@@ -28,26 +29,40 @@ export default function DonationRequest() {
         });
     }, []);
 
-
     const getBgClass = () => (theme === 'dark' ? 'bg-slate-900 text-gray-100' : 'bg-white text-gray-900');
-    const getCardBgClass = () => (theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-white text-gray-800');
+    const getCardBgClass = () => (theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-base-200 text-gray-800');
     const getTextClass = () => (theme === 'dark' ? 'text-gray-200' : 'text-gray-700');
     const getSubTextClass = () => (theme === 'dark' ? 'text-gray-400' : 'text-gray-600');
 
+ 
+    const sortedRequests = [...requests].sort((a, b) => {
+        const dateA = new Date(a.donationDate);
+        const dateB = new Date(b.donationDate);
+        return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+    });
+
     return (
-        <div className={`min-h-screen ${getBgClass()}`}>
-            <Link to={'/'} className={`btn mb-5 mx-6 ${getTextClass()}`}>
+        <div className={`min-h-screen pt-24 ${getBgClass()}`}>
+            {/* <Link to={'/'} className={`btn mb-5 mx-6 ${getTextClass()}`}>
                 <LuCircleArrowLeft />
                 Back
-            </Link>
-            <div
-                className="container mt-12 mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-                data-aos="zoom-out"
-            >
+            </Link> */}
+
+            {/* 🔘 Sort Button */}
+            <div className="flex justify-end px-6">
+                <button
+                    onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                    className="btn bg-blue-600 text-white hover:bg-blue-800"
+                >
+                    Sort By Date ({sortOrder === 'asc' ? 'Oldest' : 'Newest'})
+                </button>
+            </div>
+
+            <div className="container mt-6 mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" data-aos="zoom-out">
                 {isLoading ? (
                     <p className={`text-center ${getSubTextClass()}`}>Loading...</p>
-                ) : requests.length > 0 ? (
-                    requests.map((request) => (
+                ) : sortedRequests.length > 0 ? (
+                    sortedRequests.map((request) => (
                         <div key={request._id} className={`p-4 border rounded shadow-sm ${getCardBgClass()}`}>
                             <h3 className={`text-lg font-semibold ${getTextClass()}`}>
                                 Name: {request?.recipientName}

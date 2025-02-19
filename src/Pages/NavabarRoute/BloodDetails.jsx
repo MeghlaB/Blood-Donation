@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import UseAuth from '../../Components/Hooks/UseAuth';
 import AxiosPublic from '../../Components/Hooks/AxiosPublic';
 import Modal from '../../Components/Modal/Modal';
 import { LuCircleArrowLeft } from 'react-icons/lu';
 import { useQuery } from '@tanstack/react-query';
+import { ThemeContext } from '../../Context/ThemeProvider';
 
 export default function BloodDetails() {
+     const { theme } = useContext(ThemeContext);
     const { id } = useParams();
     const { user } = UseAuth();
     const axiosPublic = AxiosPublic();
@@ -14,6 +16,11 @@ export default function BloodDetails() {
     const [showModal, setShowModal] = useState(false);
     const [error, setError] = useState(null);
     const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') === 'true');
+
+    const getBgClass = () => (theme === 'dark' ? 'bg-slate-900 text-gray-100' : 'bg-white text-gray-900');
+    const getCardBgClass = () => (theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-base-200 text-gray-800');
+    const getTextClass = () => (theme === 'dark' ? 'text-gray-200' : 'text-gray-700');
+    const getSubTextClass = () => (theme === 'dark' ? 'text-gray-400' : 'text-gray-600');
 
     const { data: donations, refetch } = useQuery({
         queryKey: ['alldonarPageRequest', id],

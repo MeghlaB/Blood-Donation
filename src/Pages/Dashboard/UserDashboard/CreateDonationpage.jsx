@@ -143,12 +143,12 @@ const CreateDonationPage = () => {
     };
 
     return (
-        <div className={`container mx-auto mt-6 p-6 ${getBgClass()}`}>
+        <div className={`container mx-auto  ${getBgClass()}`}>
             <h1 className="text-2xl lg:text-4xl font-bold text-center">Create Donation <span className="text-red-950">Request</span></h1>
 
-            <section className="mt-5">
+            <section className="mt-3  pb-16">
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    <fieldset className={`p-6 rounded-md shadow-sm ${getCardBgClass()}`}>
+                    <fieldset className={`p-6   rounded-md shadow-sm ${getCardBgClass()}`}>
                         <div className="grid grid-cols-6 gap-4">
                             {/* Requester Name */}
                             <div className="col-span-3">
